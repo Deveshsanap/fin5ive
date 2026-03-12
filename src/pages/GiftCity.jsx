@@ -2,17 +2,50 @@ import React, { useState } from 'react';
 import { 
   CheckCircle, ArrowRight, Building2, FileText, Globe, 
   ChevronDown, ChevronUp, Download, Landmark, TrendingUp, 
-  Shield, Briefcase, Calculator, X, Send, Scale, Plane, Coins
+  Shield, Briefcase, Calculator, X, Send, Scale, Plane, Coins, Loader2
 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { createLead } from '../config/api';
 
 const GiftCity = () => {
   // --- STATE MANAGEMENT ---
   const [activeFaq, setActiveFaq] = useState(null);
   const [activeTab, setActiveTab] = useState('PRE'); // 'PRE' or 'POST'
+  
+  // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    companyName: '',
+    targetSector: 'Banking / AIF'
+  });
   
   // Tax Calculator State
   const [projectedProfit, setProjectedProfit] = useState(100000000); // Default 10 Cr
+
+  // --- FORM HANDLER ---
+  const handleModalSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await createLead({
+        name: formData.fullName,
+        company: formData.companyName,
+        email: formData.email,
+        service: `GIFT City Setup - ${formData.targetSector}`,
+        message: "Requested a strategy session for GIFT City setup."
+      });
+      toast.success("Strategy session requested successfully! Our advisory team will reach out.");
+      setIsModalOpen(false);
+      setFormData({ fullName: '', email: '', companyName: '', targetSector: 'Banking / AIF' });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to submit request. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // --- CALCULATOR MATH ---
   // Assuming standard corporate tax + surcharge is ~25.17%. GIFT City is 0% for 10 years.
@@ -60,30 +93,30 @@ const GiftCity = () => {
               <h3 className="text-xl font-bold flex items-center"><Briefcase className="w-5 h-5 mr-2"/> Book Strategy Session</h3>
               <button onClick={() => setIsModalOpen(false)} className="hover:text-finOrange transition"><X className="w-6 h-6" /></button>
             </div>
-            <form className="p-8 space-y-4" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); alert("Request Sent Successfully!"); }}>
+            <form className="p-8 space-y-4" onSubmit={handleModalSubmit}>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                <input type="text" required className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="John Doe" />
+                <input type="text" required value={formData.fullName} onChange={(e) => setFormData({...formData, fullName: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="John Doe" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Corporate Email</label>
-                <input type="email" required className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="john@company.com" />
+                <input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="john@company.com" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-                <input type="text" required className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="Global Corp Ltd." />
+                <input type="text" required value={formData.companyName} onChange={(e) => setFormData({...formData, companyName: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="Global Corp Ltd." />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Target Sector</label>
-                <select className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
+                <select value={formData.targetSector} onChange={(e) => setFormData({...formData, targetSector: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
                   <option>Banking / AIF</option>
                   <option>Fintech</option>
                   <option>Family Office</option>
                   <option>Other</option>
                 </select>
               </div>
-              <button type="submit" className="w-full bg-finOrange hover:bg-finOrange-dark text-white font-bold py-4 rounded-lg mt-4 flex justify-center items-center transition shadow-lg">
-                Submit Request <Send className="w-5 h-5 ml-2" />
+              <button type="submit" disabled={isSubmitting} className={`w-full text-white font-bold py-4 rounded-lg mt-4 flex justify-center items-center transition shadow-lg ${isSubmitting ? 'bg-gray-400' : 'bg-finOrange hover:bg-finOrange-dark'}`}>
+                {isSubmitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin"/> Submitting...</> : <>Submit Request <Send className="w-5 h-5 ml-2" /></>}
               </button>
             </form>
           </div>
@@ -366,4 +399,3 @@ const GiftCity = () => {
 };
 
 export default GiftCity;
-

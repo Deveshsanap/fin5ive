@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 
 import Hero from '../components/Hero';
 import ServicesGrid from '../components/ServicesGrid';
+import { createLead } from '../config/api'; // <-- IMPORTED API
 
 const Home = () => {
   // --- STATE MANAGEMENT ---
@@ -40,51 +41,17 @@ const Home = () => {
 
   // --- LIVE MARKET DATA LOGIC ---
   useEffect(() => {
-    // In a real production environment, you would use an API like Alpha Vantage, Yahoo Finance API, or a paid Indian market API.
-    // Example of how the fetch would look:
-    /*
-    const fetchMarketData = async () => {
-      try {
-        const response = await fetch('YOUR_API_ENDPOINT_HERE');
-        const data = await response.json();
-        setMarketData({
-          nifty: { value: data.nifty.price, change: data.nifty.percentChange, isPositive: data.nifty.percentChange >= 0 },
-          // ... mapping rest of data
-        });
-      } catch (error) {
-        console.error("Error fetching market data", error);
-      }
-    };
-    fetchMarketData();
-    const interval = setInterval(fetchMarketData, 60000); // Update every minute
-    */
-
-    // For demonstration, we simulate live fluctuations every 5 seconds
     const simulateMarketUpdates = setInterval(() => {
       setMarketData(prev => {
-        // Random fluctuation between -0.2% and +0.2%
         const fluctuate = (val) => val * (1 + (Math.random() * 0.004 - 0.002));
-        
         const newNiftyVal = fluctuate(prev.nifty.value);
         const newSensexVal = fluctuate(prev.sensex.value);
         const newGoldVal = fluctuate(prev.gold.value);
 
         return {
-          nifty: { 
-            value: newNiftyVal, 
-            change: ((newNiftyVal - 22400) / 22400) * 100, // Simulated baseline
-            isPositive: newNiftyVal >= prev.nifty.value 
-          },
-          sensex: { 
-            value: newSensexVal, 
-            change: ((newSensexVal - 73800) / 73800) * 100, // Simulated baseline
-            isPositive: newSensexVal >= prev.sensex.value 
-          },
-          gold: { 
-            value: newGoldVal, 
-            change: ((newGoldVal - 71300) / 71300) * 100, // Simulated baseline
-            isPositive: newGoldVal >= prev.gold.value 
-          }
+          nifty: { value: newNiftyVal, change: ((newNiftyVal - 22400) / 22400) * 100, isPositive: newNiftyVal >= prev.nifty.value },
+          sensex: { value: newSensexVal, change: ((newSensexVal - 73800) / 73800) * 100, isPositive: newSensexVal >= prev.sensex.value },
+          gold: { value: newGoldVal, change: ((newGoldVal - 71300) / 71300) * 100, isPositive: newGoldVal >= prev.gold.value }
         };
       });
     }, 5000);
@@ -137,27 +104,33 @@ const Home = () => {
 
   const { totalInvested, maturityValue, wealthGained } = calculateReturns();
   
-  // Format numbers nicely
   const formatINR = (value) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value);
   const formatIndex = (value) => new Intl.NumberFormat('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value);
 
-  // --- NEWSLETTER HANDLER ---
-  const handleNewsletterSubmit = (e) => {
+  // --- WIRED NEWSLETTER HANDLER ---
+  const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
     if (!newsletterEmail) {
-      toast.error("Please enter a valid email address.");
-      return;
+      return toast.error("Please enter a valid email address.");
     }
 
     setIsSubscribing(true);
-
-    setTimeout(() => {
-      setIsSubscribing(false);
-      setNewsletterEmail('');
+    try {
+      await createLead({
+        name: "Home Page Subscriber",
+        email: newsletterEmail,
+        service: "Newsletter Subscription",
+        message: "User subscribed to market updates from the Home Page."
+      });
       toast.success('Successfully subscribed to market updates!', {
         iconTheme: { primary: '#FF6600', secondary: 'white' }
       });
-    }, 1500);
+      setNewsletterEmail('');
+    } catch (error) {
+      toast.error("Failed to subscribe. Please try again later.");
+    } finally {
+      setIsSubscribing(false);
+    }
   };
 
   // --- DATA ARRAYS ---
@@ -174,8 +147,6 @@ const Home = () => {
     { text: "Their export factoring services solved our cash flow bottleneck overnight. Getting 80% advance on our international invoices within 24 hours changed our business.", author: "Amit V.", role: "Founder, Export Trading House" }
   ];
 
-  // --- REUSABLE TICKER CONTENT ---
-  // We extract this so we can duplicate it side-by-side to create a seamless loop
   const TickerItems = () => (
     <div className="flex space-x-12 px-6 items-center flex-shrink-0">
       <span className="flex items-center font-medium transition-colors duration-500">
@@ -209,7 +180,7 @@ const Home = () => {
   return (
     <div className="bg-white font-sans overflow-x-hidden">
       
-      {/* 0. Market Ticker (Top Bar) - SEAMLESS AUTO-SCROLLING */}
+      {/* Market Ticker */}
       <style>
         {`
           @keyframes custom-marquee {
@@ -228,17 +199,14 @@ const Home = () => {
       </style>
       
       <div className="bg-[#002244] text-white text-xs py-2.5 overflow-hidden relative z-50 border-b border-white/10 flex">
-        {/* The seamless wrapper translates from 0 to -50% to perfectly loop the two identical children */}
         <div className="animate-custom-marquee">
           <TickerItems />
           <TickerItems />
         </div>
       </div>
 
-      {/* 1. Hero Section */}
       <Hero />
 
-      {/* 2. Trust Marquee */}
       <section className="py-10 bg-slate-50 border-b border-gray-100 overflow-hidden shadow-[inset_0_4px_6px_-4px_rgba(0,0,0,0.05)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-8">
@@ -254,12 +222,9 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 3. Services Grid */}
       <ServicesGrid />
 
-      {/* 4. The FIN5IVE Advantage (Why Choose Us) */}
       <section className="py-24 bg-white relative overflow-hidden border-t border-gray-100">
-        {/* Background Decorative Element */}
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-orange-50 rounded-full blur-[100px] opacity-60 pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -290,9 +255,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 5. Interactive Wealth Calculator */}
       <section className="py-24 bg-[#003366] relative overflow-hidden text-white">
-        {/* Background glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#FF6600] opacity-5 blur-[120px] rounded-full pointer-events-none"></div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -303,8 +266,6 @@ const Home = () => {
           </div>
 
           <div className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden max-w-5xl mx-auto text-gray-800">
-            
-            {/* Toggle SIP / Lumpsum */}
             <div className="flex border-b border-gray-100">
               <button 
                 onClick={() => { setCalcType('SIP'); setInvestment(25000); }}
@@ -321,7 +282,6 @@ const Home = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-5">
-              {/* Sliders Side */}
               <div className="p-8 md:p-12 border-b md:border-b-0 md:border-r border-gray-100 md:col-span-3">
                 <div className="mb-10">
                   <div className="flex justify-between items-center mb-5">
@@ -362,11 +322,8 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Output Side */}
               <div className="p-8 md:p-12 bg-slate-50 flex flex-col justify-center md:col-span-2 relative overflow-hidden">
-                {/* Decorative Icon */}
                 <Calculator className="absolute -bottom-10 -right-10 w-64 h-64 text-slate-200 opacity-50 pointer-events-none" />
-                
                 <div className="relative z-10 space-y-6 mb-10">
                   <div className="flex justify-between items-center">
                     <p className="text-gray-500 font-bold uppercase tracking-wider text-xs">Invested Amount</p>
@@ -381,8 +338,6 @@ const Home = () => {
                     <p className="text-4xl lg:text-5xl font-black text-[#003366] tracking-tight">{formatINR(maturityValue)}</p>
                   </div>
                 </div>
-                
-                {/* Link to Contact Page */}
                 <Link to="/contact" className="w-full bg-[#003366] hover:bg-[#002244] text-white font-bold py-4.5 rounded-xl transition duration-300 shadow-xl hover:-translate-y-1 flex justify-center items-center text-lg relative z-10">
                   Start Investing <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
@@ -392,7 +347,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 6. Testimonials Slider */}
       <section className="py-32 bg-white border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <span className="text-[#FF6600] font-bold tracking-widest uppercase text-sm mb-4 block">Client Success</span>
@@ -414,7 +368,6 @@ const Home = () => {
               </div>
             </div>
             
-            {/* Slider Controls */}
             <div className="absolute bottom-10 right-10 flex space-x-3">
               <button onClick={prevTestimonial} className="w-12 h-12 rounded-full border-2 border-gray-200 text-gray-500 flex items-center justify-center hover:bg-[#003366] hover:text-white hover:border-[#003366] transition-all shadow-sm">
                 <ArrowLeft className="w-5 h-5" />
@@ -424,7 +377,6 @@ const Home = () => {
               </button>
             </div>
 
-            {/* Slider Indicators */}
             <div className="absolute bottom-14 left-0 w-full flex justify-center space-x-2 pointer-events-none">
                {testimonials.map((_, i) => (
                  <div key={i} className={`h-1.5 rounded-full transition-all duration-500 ${testimonialIdx === i ? 'w-8 bg-[#FF6600]' : 'w-2 bg-gray-300'}`}></div>
@@ -434,7 +386,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 7. Leadership Team Teaser */}
       <section className="py-24 bg-slate-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -480,7 +431,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 8. Scale Statistics */}
       <section className="py-20 bg-[#003366] relative text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-[#FF6600] via-[#003366] to-[#003366]"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -505,7 +455,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 9. Interactive FAQ */}
       <section className="py-32 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
@@ -536,7 +485,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 10. Newsletter Lead Capture */}
+      {/* --- WIRED NEWSLETTER FORM --- */}
       <section className="py-24 bg-slate-50 border-t border-gray-100 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-orange-100 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
@@ -568,7 +517,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 11. Final CTA */}
       <section className="py-32 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-[#FF6600] rounded-[3rem] p-12 md:p-20 text-center shadow-2xl relative overflow-hidden">

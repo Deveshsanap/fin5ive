@@ -5,7 +5,7 @@ import {
   MessageCircle, Map, Loader2, ChevronDown, ShieldCheck
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { createContact } from "../config/api";
+import { createLead } from "../config/api";
 
 const Contact = () => {
   // --- STATE MANAGEMENT ---
@@ -82,7 +82,7 @@ const Contact = () => {
   try {
     setIsSubmitting(true);
 
-    const response = await createContact(formData);
+    const response = await createLead(formData);
 
     if (response.status === 201) {
       toast.success("Inquiry sent successfully!");

@@ -2,14 +2,26 @@ import React, { useState } from 'react';
 import { 
   Plane, Clock, DollarSign, Globe, CheckCircle, ArrowRight, 
   ShieldCheck, FileText, Calculator, X, Send, ChevronDown, ChevronUp, 
-  Download, FileSearch, Anchor, Activity, Building, Briefcase, Award
+  Download, FileSearch, Anchor, Activity, Building, Briefcase, Award, Loader2
 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { createLead } from '../config/api';
 
 const ExportFunding = () => {
   // --- STATE MANAGEMENT ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
   const [activeIndustry, setActiveIndustry] = useState('TEXTILE');
+  
+  // Modal Form State
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    companyName: '',
+    iecCode: '',
+    email: '',
+    turnover: '₹2 Cr - ₹10 Cr',
+    invoiceValue: ''
+  });
   
   // 1. Advanced Calculator State
   const [currency, setCurrency] = useState('USD');
@@ -21,9 +33,30 @@ const ExportFunding = () => {
   const [eligibilityStep, setEligibilityStep] = useState(0);
   const [eligibilityAnswers, setEligibilityAnswers] = useState({});
 
+  // --- FORM HANDLER ---
+  const handleModalSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await createLead({
+        name: formData.companyName, 
+        company: formData.companyName,
+        email: formData.email,
+        service: "Export Factoring / Funding",
+        message: `IEC Code: ${formData.iecCode} | Turnover: ${formData.turnover} | Avg Invoice: ${formData.invoiceValue}`
+      });
+      toast.success("Factoring request submitted successfully! Our team will contact you shortly.");
+      setIsModalOpen(false);
+      setFormData({ companyName: '', iecCode: '', email: '', turnover: '₹2 Cr - ₹10 Cr', invoiceValue: '' });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to submit request. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // --- CALCULATOR MATH ---
   const advanceRate = 0.80; // 80% Advance
-  
   const dayZeroAdvance = invoiceValue * advanceRate;
   const timeInMonths = creditDays / 30;
   const totalFactoringFee = invoiceValue * (feeRate / 100) * timeInMonths;
@@ -74,25 +107,25 @@ const ExportFunding = () => {
               <h3 className="text-xl font-bold flex items-center"><Plane className="w-5 h-5 mr-2"/> Apply for Export Finance</h3>
               <button onClick={() => setIsModalOpen(false)} className="hover:text-finOrange transition"><X className="w-6 h-6" /></button>
             </div>
-            <form className="p-8 space-y-4" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); alert("Application Initiated!"); }}>
+            <form className="p-8 space-y-4" onSubmit={handleModalSubmit}>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-                  <input type="text" required className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="Global Exports Ltd." />
+                  <input type="text" required value={formData.companyName} onChange={(e) => setFormData({...formData, companyName: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="Global Exports Ltd." />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">IEC Code (Import Export Code)</label>
-                  <input type="text" required className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="0123456789" />
+                  <input type="text" required value={formData.iecCode} onChange={(e) => setFormData({...formData, iecCode: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="0123456789" />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Corporate Email</label>
-                <input type="email" required className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="finance@company.com" />
+                <input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="finance@company.com" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Annual Turnover</label>
-                  <select className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
+                  <select value={formData.turnover} onChange={(e) => setFormData({...formData, turnover: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
                     <option>₹2 Cr - ₹10 Cr</option>
                     <option>₹10 Cr - ₹50 Cr</option>
                     <option>₹50 Cr+</option>
@@ -100,11 +133,11 @@ const ExportFunding = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Avg. Invoice Value</label>
-                  <input type="text" className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="$50,000" />
+                  <input type="text" value={formData.invoiceValue} onChange={(e) => setFormData({...formData, invoiceValue: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="$50,000" />
                 </div>
               </div>
-              <button type="submit" className="w-full bg-finOrange hover:bg-finOrange-dark text-white font-bold py-4 rounded-lg mt-4 flex justify-center items-center transition shadow-lg">
-                Submit Factoring Request <Send className="w-5 h-5 ml-2" />
+              <button type="submit" disabled={isSubmitting} className={`w-full text-white font-bold py-4 rounded-lg mt-4 flex justify-center items-center transition shadow-lg ${isSubmitting ? 'bg-gray-400' : 'bg-finOrange hover:bg-finOrange-dark'}`}>
+                {isSubmitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin"/> Submitting Request...</> : <>Submit Factoring Request <Send className="w-5 h-5 ml-2" /></>}
               </button>
             </form>
           </div>

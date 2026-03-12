@@ -2,27 +2,81 @@ import React, { useState } from 'react';
 import { 
   ShieldCheck, Award, TrendingUp, Factory, CheckCircle, 
   ArrowRight, Settings, FileCheck, X, Send, Calculator, 
-  ChevronDown, ChevronUp, Download, CheckSquare, Coins, LineChart
+  ChevronDown, ChevronUp, Download, CheckSquare, Coins, LineChart, Loader2
 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { createLead } from '../config/api';
 
 const ZedCertification = () => {
-  // --- STATE MANAGEMENT ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
-  const [activeTier, setActiveTier] = useState('GOLD'); // BRONZE, SILVER, GOLD
+  const [activeTier, setActiveTier] = useState('GOLD');
+
+  // --- FORM STATE ---
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    unitName: '',
+    contactPerson: '',
+    phoneNumber: '',
+    email: '',
+    targetLevel: 'ZED Bronze (Basic)',
+    industry: ''
+  });
+
+  const [brochureEmail, setBrochureEmail] = useState('');
+  const [isBrochureSubmitting, setIsBrochureSubmitting] = useState(false);
+
+  // --- FORM HANDLERS ---
+  const handleModalSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await createLead({
+        name: formData.contactPerson,
+        company: formData.unitName,
+        email: formData.email,
+        phone: formData.phoneNumber,
+        service: `ZED Certification - ${formData.targetLevel}`,
+        message: `Industry: ${formData.industry}`
+      });
+      toast.success("Request Sent! Our ZED implementation team will contact you.");
+      setIsModalOpen(false);
+      setFormData({ unitName: '', contactPerson: '', phoneNumber: '', email: '', targetLevel: 'ZED Bronze (Basic)', industry: '' });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to submit request.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleBrochureDownload = async (e) => {
+    e.preventDefault();
+    if(!brochureEmail) return toast.error("Please enter your email.");
+    setIsBrochureSubmitting(true);
+    try {
+      await createLead({
+        name: "Checklist Download",
+        email: brochureEmail,
+        service: "ZED Gold Checklist",
+        message: "User requested the ZED Certification PDF."
+      });
+      toast.success("Checklist sent to your email!");
+      setBrochureEmail('');
+    } catch (error) {
+      toast.error("Failed to process request.");
+    } finally {
+      setIsBrochureSubmitting(false);
+    }
+  };
 
   // ZED Savings Calculator State
-  const [loanAmount, setLoanAmount] = useState(50000000); // 5 Cr
+  const [loanAmount, setLoanAmount] = useState(50000000);
 
   // --- CALCULATOR MATH ---
-  // ZED typically offers ~0.5% interest concession and ~50% processing fee waiver.
-  // We will assume a standard 1% processing fee for the baseline.
   const interestConcessionRate = 0.005; // 0.5%
   const annualInterestSavings = loanAmount * interestConcessionRate;
-  
   const standardProcessingFee = loanAmount * 0.01; // 1%
   const processingFeeSavings = standardProcessingFee * 0.50; // 50% waiver
-
   const totalFirstYearSavings = annualInterestSavings + processingFeeSavings;
 
   const formatINR = (value) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value);
@@ -70,43 +124,49 @@ const ZedCertification = () => {
               <h3 className="text-xl font-bold flex items-center"><ShieldCheck className="w-5 h-5 mr-2"/> Start ZED Certification</h3>
               <button onClick={() => setIsModalOpen(false)} className="hover:text-finOrange transition"><X className="w-6 h-6" /></button>
             </div>
-            <form className="p-8 space-y-4" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); alert("Request Sent! Our ZED implementation team will contact you."); }}>
+            <form className="p-8 space-y-4" onSubmit={handleModalSubmit}>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Manufacturing Unit Name</label>
-                <input type="text" required className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="Acme Auto Parts" />
+                <input type="text" required value={formData.unitName} onChange={(e) => setFormData({...formData, unitName: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="Acme Auto Parts" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Contact Person</label>
-                  <input type="text" required className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="John Doe" />
+                  <input type="text" required value={formData.contactPerson} onChange={(e) => setFormData({...formData, contactPerson: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="John Doe" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                  <input type="tel" required className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="+91 98765 43210" />
+                  <input type="tel" required value={formData.phoneNumber} onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="+91 98765 43210" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Target Certification Level</label>
-                <select className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
-                  <option>ZED Bronze (Basic)</option>
-                  <option>ZED Silver (Intermediate)</option>
-                  <option>ZED Gold (Advanced)</option>
-                  <option>Unsure, need assessment</option>
-                </select>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="director@company.com" />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Primary Industry</label>
-                <input type="text" required className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="e.g., Engineering, Textiles, Pharma" />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Target Level</label>
+                  <select value={formData.targetLevel} onChange={(e) => setFormData({...formData, targetLevel: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
+                    <option>ZED Bronze (Basic)</option>
+                    <option>ZED Silver (Intermediate)</option>
+                    <option>ZED Gold (Advanced)</option>
+                    <option>Unsure, need assessment</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Primary Industry</label>
+                  <input type="text" required value={formData.industry} onChange={(e) => setFormData({...formData, industry: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="e.g. Textiles" />
+                </div>
               </div>
-              <button type="submit" className="w-full bg-finOrange hover:bg-finOrange-dark text-white font-bold py-4 rounded-lg mt-4 flex justify-center items-center transition shadow-lg">
-                Book Initial Gap Analysis <Send className="w-5 h-5 ml-2" />
+              <button type="submit" disabled={isSubmitting} className={`w-full text-white font-bold py-4 rounded-lg mt-4 flex justify-center items-center transition shadow-lg ${isSubmitting ? 'bg-gray-400' : 'bg-finOrange hover:bg-finOrange-dark'}`}>
+                {isSubmitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin"/> Processing...</> : <>Book Initial Gap Analysis <Send className="w-5 h-5 ml-2" /></>}
               </button>
             </form>
           </div>
         </div>
       )}
 
-      {/* 1. Epic Hero Section */}
+      {/* Hero Section */}
       <div className="bg-finBlue text-white py-24 relative overflow-hidden">
         <div className="absolute top-0 right-0 opacity-10 pointer-events-none">
           <Award className="w-96 h-96 -mt-10 -mr-10 animate-[pulse_10s_ease-in-out_infinite]" />
@@ -134,11 +194,10 @@ const ZedCertification = () => {
         </div>
       </div>
 
-      {/* 2. What is ZED Gold & Key Benefits */}
+      {/* What is ZED Gold & Key Benefits */}
       <section className="py-24 bg-slate-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            
             <div>
               <span className="text-finOrange font-bold tracking-wider uppercase text-sm mb-4 block">The Value Proposition</span>
               <h2 className="text-3xl md:text-4xl font-bold text-finBlue mb-6">A Catalyst for Business Growth</h2>
@@ -199,12 +258,11 @@ const ZedCertification = () => {
                 <p className="text-sm text-gray-500 mt-2">Minimizes rejections & waste.</p>
               </div>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* 3. NEW: ZED Financial Benefits Calculator */}
+      {/* ZED Financial Benefits Calculator */}
       <section className="py-24 bg-white border-b border-gray-100 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -214,8 +272,6 @@ const ZedCertification = () => {
           </div>
 
           <div className="bg-finBlue rounded-3xl shadow-2xl border border-finBlue-light overflow-hidden max-w-4xl mx-auto flex flex-col md:flex-row">
-            
-            {/* Input Side */}
             <div className="p-8 md:p-12 md:w-1/2 border-b md:border-b-0 md:border-r border-white/10 bg-slate-900 text-white relative">
               <Calculator className="absolute top-0 right-0 w-48 h-48 opacity-5 -mt-10 -mr-10 pointer-events-none" />
               <div className="relative z-10">
@@ -245,19 +301,16 @@ const ZedCertification = () => {
               </div>
             </div>
 
-            {/* Output Side */}
             <div className="p-8 md:p-12 md:w-1/2 text-white relative flex flex-col justify-center bg-finBlue">
               <div className="relative z-10 space-y-8">
                 <div>
                   <p className="text-gray-300 font-bold text-sm tracking-widest uppercase mb-1">Annual Interest Savings</p>
                   <p className="text-3xl font-bold text-white">{formatINR(annualInterestSavings)} / yr</p>
                 </div>
-                
                 <div>
                   <p className="text-gray-300 font-bold text-sm tracking-widest uppercase mb-1">Processing Fee Savings (One-time)</p>
                   <p className="text-3xl font-bold text-white">{formatINR(processingFeeSavings)}</p>
                 </div>
-                
                 <div className="pt-6 border-t border-white/20">
                   <p className="text-green-400 font-bold text-sm tracking-widest uppercase mb-1">Total Year 1 Savings</p>
                   <p className="text-5xl font-extrabold text-green-400">{formatINR(totalFirstYearSavings)}</p>
@@ -269,7 +322,7 @@ const ZedCertification = () => {
         </div>
       </section>
 
-      {/* 4. NEW: The "Bronze to Gold" Progression Path (Dynamic Tabs) */}
+      {/* The "Bronze to Gold" Progression Path (Dynamic Tabs) */}
       <section className="py-24 bg-slate-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -324,7 +377,7 @@ const ZedCertification = () => {
         </div>
       </section>
 
-      {/* 5. FIN5IVE Implementation Approach */}
+      {/* FIN5IVE Implementation Approach */}
       <section className="py-24 bg-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
@@ -357,7 +410,7 @@ const ZedCertification = () => {
         </div>
       </section>
 
-      {/* 6. FAQ Accordion */}
+      {/* FAQ Accordion */}
       <section className="py-24 bg-slate-50 border-t border-gray-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -383,7 +436,7 @@ const ZedCertification = () => {
         </div>
       </section>
 
-      {/* 7. Lead Magnet: Download Brochure */}
+      {/* Lead Magnet: Download Brochure */}
       <section className="py-16 bg-white border-t border-gray-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-finBlue rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden">
@@ -393,14 +446,17 @@ const ZedCertification = () => {
               <p className="text-gray-300">Download the exact 20 parameters tested by QCI auditors and check if your factory is ready for certification.</p>
             </div>
             <div className="w-full md:w-auto flex-shrink-0 relative z-10">
-              <form className="flex flex-col sm:flex-row w-full shadow-lg rounded-lg overflow-hidden" onSubmit={(e) => e.preventDefault()}>
+              <form className="flex flex-col sm:flex-row w-full shadow-lg rounded-lg overflow-hidden" onSubmit={handleBrochureDownload}>
                 <input 
                   type="email" 
+                  required
+                  value={brochureEmail}
+                  onChange={(e) => setBrochureEmail(e.target.value)}
                   placeholder="Director's Email" 
                   className="w-full sm:w-64 px-6 py-4 border-none focus:outline-none focus:ring-2 focus:ring-finOrange text-gray-800 rounded-t-lg sm:rounded-l-lg sm:rounded-t-none"
                 />
-                <button className="bg-finOrange hover:bg-finOrange-dark text-white px-8 py-4 font-bold transition flex items-center justify-center whitespace-nowrap rounded-b-lg sm:rounded-r-lg sm:rounded-b-none">
-                  <Download className="w-5 h-5 mr-2" /> Get PDF
+                <button type="submit" disabled={isBrochureSubmitting} className={`text-white px-8 py-4 font-bold transition flex items-center justify-center whitespace-nowrap rounded-b-lg sm:rounded-r-lg sm:rounded-b-none ${isBrochureSubmitting ? 'bg-gray-400' : 'bg-finOrange hover:bg-finOrange-dark'}`}>
+                  {isBrochureSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Download className="w-5 h-5 mr-2" /> Get PDF</>}
                 </button>
               </form>
             </div>

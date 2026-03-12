@@ -4,14 +4,46 @@ import {
   ShieldCheck, HeartPulse, Umbrella, Car, 
   ArrowRight, CheckCircle2, ClipboardCheck, 
   ShieldAlert, Layers, X, Send, ChevronDown, ChevronUp,
-  PhoneCall, Mail, CheckCircle
+  PhoneCall, Mail, CheckCircle, Loader2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { createLead } from '../config/api';
 
 const InsuranceServices = () => {
   // --- STATE MANAGEMENT ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
+
+  // --- FORM STATE ---
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    phoneNumber: '',
+    email: '',
+    interest: 'Term Life Insurance'
+  });
+
+  // --- FORM HANDLERS ---
+  const handleModalSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await createLead({
+        name: formData.fullName,
+        phone: formData.phoneNumber,
+        email: formData.email,
+        service: `Insurance Review`,
+        message: `Primary Interest: ${formData.interest}`
+      });
+      toast.success("Review Request Received! Our risk management team will contact you shortly.");
+      setIsModalOpen(false);
+      setFormData({ fullName: '', phoneNumber: '', email: '', interest: 'Term Life Insurance' });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to submit request.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // --- DATA ARRAYS ---
   const insuranceTypes = [
@@ -87,7 +119,6 @@ const InsuranceServices = () => {
   ];
 
   return (
-    // FIXED: Removed pt-20 here so the Hero section touches the navbar directly
     <div className="bg-white font-sans relative overflow-hidden">
 
       {/* --- SCHEDULE REVIEW MODAL --- */}
@@ -98,36 +129,32 @@ const InsuranceServices = () => {
               <h3 className="text-xl font-bold flex items-center"><ClipboardCheck className="w-5 h-5 mr-2"/> Schedule Policy Review</h3>
               <button onClick={() => setIsModalOpen(false)} className="hover:text-[#FF6600] transition"><X className="w-6 h-6" /></button>
             </div>
-            <form className="p-8 space-y-4" onSubmit={(e) => { 
-              e.preventDefault(); 
-              setIsModalOpen(false); 
-              toast.success("Review Request Received! Our risk management team will contact you shortly."); 
-            }}>
+            <form className="p-8 space-y-4" onSubmit={handleModalSubmit}>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                <input type="text" required className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none" placeholder="John Doe" />
+                <input type="text" required value={formData.fullName} onChange={(e) => setFormData({...formData, fullName: e.target.value})} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none" placeholder="John Doe" />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                  <input type="tel" required className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none" placeholder="+91 98765 43210" />
+                  <input type="tel" required value={formData.phoneNumber} onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none" placeholder="+91 98765 43210" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                  <input type="email" required className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none" placeholder="you@email.com" />
+                  <input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none" placeholder="you@email.com" />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Primary Interest</label>
-                <select className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none bg-white">
+                <select value={formData.interest} onChange={(e) => setFormData({...formData, interest: e.target.value})} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none bg-white">
                   <option>Term Life Insurance</option>
                   <option>Comprehensive Health Insurance</option>
                   <option>General/Asset Insurance</option>
                   <option>Review Existing Policies</option>
                 </select>
               </div>
-              <button type="submit" className="w-full bg-[#FF6600] hover:bg-[#e55c00] text-white font-bold py-4 rounded-xl mt-4 flex justify-center items-center transition shadow-lg">
-                Request Consultation <Send className="w-5 h-5 ml-2" />
+              <button type="submit" disabled={isSubmitting} className={`w-full text-white font-bold py-4 rounded-xl mt-4 flex justify-center items-center transition shadow-lg ${isSubmitting ? 'bg-gray-400' : 'bg-[#FF6600] hover:bg-[#e55c00]'}`}>
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin"/> : <>Request Consultation <Send className="w-5 h-5 ml-2" /></>}
               </button>
             </form>
           </div>
@@ -159,7 +186,6 @@ const InsuranceServices = () => {
 
       {/* 2. Types of Insurance Grid */}
       <section className="py-24 bg-slate-50 border-b border-gray-100 relative">
-        {/* Decorative elements */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl opacity-60 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-60 pointer-events-none"></div>
 
@@ -196,14 +222,12 @@ const InsuranceServices = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
-            {/* Desktop connecting line */}
             <div className="hidden lg:block absolute top-[2.5rem] left-[10%] w-[80%] h-1 bg-slate-100 rounded-full"></div>
 
             {approachSteps.map((step, index) => (
               <div key={index} className="relative z-10 flex flex-col items-center text-center group">
                 <div className="w-20 h-20 bg-white border-4 border-slate-50 shadow-lg rounded-full flex items-center justify-center mb-6 relative group-hover:border-[#FF6600]/20 transition-colors duration-300">
                   <span className="text-2xl font-black text-[#003366] group-hover:text-[#FF6600] transition-colors">{step.step}</span>
-                  {/* Active dot indicator */}
                   <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#FF6600] border-4 border-white rounded-full shadow-sm"></div>
                 </div>
                 <h3 className="text-xl font-bold text-[#003366] mb-3">{step.title}</h3>
@@ -219,7 +243,6 @@ const InsuranceServices = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-[3rem] shadow-xl border border-gray-100 overflow-hidden flex flex-col lg:flex-row">
             
-            {/* Left Side: Why Choose Us */}
             <div className="p-10 md:p-16 lg:w-1/2 flex flex-col justify-center">
               <span className="text-[#FF6600] font-bold tracking-widest uppercase text-sm mb-4 block">The FIN5IVE Advantage</span>
               <h2 className="text-3xl md:text-4xl font-black text-[#003366] mb-8 tracking-tight">Why Choose FIN5IVE for Insurance?</h2>
@@ -235,7 +258,6 @@ const InsuranceServices = () => {
               </div>
             </div>
 
-            {/* Right Side: CTA Block */}
             <div className="bg-[#003366] p-10 md:p-16 lg:w-1/2 text-white flex flex-col justify-center relative overflow-hidden">
               <div className="absolute top-0 right-0 w-80 h-80 bg-[#FF6600] opacity-20 rounded-full blur-[80px]"></div>
               

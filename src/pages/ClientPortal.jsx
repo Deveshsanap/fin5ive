@@ -735,12 +735,17 @@ const ClientPortal = () => {
             </div>
           )}
 
-          <div className="mt-10 pt-8 border-t border-gray-100 text-center">
+          <div className="mt-10 pt-8 border-t border-gray-100 text-center flex flex-col items-center">
             {view === 'LOGIN' ? (
               <p className="text-gray-500 text-sm font-medium mb-4">Not a client yet? <button type="button" onClick={() => setView('REGISTER')} className="font-extrabold text-[#003366] hover:text-[#FF6600] transition-colors ml-1">Register Now</button></p>
             ) : (
               <p className="text-gray-500 text-sm font-medium mb-4">Already have an account? <button type="button" onClick={() => setView('LOGIN')} className="font-extrabold text-[#003366] hover:text-[#FF6600] transition-colors ml-1">Sign In</button></p>
             )}
+            
+            {/* ADMIN LOGIN LINK ADDED HERE */}
+            <Link to="/admin" className="inline-flex items-center text-xs font-bold text-gray-400 hover:text-[#003366] transition-colors mt-2">
+              <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Authorized Personnel Only
+            </Link>
           </div>
         </div>
       </div>
