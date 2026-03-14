@@ -12,6 +12,10 @@ import Hero from '../components/Hero';
 import ServicesGrid from '../components/ServicesGrid';
 import { createLead } from '../config/api'; 
 
+// --- IMPORTED PHOTOS ---
+import chetanPhoto from '../assets/chetanJoshi.png';
+import nehaPhoto from '../assets/nehaJoshi.png';
+
 const Home = () => {
   const [calcType, setCalcType] = useState('SIP'); 
   const [investment, setInvestment] = useState(25000);
@@ -30,6 +34,22 @@ const Home = () => {
     sensex: { value: 74228.10, change: 0.51, isPositive: true },
     gold: { value: 71200, change: -0.12, isPositive: false }
   });
+
+  // --- LOGOS ARRAY ---
+  const mutualFundLogos = [
+    { name: 'SBI Mutual Fund', img: '/partners/sbi.jpg' },
+    { name: 'HDFC Mutual Fund', img: '/partners/hdfc.jpg' },
+    { name: 'Kotak Mutual Fund', img: '/partners/kotak.jpg' },
+    { name: 'ICICI Prudential', img: '/partners/icici.jpg' },
+    { name: 'Axis Mutual Fund', img: '/partners/axis.jpg' },
+    { name: 'Tata Mutual Fund', img: '/partners/tata.jpg' },
+    { name: 'DSP Mutual Fund', img: '/partners/dsp.jpg' },
+    { name: 'Franklin Templeton', img: '/partners/franklin.jpg' },
+    { name: 'PPFAS', img: '/partners/ppfas.jpg' },
+    { name: 'Aditya Birla', img: '/partners/aditya-birla.jpg' },
+    { name: '360 ONE', img: '/partners/360-one.jpg' },
+    { name: 'Baroda BNP Paribas', img: '/partners/baroda-bnp.jpg' },
+  ];
 
   useEffect(() => {
     const simulateMarketUpdates = setInterval(() => {
@@ -99,18 +119,16 @@ const Home = () => {
     setIsSubscribing(true);
     try {
       await createLead({
-        name: "Home Page Subscriber", email: newsletterEmail, service: "Newsletter Subscription", message: "User subscribed to market updates."
+        name: "Home Page Subscriber", email: newsletterEmail, phone: "0000000000", company: "N/A", service: "Newsletter Subscription", message: "User subscribed to market updates."
       });
       toast.success('Successfully subscribed to market updates!', { iconTheme: { primary: '#FF6600', secondary: 'white' }});
       setNewsletterEmail('');
     } catch (error) {
-      toast.error("Failed to subscribe. Please try again later.");
+      toast.error(error.response?.data?.message || "Failed to subscribe. Please try again later.");
     } finally {
       setIsSubscribing(false);
     }
   };
-
-  const bankingPartners = ['Axis Bank', 'PNB', 'SIDBI', 'HDFC Bank', 'SBI', 'ICICI Bank', 'BOB', 'Kotak Mahindra Bank', 'AU Small Finance Bank', 'UCO Bank'];
 
   const faqs = [
     { question: "What is the minimum ticket size for Working Capital funding?", answer: "We arrange working capital facilities ranging from ₹30 Lakhs up to ₹25 Crores, including Cash Credit (CC), Overdrafts, and CGTMSE unsecured loans." },
@@ -175,16 +193,32 @@ const Home = () => {
 
       <Hero />
 
-      <section className="py-10 bg-slate-50 border-b border-gray-100 overflow-hidden shadow-[inset_0_4px_6px_-4px_rgba(0,0,0,0.05)]">
+      {/* --- TRUSTED PARTNERS SHOWCASE --- */}
+      <section className="py-16 bg-slate-50 border-b border-gray-100 overflow-hidden shadow-[inset_0_4px_6px_-4px_rgba(0,0,0,0.05)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-8">
-            Empanelled & Trusted By Leading Banking Partners
-          </p>
-          <div className="flex flex-wrap justify-center gap-10 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-700 items-center">
-            {bankingPartners.map((bank, index) => (
-              <span key={index} className="text-lg md:text-2xl font-black text-gray-800 tracking-tighter">{bank}</span>
-            ))}
+          
+          {/* Mutual Fund Partners ONLY */}
+          <div>
+            <p className="text-center text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-8">
+              Empanelled With Top Asset Management Companies
+            </p>
+            <div className="flex flex-wrap justify-center gap-8 md:gap-12 items-center transition-all duration-700">
+              {mutualFundLogos.map((fund, index) => (
+                <div key={index} className="w-24 md:w-32 h-16 flex items-center justify-center hover:scale-105 transition-transform duration-300">
+                  <img 
+                    src={fund.img} 
+                    alt={fund.name} 
+                    className="max-w-full max-h-full object-contain mix-blend-multiply"
+                    onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
+                  />
+                  <span className="hidden text-sm md:text-lg font-black text-[#003366] text-center leading-tight">
+                    {fund.name}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
+
         </div>
       </section>
 
@@ -305,7 +339,7 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto mb-12">
             <div className="bg-white rounded-[2rem] shadow-md border border-gray-100 overflow-hidden text-left group hover:shadow-xl hover:-translate-y-2 transition-all duration-500">
               <div className="h-80 bg-slate-200 overflow-hidden relative">
-                <img src="https://ui-avatars.com/api/?name=Chetan+Joshi&background=003366&color=fff&size=512" alt="CA Chetan Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <img src={chetanPhoto} alt="CA Chetan Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 object-top" />
               </div>
               <div className="p-8 relative">
                 <a href="#" target="_blank" rel="noreferrer" className="absolute top-8 right-8 text-blue-600 hover:text-blue-800 bg-blue-50 p-2 rounded-lg transition-colors"><Linkedin className="w-6 h-6" /></a>
@@ -317,7 +351,7 @@ const Home = () => {
 
             <div className="bg-white rounded-[2rem] shadow-md border border-gray-100 overflow-hidden text-left group hover:shadow-xl hover:-translate-y-2 transition-all duration-500">
               <div className="h-80 bg-slate-200 overflow-hidden relative">
-                <img src="https://ui-avatars.com/api/?name=Neha+Joshi&background=FF6600&color=fff&size=512" alt="CMA Neha Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <img src={nehaPhoto} alt="CMA Neha Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 object-top" />
               </div>
               <div className="p-8 relative">
                 <a href="#" target="_blank" rel="noreferrer" className="absolute top-8 right-8 text-blue-600 hover:text-blue-800 bg-blue-50 p-2 rounded-lg transition-colors"><Linkedin className="w-6 h-6" /></a>

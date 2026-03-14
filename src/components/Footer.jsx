@@ -1,18 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
-
+import logo from '../assets/logo.png';
 const Footer = () => {
   return (
     <footer className="bg-[#002244] text-white pt-16 pb-8 border-t-4 border-[#FF6600] mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           
-          {/* Brand & About */}
+         {/* Brand & About */}
           <div>
-            <Link to="/" className="flex flex-col mb-6">
-              <span className="text-3xl font-extrabold text-white tracking-tight leading-none">FIN<span className="text-[#FF6600]">5</span>IVE™</span>
-              <span className="text-[10px] text-gray-400 font-medium tracking-widest uppercase mt-1 leading-none">Ambitions Realised</span>
+            <Link to="/" className="flex flex-col items-start mb-6 w-max">
+              <div className="relative inline-block">
+                {/* Logo Image (Using CSS to make it white for the dark footer) */}
+                <img src={logo} alt="FIN5IVE Logo" className="h-12 w-auto object-contain brightness-0 invert" />
+                <span className="absolute -top-1 -right-3 text-[10px] font-bold text-white">™</span>
+              </div>
+              <span className="text-[10px] text-gray-400 font-medium tracking-widest uppercase mt-2 leading-none">
+                Ambitions Realised
+              </span>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               A premier financial solutions partner offering end-to-end, innovative funding and advisory services designed to navigate complex financial landscapes for businesses and individuals globally.

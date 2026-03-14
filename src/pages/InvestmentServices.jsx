@@ -111,7 +111,18 @@ const InvestmentServices = () => {
     }
   };
 
-  const amcPartners = ['Invesco AMC', 'Kotak AMC', 'ICICI Pru AMC', 'SBI AMC', 'HDFC AMC', 'Motilal Oswal', 'LIC Mutual Fund', 'DSP AMC'];
+const amcLogos = [
+    { name: 'Invesco AMC', img: '/partners/invesco.jpg' },
+    { name: 'Kotak AMC', img: '/partners/kotak.jpg' },
+    { name: 'ICICI Pru AMC', img: '/partners/icici.jpg' },
+    { name: 'SBI AMC', img: '/partners/sbi.jpg' },
+    { name: 'HDFC AMC', img: '/partners/hdfc.jpg' },
+    { name: 'Motilal Oswal', img: '/partners/motilal.jpg' },
+    { name: 'LIC Mutual Fund', img: '/partners/lic.jpg' },
+    { name: 'DSP AMC', img: '/partners/dsp.jpg' },
+    { name: 'INVESCO AMC', img: '/partners/invesco.jpg' }
+    
+  ];
 
   const faqs = [
     { question: "What is the minimum portfolio size you manage?", answer: "While we advise clients across various wealth brackets, our specialized services like PMS require a regulatory minimum of ₹50 Lakhs, and AIFs require a minimum commitment of ₹1 Crore." },
@@ -179,14 +190,29 @@ const InvestmentServices = () => {
         </div>
       </section>
 
-      {/* AMC Marquee - UPDATED */}
-      <section className="py-8 bg-slate-50 border-b border-gray-100 overflow-hidden shadow-inner">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
-          <p className="text-xs font-bold text-gray-400 tracking-widest uppercase mr-8 whitespace-nowrap hidden md:block">Empanelled With Top AMCs</p>
+     {/* AMC Marquee - IMAGE LOGOS */}
+      <section className="py-10 bg-slate-50 border-b border-gray-100 overflow-hidden shadow-inner">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
+          <p className="text-xs font-bold text-gray-400 tracking-widest uppercase md:mr-10 whitespace-nowrap mb-6 md:mb-0">
+            Empanelled With Top AMCs
+          </p>
           <div className="flex overflow-hidden relative w-full">
-            <div className="animate-[marquee_30s_linear_infinite] whitespace-nowrap flex space-x-12 opacity-60 grayscale hover:grayscale-0 transition-all duration-500 items-center">
-              {amcPartners.map((amc, i) => (
-                <span key={i} className="text-xl font-bold text-[#003366] tracking-tight">{amc}</span>
+            {/* We render the list twice inside the scrolling div to create a seamless infinite loop.
+            */}
+            <div className="animate-[marquee_30s_linear_infinite] whitespace-nowrap flex space-x-12 items-center min-w-max">
+              {[...amcLogos, ...amcLogos].map((amc, i) => (
+                <div key={i} className="w-24 md:w-32 h-12 flex items-center justify-center hover:scale-105 transition-transform duration-300">
+                  <img 
+                    src={amc.img} 
+                    alt={amc.name} 
+                    className="max-w-full max-h-full object-contain mix-blend-multiply"
+                    onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
+                  />
+                  {/* Fallback text if the image is missing */}
+                  <span className="hidden text-sm md:text-lg font-black text-[#003366] tracking-tight">
+                    {amc.name}
+                  </span>
+                </div>
               ))}
             </div>
           </div>

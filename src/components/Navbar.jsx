@@ -5,7 +5,7 @@ import logo from '../assets/logo.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isServicesOpen, setIsServicesOpen] = useState(false); 
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [isNriOpen, setIsNriOpen] = useState(false);
   const location = useLocation();
 
@@ -41,16 +41,17 @@ const Navbar = () => {
 
           {/* Logo Section */}
           <div className="flex-shrink-0 flex items-center">
-            <Link to="/" className="flex items-center gap-3">
-              <img src={logo} alt="FIN5IVE Logo" className="h-10 md:h-12 w-auto object-contain" />
-              <div className="flex flex-col justify-center">
-                <span className="text-2xl md:text-3xl font-extrabold text-[#003366] tracking-tight leading-none">
-                  FIN<span className="text-[#FF6600]">5</span>IVE™
-                </span>
-                <span className="text-[9px] md:text-[10px] text-gray-500 font-medium tracking-widest uppercase mt-1 leading-none">
-                  Ambitions Realised
-                </span>
+            <Link to="/" className="flex flex-col items-center justify-center pt-1">
+              <div className="relative inline-block">
+                {/* Only the Logo Image */}
+                <img src={logo} alt="FIN5IVE Logo" className="h-10 md:h-12 w-auto object-contain" />
+                {/* TM placed above and to the right of the image */}
+                <span className="absolute -top-1 -right-3 text-[10px] font-bold text-[#003366]">™</span>
               </div>
+              {/* Tagline directly underneath the image */}
+              <span className="text-[9px] md:text-[10px] text-gray-500 font-medium tracking-widest uppercase mt-1.5 leading-none">
+                Ambitions Realised
+              </span>
             </Link>
           </div>
 
@@ -89,7 +90,7 @@ const Navbar = () => {
             <Link to="/about" className={`font-medium text-[15px] transition-colors hover:text-[#FF6600] ${location.pathname === '/about' ? 'text-[#FF6600]' : 'text-[#003366]'}`}>
               About Us
             </Link>
-            
+
             <Link to="/work-with-us" className={`font-medium text-[15px] transition-colors hover:text-[#FF6600] ${location.pathname === '/work-with-us' ? 'text-[#FF6600]' : 'text-[#003366]'}`}>
               Work With Us
             </Link>

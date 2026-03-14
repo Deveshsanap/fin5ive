@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import chetanPhoto from '../assets/chetanJoshi.png';
+import nehaPhoto from '../assets/nehaJoshi.png';
 import { Link } from 'react-router-dom';
 import {
   Award, ShieldCheck, Globe, Users, Briefcase, Building2,
@@ -38,23 +40,36 @@ const About = () => {
     }
   };
 
-  const handleProfileDownload = async (e) => {
+ const handleProfileDownload = async (e) => {
     e.preventDefault();
-    if (!profileEmail) return toast.error("Please enter your email.");
+    if(!profileEmail) return toast.error("Please enter your email.");
     setIsProfileSubmitting(true);
+    
     try {
+      // 1. Send the Lead to the Backend CRM (with dummy data to bypass validation)
       await createLead({
-        name: "PDF Download Request",
-        email: profileEmail, // The actual email they typed in
-        phone: "0000000000", // <-- Dummy phone number to satisfy backend
-        company: "N/A",      // <-- Dummy company to satisfy backend
-        service: "Company Profile PDF",
-        message: "User requested the PDF guide."
+        name: "Company Profile Download",
+        email: profileEmail,
+        phone: "0000000000",
+        company: "N/A",
+        service: "About Us - Company Profile",
+        message: "User requested the Fin5ive Company Profile PDF."
       });
-      toast.success("Company Profile sent to your email!", { icon: '📄' });
+
+      // 2. ACTIVATE REAL PDF DOWNLOAD
+      const link = document.createElement('a');
+      link.href = '/Company Profile.pdf'; // <--- This looks inside your public folder
+      link.setAttribute('download', 'Fin5ive_Company_Profile.pdf'); // Name of file when downloaded
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // 3. Show Success Message
+      toast.success("Company Profile downloaded successfully!", { icon: '📄' });
       setProfileEmail('');
+      
     } catch (error) {
-      console.error("Backend Error:", error.response?.data);
+      console.error(error);
       toast.error(error.response?.data?.message || "Failed to process request.");
     } finally {
       setIsProfileSubmitting(false);
@@ -202,8 +217,7 @@ const About = () => {
             {/* CA Chetan Joshi */}
             <div className="bg-slate-50 rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden group hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col">
               <div className="h-80 bg-[#003366] relative overflow-hidden flex items-center justify-center">
-                <img src="https://ui-avatars.com/api/?name=Chetan+Joshi&background=003366&color=fff&size=512" alt="CA Chetan Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#003366] via-transparent to-transparent opacity-90"></div>
+<img src={chetanPhoto} alt="CA Chetan Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 object-top" />                <div className="absolute inset-0 bg-gradient-to-t from-[#003366] via-transparent to-transparent opacity-90"></div>
                 <div className="absolute bottom-0 left-0 p-8 w-full">
                   <div className="flex justify-between items-end">
                     <div>
@@ -231,8 +245,7 @@ const About = () => {
             {/* CMA Neha Joshi */}
             <div className="bg-slate-50 rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden group hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col">
               <div className="h-80 bg-[#FF6600] relative overflow-hidden flex items-center justify-center">
-                <img src="https://ui-avatars.com/api/?name=Neha+Joshi&background=FF6600&color=fff&size=512" alt="CMA Neha Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#003366] via-transparent to-transparent opacity-90"></div>
+<img src={nehaPhoto} alt="CMA Neha Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 object-top" />                <div className="absolute inset-0 bg-gradient-to-t from-[#003366] via-transparent to-transparent opacity-90"></div>
                 <div className="absolute bottom-0 left-0 p-8 w-full">
                   <div className="flex justify-between items-end">
                     <div>
