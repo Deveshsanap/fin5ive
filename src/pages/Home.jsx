@@ -3,43 +3,34 @@ import { Link } from 'react-router-dom';
 import { 
   ArrowRight, ShieldCheck, TrendingUp, Users, Award, Building2, 
   Briefcase, Calculator, ChevronDown, ChevronUp, Star, Quote, 
-  CheckCircle, Mail, LineChart, Loader2, 
+  CheckCircle, Mail, LineChart, Loader2, Linkedin,
   ArrowLeft, TrendingDown
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import Hero from '../components/Hero';
 import ServicesGrid from '../components/ServicesGrid';
-import { createLead } from '../config/api'; // <-- IMPORTED API
+import { createLead } from '../config/api'; 
 
 const Home = () => {
-  // --- STATE MANAGEMENT ---
-  
-  // 1. Calculator State
   const [calcType, setCalcType] = useState('SIP'); 
   const [investment, setInvestment] = useState(25000);
   const [years, setYears] = useState(10);
   const [returnRate, setReturnRate] = useState(12);
 
-  // 2. FAQ State
   const [activeFaq, setActiveFaq] = useState(null); 
-
-  // 3. Testimonial Slider State
   const [testimonialIdx, setTestimonialIdx] = useState(0);
   const sliderIntervalRef = useRef(null);
 
-  // 4. Newsletter State
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [isSubscribing, setIsSubscribing] = useState(false);
 
-  // 5. Live Market Data State
   const [marketData, setMarketData] = useState({
     nifty: { value: 22514.50, change: 0.42, isPositive: true },
     sensex: { value: 74228.10, change: 0.51, isPositive: true },
     gold: { value: 71200, change: -0.12, isPositive: false }
   });
 
-  // --- LIVE MARKET DATA LOGIC ---
   useEffect(() => {
     const simulateMarketUpdates = setInterval(() => {
       setMarketData(prev => {
@@ -55,11 +46,9 @@ const Home = () => {
         };
       });
     }, 5000);
-
     return () => clearInterval(simulateMarketUpdates);
   }, []);
 
-  // --- AUTO-PLAY TESTIMONIALS ---
   const startSlider = () => {
     sliderIntervalRef.current = setInterval(() => {
       setTestimonialIdx((prev) => (prev + 1) % testimonials.length);
@@ -83,7 +72,6 @@ const Home = () => {
     startSlider(); 
   };
 
-  // --- CALCULATOR MATH ---
   const calculateReturns = () => {
     const r = returnRate / 100;
     const months = years * 12;
@@ -98,33 +86,22 @@ const Home = () => {
       totalInvested = investment;
       maturityValue = Math.round(investment * Math.pow(1 + r, years));
     }
-
     return { totalInvested, maturityValue, wealthGained: maturityValue - totalInvested };
   };
 
   const { totalInvested, maturityValue, wealthGained } = calculateReturns();
-  
   const formatINR = (value) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value);
   const formatIndex = (value) => new Intl.NumberFormat('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value);
 
-  // --- WIRED NEWSLETTER HANDLER ---
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
-    if (!newsletterEmail) {
-      return toast.error("Please enter a valid email address.");
-    }
-
+    if (!newsletterEmail) return toast.error("Please enter a valid email address.");
     setIsSubscribing(true);
     try {
       await createLead({
-        name: "Home Page Subscriber",
-        email: newsletterEmail,
-        service: "Newsletter Subscription",
-        message: "User subscribed to market updates from the Home Page."
+        name: "Home Page Subscriber", email: newsletterEmail, service: "Newsletter Subscription", message: "User subscribed to market updates."
       });
-      toast.success('Successfully subscribed to market updates!', {
-        iconTheme: { primary: '#FF6600', secondary: 'white' }
-      });
+      toast.success('Successfully subscribed to market updates!', { iconTheme: { primary: '#FF6600', secondary: 'white' }});
       setNewsletterEmail('');
     } catch (error) {
       toast.error("Failed to subscribe. Please try again later.");
@@ -133,7 +110,8 @@ const Home = () => {
     }
   };
 
-  // --- DATA ARRAYS ---
+  const bankingPartners = ['Axis Bank', 'PNB', 'SIDBI', 'HDFC Bank', 'SBI', 'ICICI Bank', 'BOB', 'Kotak Mahindra Bank', 'AU Small Finance Bank', 'UCO Bank'];
+
   const faqs = [
     { question: "What is the minimum ticket size for Working Capital funding?", answer: "We arrange working capital facilities ranging from ₹30 Lakhs up to ₹25 Crores, including Cash Credit (CC), Overdrafts, and CGTMSE unsecured loans." },
     { question: "Do you assist with the entire GIFT City IFSC setup process?", answer: "Yes. We are an end-to-end implementation partner. We handle MCA Name Reservation, SEZ Approval, IFSCA Registration, and post-establishment compliance." },
@@ -180,21 +158,11 @@ const Home = () => {
   return (
     <div className="bg-white font-sans overflow-x-hidden">
       
-      {/* Market Ticker */}
       <style>
         {`
-          @keyframes custom-marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-          }
-          .animate-custom-marquee {
-            display: flex;
-            width: max-content;
-            animation: custom-marquee 40s linear infinite;
-          }
-          .animate-custom-marquee:hover {
-            animation-play-state: paused;
-          }
+          @keyframes custom-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+          .animate-custom-marquee { display: flex; width: max-content; animation: custom-marquee 40s linear infinite; }
+          .animate-custom-marquee:hover { animation-play-state: paused; }
         `}
       </style>
       
@@ -210,14 +178,12 @@ const Home = () => {
       <section className="py-10 bg-slate-50 border-b border-gray-100 overflow-hidden shadow-[inset_0_4px_6px_-4px_rgba(0,0,0,0.05)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-8">
-            Empanelled & Trusted By Leading Institutions
+            Empanelled & Trusted By Leading Banking Partners
           </p>
-          <div className="flex flex-wrap justify-center gap-12 md:gap-24 opacity-60 grayscale hover:grayscale-0 transition-all duration-700 items-center">
-            <span className="text-xl md:text-3xl font-black text-gray-800 tracking-tighter">HDFC MF</span>
-            <span className="text-xl md:text-3xl font-black text-gray-800 tracking-tighter">SBI Mutual</span>
-            <span className="text-xl md:text-3xl font-black text-gray-800 tracking-tighter">ICICI Pru</span>
-            <span className="text-xl md:text-3xl font-black text-gray-800 tracking-tighter">NSE Emerge</span>
-            <span className="text-xl md:text-3xl font-black text-gray-800 tracking-tighter">BSE SME</span>
+          <div className="flex flex-wrap justify-center gap-10 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-700 items-center">
+            {bankingPartners.map((bank, index) => (
+              <span key={index} className="text-lg md:text-2xl font-black text-gray-800 tracking-tighter">{bank}</span>
+            ))}
           </div>
         </div>
       </section>
@@ -267,80 +233,34 @@ const Home = () => {
 
           <div className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden max-w-5xl mx-auto text-gray-800">
             <div className="flex border-b border-gray-100">
-              <button 
-                onClick={() => { setCalcType('SIP'); setInvestment(25000); }}
-                className={`flex-1 py-6 text-center font-black text-lg transition-colors ${calcType === 'SIP' ? 'bg-[#FF6600] text-white shadow-inner' : 'bg-slate-50 text-gray-500 hover:bg-gray-100'}`}
-              >
-                Monthly SIP
-              </button>
-              <button 
-                onClick={() => { setCalcType('LUMPSUM'); setInvestment(500000); }}
-                className={`flex-1 py-6 text-center font-black text-lg transition-colors ${calcType === 'LUMPSUM' ? 'bg-[#FF6600] text-white shadow-inner' : 'bg-slate-50 text-gray-500 hover:bg-gray-100'}`}
-              >
-                One-Time Lumpsum
-              </button>
+              <button onClick={() => { setCalcType('SIP'); setInvestment(25000); }} className={`flex-1 py-6 text-center font-black text-lg transition-colors ${calcType === 'SIP' ? 'bg-[#FF6600] text-white shadow-inner' : 'bg-slate-50 text-gray-500 hover:bg-gray-100'}`}>Monthly SIP</button>
+              <button onClick={() => { setCalcType('LUMPSUM'); setInvestment(500000); }} className={`flex-1 py-6 text-center font-black text-lg transition-colors ${calcType === 'LUMPSUM' ? 'bg-[#FF6600] text-white shadow-inner' : 'bg-slate-50 text-gray-500 hover:bg-gray-100'}`}>One-Time Lumpsum</button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-5">
               <div className="p-8 md:p-12 border-b md:border-b-0 md:border-r border-gray-100 md:col-span-3">
                 <div className="mb-10">
-                  <div className="flex justify-between items-center mb-5">
-                    <label className="font-extrabold text-gray-800">{calcType === 'SIP' ? 'Monthly Investment' : 'Total Investment'}</label>
-                    <div className="bg-orange-50 border border-orange-100 px-5 py-2.5 rounded-xl font-black text-[#FF6600] shadow-sm">
-                      {formatINR(investment)}
-                    </div>
-                  </div>
-                  <input 
-                    type="range" min={calcType === 'SIP' ? "1000" : "50000"} max={calcType === 'SIP' ? "500000" : "25000000"} step={calcType === 'SIP' ? "1000" : "50000"} 
-                    value={investment} onChange={(e) => setInvestment(Number(e.target.value))}
-                    className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#003366]"
-                  />
+                  <div className="flex justify-between items-center mb-5"><label className="font-extrabold text-gray-800">{calcType === 'SIP' ? 'Monthly Investment' : 'Total Investment'}</label><div className="bg-orange-50 border border-orange-100 px-5 py-2.5 rounded-xl font-black text-[#FF6600] shadow-sm">{formatINR(investment)}</div></div>
+                  <input type="range" min={calcType === 'SIP' ? "1000" : "50000"} max={calcType === 'SIP' ? "500000" : "25000000"} step={calcType === 'SIP' ? "1000" : "50000"} value={investment} onChange={(e) => setInvestment(Number(e.target.value))} className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#003366]"/>
                 </div>
-
                 <div className="mb-10">
-                  <div className="flex justify-between items-center mb-5">
-                    <label className="font-extrabold text-gray-800">Investment Horizon</label>
-                    <div className="bg-orange-50 border border-orange-100 px-5 py-2.5 rounded-xl font-black text-[#FF6600] shadow-sm">{years} Years</div>
-                  </div>
-                  <input 
-                    type="range" min="1" max="30" step="1" 
-                    value={years} onChange={(e) => setYears(Number(e.target.value))}
-                    className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#003366]"
-                  />
+                  <div className="flex justify-between items-center mb-5"><label className="font-extrabold text-gray-800">Investment Horizon</label><div className="bg-orange-50 border border-orange-100 px-5 py-2.5 rounded-xl font-black text-[#FF6600] shadow-sm">{years} Years</div></div>
+                  <input type="range" min="1" max="30" step="1" value={years} onChange={(e) => setYears(Number(e.target.value))} className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#003366]"/>
                 </div>
-
                 <div className="mb-4">
-                  <div className="flex justify-between items-center mb-5">
-                    <label className="font-extrabold text-gray-800">Expected Annual Return</label>
-                    <div className="bg-orange-50 border border-orange-100 px-5 py-2.5 rounded-xl font-black text-[#FF6600] shadow-sm">{returnRate}%</div>
-                  </div>
-                  <input 
-                    type="range" min="5" max="25" step="0.5" 
-                    value={returnRate} onChange={(e) => setReturnRate(Number(e.target.value))}
-                    className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#003366]"
-                  />
+                  <div className="flex justify-between items-center mb-5"><label className="font-extrabold text-gray-800">Expected Annual Return</label><div className="bg-orange-50 border border-orange-100 px-5 py-2.5 rounded-xl font-black text-[#FF6600] shadow-sm">{returnRate}%</div></div>
+                  <input type="range" min="5" max="25" step="0.5" value={returnRate} onChange={(e) => setReturnRate(Number(e.target.value))} className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#003366]"/>
                 </div>
               </div>
 
               <div className="p-8 md:p-12 bg-slate-50 flex flex-col justify-center md:col-span-2 relative overflow-hidden">
                 <Calculator className="absolute -bottom-10 -right-10 w-64 h-64 text-slate-200 opacity-50 pointer-events-none" />
                 <div className="relative z-10 space-y-6 mb-10">
-                  <div className="flex justify-between items-center">
-                    <p className="text-gray-500 font-bold uppercase tracking-wider text-xs">Invested Amount</p>
-                    <p className="text-xl font-black text-gray-800">{formatINR(totalInvested)}</p>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <p className="text-gray-500 font-bold uppercase tracking-wider text-xs">Est. Wealth Gained</p>
-                    <p className="text-xl font-black text-green-500">+{formatINR(wealthGained)}</p>
-                  </div>
-                  <div className="pt-8 border-t border-gray-200">
-                    <p className="text-gray-800 font-extrabold mb-2">Total Future Value</p>
-                    <p className="text-4xl lg:text-5xl font-black text-[#003366] tracking-tight">{formatINR(maturityValue)}</p>
-                  </div>
+                  <div className="flex justify-between items-center"><p className="text-gray-500 font-bold uppercase tracking-wider text-xs">Invested Amount</p><p className="text-xl font-black text-gray-800">{formatINR(totalInvested)}</p></div>
+                  <div className="flex justify-between items-center"><p className="text-gray-500 font-bold uppercase tracking-wider text-xs">Est. Wealth Gained</p><p className="text-xl font-black text-green-500">+{formatINR(wealthGained)}</p></div>
+                  <div className="pt-8 border-t border-gray-200"><p className="text-gray-800 font-extrabold mb-2">Total Future Value</p><p className="text-4xl lg:text-5xl font-black text-[#003366] tracking-tight">{formatINR(maturityValue)}</p></div>
                 </div>
-                <Link to="/contact" className="w-full bg-[#003366] hover:bg-[#002244] text-white font-bold py-4.5 rounded-xl transition duration-300 shadow-xl hover:-translate-y-1 flex justify-center items-center text-lg relative z-10">
-                  Start Investing <ArrowRight className="ml-2 w-5 h-5" />
-                </Link>
+                <Link to="/contact" className="w-full bg-[#003366] hover:bg-[#002244] text-white font-bold py-4.5 rounded-xl transition duration-300 shadow-xl hover:-translate-y-1 flex justify-center items-center text-lg relative z-10">Start Investing <ArrowRight className="ml-2 w-5 h-5" /></Link>
               </div>
             </div>
           </div>
@@ -354,14 +274,9 @@ const Home = () => {
           
           <div className="bg-slate-50 rounded-[3rem] p-10 md:p-20 relative shadow-lg border border-gray-100 overflow-hidden">
             <Quote className="absolute top-10 left-10 w-24 h-24 text-[#003366] opacity-5 pointer-events-none" />
-            
             <div className="relative z-10 min-h-[250px] flex flex-col justify-center transition-opacity duration-500">
-              <div className="flex justify-center mb-8">
-                {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-6 h-6 text-[#FF6600] fill-current mx-1 drop-shadow-sm" />)}
-              </div>
-              <p className="text-2xl md:text-3xl font-bold leading-relaxed mb-12 text-[#003366] tracking-tight">
-                "{testimonials[testimonialIdx].text}"
-              </p>
+              <div className="flex justify-center mb-8">{[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-6 h-6 text-[#FF6600] fill-current mx-1 drop-shadow-sm" />)}</div>
+              <p className="text-2xl md:text-3xl font-bold leading-relaxed mb-12 text-[#003366] tracking-tight">"{testimonials[testimonialIdx].text}"</p>
               <div>
                 <p className="font-black text-xl text-gray-800">{testimonials[testimonialIdx].author}</p>
                 <p className="text-[#FF6600] font-bold uppercase tracking-wider text-sm mt-1">{testimonials[testimonialIdx].role}</p>
@@ -369,18 +284,11 @@ const Home = () => {
             </div>
             
             <div className="absolute bottom-10 right-10 flex space-x-3">
-              <button onClick={prevTestimonial} className="w-12 h-12 rounded-full border-2 border-gray-200 text-gray-500 flex items-center justify-center hover:bg-[#003366] hover:text-white hover:border-[#003366] transition-all shadow-sm">
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-              <button onClick={nextTestimonial} className="w-12 h-12 rounded-full border-2 border-gray-200 text-gray-500 flex items-center justify-center hover:bg-[#003366] hover:text-white hover:border-[#003366] transition-all shadow-sm">
-                <ArrowRight className="w-5 h-5" />
-              </button>
+              <button onClick={prevTestimonial} className="w-12 h-12 rounded-full border-2 border-gray-200 text-gray-500 flex items-center justify-center hover:bg-[#003366] hover:text-white hover:border-[#003366] transition-all shadow-sm"><ArrowLeft className="w-5 h-5" /></button>
+              <button onClick={nextTestimonial} className="w-12 h-12 rounded-full border-2 border-gray-200 text-gray-500 flex items-center justify-center hover:bg-[#003366] hover:text-white hover:border-[#003366] transition-all shadow-sm"><ArrowRight className="w-5 h-5" /></button>
             </div>
-
             <div className="absolute bottom-14 left-0 w-full flex justify-center space-x-2 pointer-events-none">
-               {testimonials.map((_, i) => (
-                 <div key={i} className={`h-1.5 rounded-full transition-all duration-500 ${testimonialIdx === i ? 'w-8 bg-[#FF6600]' : 'w-2 bg-gray-300'}`}></div>
-               ))}
+               {testimonials.map((_, i) => (<div key={i} className={`h-1.5 rounded-full transition-all duration-500 ${testimonialIdx === i ? 'w-8 bg-[#FF6600]' : 'w-2 bg-gray-300'}`}></div>))}
             </div>
           </div>
         </div>
@@ -394,32 +302,29 @@ const Home = () => {
             <p className="text-gray-500 max-w-2xl mx-auto text-lg font-medium">Guided by industry veterans with over 25 years of combined experience in corporate finance, compliance, and wealth management.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
-            <div className="bg-white rounded-[2rem] shadow-md border border-gray-100 overflow-hidden text-center group hover:shadow-xl hover:-translate-y-2 transition-all duration-500">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto mb-12">
+            <div className="bg-white rounded-[2rem] shadow-md border border-gray-100 overflow-hidden text-left group hover:shadow-xl hover:-translate-y-2 transition-all duration-500">
               <div className="h-80 bg-slate-200 overflow-hidden relative">
-                <img src="https://ui-avatars.com/api/?name=Chetan+Joshi&background=003366&color=fff&size=512" alt="CA Chetan Joshi" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <img src="https://ui-avatars.com/api/?name=Chetan+Joshi&background=003366&color=fff&size=512" alt="CA Chetan Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               </div>
-              <div className="p-8">
+              <div className="p-8 relative">
+                <a href="#" target="_blank" rel="noreferrer" className="absolute top-8 right-8 text-blue-600 hover:text-blue-800 bg-blue-50 p-2 rounded-lg transition-colors"><Linkedin className="w-6 h-6" /></a>
                 <h3 className="text-2xl font-black text-[#003366]">CA Chetan Joshi</h3>
-                <p className="text-[#FF6600] font-bold text-sm tracking-wider uppercase mt-2">Founder & Managing Director</p>
+                <p className="text-[#FF6600] font-bold text-sm tracking-wider uppercase mt-2 mb-4">Founder & Managing Director</p>
+                <p className="text-gray-600 text-sm leading-relaxed">A seasoned Chartered Accountant and expert in Capital Markets, IPO Structuring, and GIFT City offshore establishment, bringing decades of institutional insight to corporate clients.</p>
               </div>
             </div>
 
-            <div className="bg-white rounded-[2rem] shadow-md border border-gray-100 overflow-hidden text-center group hover:shadow-xl hover:-translate-y-2 transition-all duration-500">
-              <div className="h-80 bg-slate-200 overflow-hidden">
-                <img src="https://ui-avatars.com/api/?name=Neha+Joshi&background=FF6600&color=fff&size=512" alt="CMA Neha Joshi" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            <div className="bg-white rounded-[2rem] shadow-md border border-gray-100 overflow-hidden text-left group hover:shadow-xl hover:-translate-y-2 transition-all duration-500">
+              <div className="h-80 bg-slate-200 overflow-hidden relative">
+                <img src="https://ui-avatars.com/api/?name=Neha+Joshi&background=FF6600&color=fff&size=512" alt="CMA Neha Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               </div>
-              <div className="p-8">
+              <div className="p-8 relative">
+                <a href="#" target="_blank" rel="noreferrer" className="absolute top-8 right-8 text-blue-600 hover:text-blue-800 bg-blue-50 p-2 rounded-lg transition-colors"><Linkedin className="w-6 h-6" /></a>
                 <h3 className="text-2xl font-black text-[#003366]">CMA Neha Joshi</h3>
-                <p className="text-[#FF6600] font-bold text-sm tracking-wider uppercase mt-2">Co-Founder & Director</p>
+                <p className="text-[#FF6600] font-bold text-sm tracking-wider uppercase mt-2 mb-4">Co-Founder & Director</p>
+                <p className="text-gray-600 text-sm leading-relaxed">A highly credentialed Cost and Management Accountant (CMA), Neha applies analytical precision to personal finance and wealth management, specializing in robust financial portfolios.</p>
               </div>
-            </div>
-
-            <div className="bg-white rounded-[2rem] shadow-md border border-gray-100 overflow-hidden text-center flex flex-col justify-center items-center p-8 bg-gradient-to-b from-white to-slate-50 group hover:shadow-xl transition-all duration-500">
-               <Users className="w-20 h-20 text-[#003366]/10 mb-6 group-hover:text-[#FF6600]/20 transition-colors duration-500" />
-               <h3 className="text-2xl font-black text-[#003366]">Advisory Board</h3>
-               <p className="text-[#FF6600] font-bold text-sm tracking-wider uppercase mt-2 mb-6">Legal & Compliance</p>
-               <p className="text-gray-500 text-sm font-medium leading-relaxed">Supported by a dedicated network of Company Secretaries, Lawyers, and Ex-Bankers.</p>
             </div>
           </div>
           
@@ -435,22 +340,10 @@ const Home = () => {
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-[#FF6600] via-[#003366] to-[#003366]"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-8 text-center divide-x divide-white/10">
-            <div className="px-4">
-              <p className="text-5xl md:text-6xl font-black mb-3">₹25<span className="text-[#FF6600] text-4xl">Cr</span></p>
-              <p className="text-sm text-gray-300 font-bold uppercase tracking-[0.2em]">Max WC Funding</p>
-            </div>
-            <div className="px-4">
-              <p className="text-5xl md:text-6xl font-black mb-3">&lt;24<span className="text-[#FF6600] text-4xl">hr</span></p>
-              <p className="text-sm text-gray-300 font-bold uppercase tracking-[0.2em]">Export Disbursals</p>
-            </div>
-            <div className="px-4">
-              <p className="text-5xl md:text-6xl font-black mb-3">100<span className="text-[#FF6600] text-4xl">%</span></p>
-              <p className="text-sm text-gray-300 font-bold uppercase tracking-[0.2em]">Machinery Finance</p>
-            </div>
-            <div className="px-4">
-              <p className="text-5xl md:text-6xl font-black mb-3">25<span className="text-[#FF6600] text-4xl">+</span></p>
-              <p className="text-sm text-gray-300 font-bold uppercase tracking-[0.2em]">Years Expertise</p>
-            </div>
+            <div className="px-4"><p className="text-5xl md:text-6xl font-black mb-3">₹25<span className="text-[#FF6600] text-4xl">Cr</span></p><p className="text-sm text-gray-300 font-bold uppercase tracking-[0.2em]">Max WC Funding</p></div>
+            <div className="px-4"><p className="text-5xl md:text-6xl font-black mb-3">&lt;24<span className="text-[#FF6600] text-4xl">hr</span></p><p className="text-sm text-gray-300 font-bold uppercase tracking-[0.2em]">Export Disbursals</p></div>
+            <div className="px-4"><p className="text-5xl md:text-6xl font-black mb-3">100<span className="text-[#FF6600] text-4xl">%</span></p><p className="text-sm text-gray-300 font-bold uppercase tracking-[0.2em]">Machinery Finance</p></div>
+            <div className="px-4"><p className="text-5xl md:text-6xl font-black mb-3">25<span className="text-[#FF6600] text-4xl">+</span></p><p className="text-sm text-gray-300 font-bold uppercase tracking-[0.2em]">Years Expertise</p></div>
           </div>
         </div>
       </section>
@@ -464,19 +357,13 @@ const Home = () => {
           <div className="space-y-4">
             {faqs.map((faq, index) => (
               <div key={index} className="border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md">
-                <button 
-                  onClick={() => setActiveFaq(activeFaq === index ? null : index)}
-                  className={`w-full flex justify-between items-center p-6 md:p-8 transition text-left ${activeFaq === index ? 'bg-slate-50' : 'bg-white hover:bg-slate-50'}`}
-                >
+                <button onClick={() => setActiveFaq(activeFaq === index ? null : index)} className={`w-full flex justify-between items-center p-6 md:p-8 transition text-left ${activeFaq === index ? 'bg-slate-50' : 'bg-white hover:bg-slate-50'}`}>
                   <span className={`font-bold text-lg pr-4 ${activeFaq === index ? 'text-[#FF6600]' : 'text-[#003366]'}`}>{faq.question}</span>
                   <div className={`p-2 rounded-full transition-transform duration-300 flex-shrink-0 ${activeFaq === index ? 'bg-orange-100 rotate-180' : 'bg-slate-100 rotate-0'}`}>
                     <ChevronDown className={`w-5 h-5 ${activeFaq === index ? 'text-[#FF6600]' : 'text-gray-500'}`} />
                   </div>
                 </button>
-                <div 
-                  className="transition-all duration-500 ease-in-out overflow-hidden"
-                  style={{ maxHeight: activeFaq === index ? '200px' : '0', opacity: activeFaq === index ? 1 : 0 }}
-                >
+                <div className="transition-all duration-500 ease-in-out overflow-hidden" style={{ maxHeight: activeFaq === index ? '200px' : '0', opacity: activeFaq === index ? 1 : 0 }}>
                   <p className="text-gray-600 font-medium leading-relaxed p-6 md:p-8 pt-0 bg-slate-50 border-t border-gray-100">{faq.answer}</p>
                 </div>
               </div>
@@ -485,7 +372,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* --- WIRED NEWSLETTER FORM --- */}
       <section className="py-24 bg-slate-50 border-t border-gray-100 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-orange-100 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
@@ -498,19 +384,8 @@ const Home = () => {
           <p className="text-gray-500 text-lg font-medium mb-12 max-w-2xl mx-auto">Join our exclusive mailing list for HNI investment strategies, IPO updates, and MSME regulatory alerts delivered straight to your inbox.</p>
           
           <form className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto" onSubmit={handleNewsletterSubmit}>
-            <input 
-              type="email" 
-              required
-              value={newsletterEmail}
-              onChange={(e) => setNewsletterEmail(e.target.value)}
-              placeholder="Enter your corporate email address" 
-              className="flex-1 px-8 py-5 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FF6600] focus:border-[#FF6600] font-medium text-gray-800 shadow-sm"
-            />
-            <button 
-              type="submit"
-              disabled={isSubscribing}
-              className={`bg-[#003366] text-white font-bold py-5 px-10 rounded-2xl transition duration-300 shadow-lg whitespace-nowrap flex items-center justify-center ${isSubscribing ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#002244] hover:-translate-y-1'}`}
-            >
+            <input type="email" required value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)} placeholder="Enter your corporate email address" className="flex-1 px-8 py-5 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FF6600] focus:border-[#FF6600] font-medium text-gray-800 shadow-sm" />
+            <button type="submit" disabled={isSubscribing} className={`bg-[#003366] text-white font-bold py-5 px-10 rounded-2xl transition duration-300 shadow-lg whitespace-nowrap flex items-center justify-center ${isSubscribing ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#002244] hover:-translate-y-1'}`}>
               {isSubscribing ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Subscribing...</> : 'Subscribe Now'}
             </button>
           </form>

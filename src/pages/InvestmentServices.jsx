@@ -13,29 +13,20 @@ const InvestmentServices = () => {
   const [activeTab, setActiveTab] = useState('MUTUAL_FUNDS');
   const [activeFaq, setActiveFaq] = useState(null);
 
-  // --- FORM STATE ---
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    profile: 'Resident Indian (HNI)',
-    assetClass: 'Mutual Funds & SIPs'
+    firstName: '', lastName: '', email: '', profile: 'Resident Indian (HNI)', assetClass: 'Mutual Funds & SIPs'
   });
 
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [isNewsletterSubmitting, setIsNewsletterSubmitting] = useState(false);
 
-  // --- FORM HANDLERS ---
   const handleModalSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
       await createLead({
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        service: `Wealth Management - ${formData.assetClass}`,
-        message: `Investor Profile: ${formData.profile}`
+        name: `${formData.firstName} ${formData.lastName}`, email: formData.email, service: `Wealth Management - ${formData.assetClass}`, message: `Investor Profile: ${formData.profile}`
       });
       toast.success("Request Received. An advisor will contact you shortly.");
       setIsModalOpen(false);
@@ -53,10 +44,7 @@ const InvestmentServices = () => {
     setIsNewsletterSubmitting(true);
     try {
       await createLead({
-        name: "Newsletter Subscription",
-        email: newsletterEmail,
-        service: "Q3 Market Strategy Report",
-        message: "User subscribed to the HNI wealth newsletter."
+        name: "Newsletter Subscription", email: newsletterEmail, service: "Quarterly Market Strategy Report", message: "User subscribed to the HNI wealth newsletter."
       });
       toast.success('Subscribed successfully!', { icon: '📈' });
       setNewsletterEmail('');
@@ -67,12 +55,10 @@ const InvestmentServices = () => {
     }
   };
 
-  // Calculator State
-  const [investmentAmount, setInvestmentAmount] = useState(10000000); // 1 Crore Default
-  const [timeHorizon, setTimeHorizon] = useState(10); // 10 Years
+  const [investmentAmount, setInvestmentAmount] = useState(10000000); 
+  const [timeHorizon, setTimeHorizon] = useState(10); 
   const [riskProfile, setRiskProfile] = useState('BALANCED'); 
 
-  // --- CALCULATOR MATH & PROFILES ---
   const profiles = {
     CONSERVATIVE: { return: 8, equity: 20, debt: 70, gold: 10 },
     BALANCED: { return: 12, equity: 60, debt: 30, gold: 10 },
@@ -86,7 +72,6 @@ const InvestmentServices = () => {
 
   const formatINR = (value) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value);
 
-  // --- DATA ARRAYS ---
   const investmentCategories = {
     MUTUAL_FUNDS: {
       label: 'Mutual Funds', icon: <PieChart className="w-6 h-6" />, title: "Diversified & Professionally Managed", desc: "Mutual funds offer a diversified and professionally managed investment option for investors seeking exposure to equity, debt, or hybrid instruments. At FIN5IVE, we carefully analyze market trends to build the perfect portfolio.",
@@ -126,6 +111,8 @@ const InvestmentServices = () => {
     }
   };
 
+  const amcPartners = ['Invesco AMC', 'Kotak AMC', 'ICICI Pru AMC', 'SBI AMC', 'HDFC AMC', 'Motilal Oswal', 'LIC Mutual Fund', 'DSP AMC'];
+
   const faqs = [
     { question: "What is the minimum portfolio size you manage?", answer: "While we advise clients across various wealth brackets, our specialized services like PMS require a regulatory minimum of ₹50 Lakhs, and AIFs require a minimum commitment of ₹1 Crore." },
     { question: "Are your investment recommendations biased towards specific AMCs?", answer: "Absolutely not. As NISM-certified professionals, we operate on an open-architecture platform. Our recommendations are purely data-driven, unbiased, and aligned solely with your risk-return profile." },
@@ -135,8 +122,7 @@ const InvestmentServices = () => {
 
   return (
     <div className="bg-white relative font-sans">
-
-      {/* --- HNI CONSULTATION MODAL --- */}
+      {/* Modal remains unchanged, keeping backend integration */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-[fadeIn_0.3s_ease-out]">
@@ -146,36 +132,20 @@ const InvestmentServices = () => {
             </div>
             <form className="p-8 space-y-4" onSubmit={handleModalSubmit}>
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                  <input type="text" required value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none" placeholder="First Name" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                  <input type="text" required value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none" placeholder="Last Name" />
-                </div>
+                <div><label className="block text-sm font-medium text-gray-700 mb-1">First Name</label><input type="text" required value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none" placeholder="First Name" /></div>
+                <div><label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label><input type="text" required value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none" placeholder="Last Name" /></div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none" placeholder="you@email.com" />
-              </div>
+              <div><label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label><input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none" placeholder="you@email.com" /></div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Investor Profile</label>
                 <select value={formData.profile} onChange={(e) => setFormData({...formData, profile: e.target.value})} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none bg-white">
-                  <option>Resident Indian (HNI)</option>
-                  <option>Non-Resident Indian (NRI)</option>
-                  <option>Corporate Treasury</option>
-                  <option>Family Office</option>
+                  <option>Resident Indian (HNI)</option><option>Non-Resident Indian (NRI)</option><option>Corporate Treasury</option><option>Family Office</option>
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Asset Class of Interest</label>
                 <select value={formData.assetClass} onChange={(e) => setFormData({...formData, assetClass: e.target.value})} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF6600] outline-none bg-white">
-                  <option>Mutual Funds & SIPs</option>
-                  <option>Direct Equity / PMS</option>
-                  <option>Fixed Income & Bonds</option>
-                  <option>NPS / Retirement Planning</option>
-                  <option>Comprehensive Portfolio Review</option>
+                  <option>Mutual Funds & SIPs</option><option>Direct Equity / PMS</option><option>Fixed Income & Bonds</option><option>NPS / Retirement Planning</option><option>Comprehensive Portfolio Review</option>
                 </select>
               </div>
               <button type="submit" disabled={isSubmitting} className={`w-full text-white font-bold py-4 rounded-xl mt-4 flex justify-center items-center transition shadow-lg ${isSubmitting ? 'bg-gray-400' : 'bg-[#FF6600] hover:bg-[#e55c00]'}`}>
@@ -209,14 +179,14 @@ const InvestmentServices = () => {
         </div>
       </section>
 
-      {/* AMC Marquee */}
+      {/* AMC Marquee - UPDATED */}
       <section className="py-8 bg-slate-50 border-b border-gray-100 overflow-hidden shadow-inner">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
           <p className="text-xs font-bold text-gray-400 tracking-widest uppercase mr-8 whitespace-nowrap hidden md:block">Empanelled With Top AMCs</p>
           <div className="flex overflow-hidden relative w-full">
             <div className="animate-[marquee_30s_linear_infinite] whitespace-nowrap flex space-x-12 opacity-60 grayscale hover:grayscale-0 transition-all duration-500 items-center">
-              {['HDFC', 'SBI', 'ICICI Prudential', 'Tata', 'Kotak', 'Nippon India', 'Axis', 'Mirae Asset', 'DSP', 'Franklin Templeton'].map((amc, i) => (
-                <span key={i} className="text-xl font-bold text-[#003366] tracking-tight">{amc} Mutual Fund</span>
+              {amcPartners.map((amc, i) => (
+                <span key={i} className="text-xl font-bold text-[#003366] tracking-tight">{amc}</span>
               ))}
             </div>
           </div>
@@ -280,7 +250,7 @@ const InvestmentServices = () => {
         </div>
       </section>
 
-      {/* Offerings Tabs */}
+      {/* Offerings Tabs - UPDATED WITH "Why Invest" section for Mutual Funds */}
       <section className="py-24 bg-slate-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16"><h2 className="text-3xl md:text-4xl font-black text-[#003366] mb-4 tracking-tight">Our Investment Offerings</h2><p className="text-gray-600 max-w-2xl mx-auto text-lg">Comprehensive financial products structured to navigate market cycles and generate alpha.</p></div>
@@ -294,10 +264,23 @@ const InvestmentServices = () => {
               ))}
             </div>
             <div className="p-8 md:p-14">
-              <div className="flex flex-col lg:flex-row gap-12 items-center">
+              <div className="flex flex-col lg:flex-row gap-12 items-start">
                 <div className="lg:w-5/12">
                   <h3 className="text-3xl font-black text-[#003366] mb-4 leading-tight">{investmentCategories[activeTab].title}</h3>
                   <p className="text-gray-600 leading-relaxed text-lg mb-8">{investmentCategories[activeTab].desc}</p>
+                  
+                  {activeTab === 'MUTUAL_FUNDS' && (
+                    <div className="bg-orange-50 border border-orange-100 p-6 rounded-2xl mb-8">
+                      <h4 className="font-bold text-[#003366] mb-4 flex items-center"><Award className="w-5 h-5 text-[#FF6600] mr-2" /> Why Invest in Mutual Funds with Fin5ive?</h4>
+                      <ul className="space-y-4 text-sm">
+                        <li><strong className="text-gray-800">Tailored Portfolio Construction:</strong> No two investors are the same. We analyze your risk appetite, time horizon, and financial goals to recommend a customized mix of equity, debt, and hybrid funds.</li>
+                        <li><strong className="text-gray-800">Expert Analysis & Research:</strong> We move beyond past performance. Our team evaluates fund manager strategies, expense ratios, and portfolio quality to ensure your money is in the right hands.</li>
+                        <li><strong className="text-gray-800">Goal-Based Planning:</strong> Whether you are planning for retirement, your child's education, or buying a new home, we help you map your investments to specific milestones.</li>
+                        <li><strong className="text-gray-800">Seamless Digital Experience:</strong> Track your entire portfolio, view valuation reports, and monitor your SIP performance with just one click through our Fin5ive App.</li>
+                      </ul>
+                    </div>
+                  )}
+
                   <button onClick={() => setIsModalOpen(true)} className="text-[#FF6600] font-bold flex items-center hover:text-[#e55c00] transition text-lg">Consult our Experts <ArrowRight className="w-5 h-5 ml-2" /></button>
                 </div>
                 <div className="lg:w-7/12 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
@@ -339,23 +322,6 @@ const InvestmentServices = () => {
         </div>
       </section>
 
-      {/* Professional Credentials Section */}
-      <section className="py-24 bg-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16"><h2 className="text-3xl md:text-4xl font-black mb-4 tracking-tight">Certified & Regulated Expertise</h2><p className="text-gray-400 max-w-2xl mx-auto text-lg">Your wealth is managed by highly qualified professionals holding rigorous regulatory certifications.</p></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { title: "NISM Series V-A", desc: "Certified Mutual Fund Distributors for optimal scheme selection.", icon: <Award className="w-8 h-8 text-[#FF6600]" /> },
-              { title: "NISM Series XXI-A", desc: "Specialized in Portfolio Management Services (PMS).", icon: <Briefcase className="w-8 h-8 text-[#FF6600]" /> },
-              { title: "NISM Series XIII", desc: "Certified expertise in the derivatives market for risk management.", icon: <TrendingUp className="w-8 h-8 text-[#FF6600]" /> },
-              { title: "RERA Certified", desc: "Registered real estate agents ensuring transparent property investments.", icon: <Building2 className="w-8 h-8 text-[#FF6600]" /> }
-            ].map((cert, index) => (
-              <div key={index} className="bg-white/5 p-8 rounded-[2rem] border border-white/10 hover:bg-white/10 transition duration-300 text-center"><div className="bg-white/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 mx-auto">{cert.icon}</div><h3 className="text-xl font-bold mb-2">{cert.title}</h3><p className="text-sm text-gray-400 leading-relaxed">{cert.desc}</p></div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* FAQ Accordion */}
       <section className="py-24 bg-slate-50 border-b border-gray-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -371,12 +337,12 @@ const InvestmentServices = () => {
         </div>
       </section>
 
-      {/* Newsletter */}
+      {/* Newsletter - UPDATED TITLE */}
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-[#003366] rounded-[3rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden">
             <Landmark className="absolute top-0 right-0 w-64 h-64 text-white opacity-5 -mr-10 -mt-10 pointer-events-none" />
-            <div className="flex-1 text-center md:text-left relative z-10"><h3 className="text-2xl font-bold text-white mb-2">Get Our Q3 Market Strategy Report</h3><p className="text-gray-300">Subscribe to our HNI newsletter to receive exclusive insights on upcoming AIF launches, market valuations, and asset allocation strategies.</p></div>
+            <div className="flex-1 text-center md:text-left relative z-10"><h3 className="text-2xl font-bold text-white mb-2">Quarterly Market Strategy Report</h3><p className="text-gray-300">Subscribe to our HNI newsletter to receive exclusive insights on upcoming AIF launches, market valuations, and asset allocation strategies.</p></div>
             <div className="w-full md:w-auto flex-shrink-0 relative z-10">
               <form className="flex w-full shadow-lg rounded-lg overflow-hidden" onSubmit={handleNewsletterSubmit}>
                 <input type="email" required value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)} placeholder="Your Email Address" className="w-full md:w-64 px-6 py-4 border-none focus:outline-none focus:ring-2 focus:ring-[#FF6600] text-gray-800" />

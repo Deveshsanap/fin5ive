@@ -37,6 +37,8 @@ import NriGiftCity from './pages/NriGiftCity';
 import NriRealEstate from './pages/NriRealEstate';
 import NriDomestic from './pages/NriDomestic';
 import NriTax from './pages/NriTax';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Terms from './pages/Terms';
 
 function App() {
   return (
@@ -47,7 +49,7 @@ function App() {
       <div className="min-h-screen flex flex-col bg-slate-50">
         <Navbar />
 
-        <main className="flex-grow pt-20"> 
+        <main className="flex-grow pt-20">
           <Routes>
             <Route path="/" element={<Home />} />
 
@@ -65,7 +67,7 @@ function App() {
             <Route path="/nri-invest/gift-city" element={<NriGiftCity />} />
             <Route path="/nri-invest/real-estate" element={<NriRealEstate />} />
             <Route path="/nri-invest/domestic-products" element={<NriDomestic />} />
-            <Route path="/nri-invest/tax-assistance" element={<NriTax />} />    
+            <Route path="/nri-invest/tax-assistance" element={<NriTax />} />
 
             {/* Utilities & Portals */}
             <Route path="/work-with-us" element={<WorkWithUs />} />
@@ -79,10 +81,16 @@ function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/team" element={<Team />} />
 
+
+
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-and-conditions" element={<Terms />} />
+
             <Route path="*" element={<NotFound />} />
+
           </Routes>
         </main>
-        
+
         <Footer />
       </div>
     </Router>

@@ -11,8 +11,8 @@ const Footer = () => {
           {/* Brand & About */}
           <div>
             <Link to="/" className="flex flex-col mb-6">
-              <span className="text-3xl font-extrabold text-white tracking-tight">FIN<span className="text-[#FF6600]">5</span>IVE</span>
-              <span className="text-[10px] text-gray-400 font-medium tracking-widest uppercase mt-[-4px]">Ambitions Realised</span>
+              <span className="text-3xl font-extrabold text-white tracking-tight leading-none">FIN<span className="text-[#FF6600]">5</span>IVE™</span>
+              <span className="text-[10px] text-gray-400 font-medium tracking-widest uppercase mt-1 leading-none">Ambitions Realised</span>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               A premier financial solutions partner offering end-to-end, innovative funding and advisory services designed to navigate complex financial landscapes for businesses and individuals globally.
@@ -67,6 +67,10 @@ const Footer = () => {
                 <div className="flex flex-col space-y-1">
                   <a href="mailto:info.fivefin@gmail.com" className="hover:text-[#FF6600] transition-colors">info.fivefin@gmail.com</a>
                   <a href="mailto:connect.fivefin@gmail.com" className="hover:text-[#FF6600] transition-colors">connect.fivefin@gmail.com</a>
+                  <div className="mt-3 text-xs font-bold text-gray-400 border-t border-white/10 pt-3">
+                    <p>CIN: U70200GJ2025PTC157711</p>
+                    <p>ARN: 321990</p>
+                  </div>
                 </div>
               </li>
             </ul>
@@ -81,8 +85,8 @@ const Footer = () => {
           </p>
           <div className="flex space-x-6 text-sm text-gray-500">
             <Link to="/portal" className="hover:text-[#FF6600] transition-colors">Client Login</Link>
-            <a href="#" className="hover:text-[#FF6600] transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-[#FF6600] transition-colors">Terms of Service</a>
+            <Link to="/privacy-policy" className="hover:text-[#FF6600] transition-colors">Privacy Policy</Link>
+            <Link to="/terms-and-conditions" className="hover:text-[#FF6600] transition-colors">Terms and Conditions</Link>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { 
-  ShieldCheck, Award, TrendingUp, Factory, CheckCircle, 
-  ArrowRight, Settings, FileCheck, X, Send, Calculator, 
+import {
+  ShieldCheck, Award, TrendingUp, Factory, CheckCircle,
+  ArrowRight, Settings, FileCheck, X, Send, Calculator,
   ChevronDown, ChevronUp, Download, CheckSquare, Coins, LineChart, Loader2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -51,7 +51,7 @@ const ZedCertification = () => {
 
   const handleBrochureDownload = async (e) => {
     e.preventDefault();
-    if(!brochureEmail) return toast.error("Please enter your email.");
+    if (!brochureEmail) return toast.error("Please enter your email.");
     setIsBrochureSubmitting(true);
     try {
       await createLead({
@@ -83,23 +83,23 @@ const ZedCertification = () => {
 
   // --- DATA ARRAYS ---
   const zedTiers = {
-    BRONZE: { 
-      title: "ZED Bronze", 
-      icon: <Award className="w-8 h-8 text-amber-700" />, 
+    BRONZE: {
+      title: "ZED Bronze",
+      icon: <Award className="w-8 h-8 text-amber-700" />,
       desc: "The foundational step into the ZED ecosystem. Focuses on basic compliance, safety, and awareness of the Zero Defect Zero Effect philosophy.",
       parameters: "5 Basic Parameters",
       reward: "Basic MSME Ministry recognition & initial subsidy eligibility."
     },
-    SILVER: { 
-      title: "ZED Silver", 
-      icon: <Award className="w-8 h-8 text-slate-400" />, 
+    SILVER: {
+      title: "ZED Silver",
+      icon: <Award className="w-8 h-8 text-slate-400" />,
       desc: "Intermediate operational maturity. Requires documented standard operating procedures (SOPs) and consistent quality control measures.",
       parameters: "14 Intermediate Parameters",
       reward: "Preferred vendor status and enhanced banking concessions."
     },
-    GOLD: { 
-      title: "ZED Gold", 
-      icon: <Award className="w-8 h-8 text-yellow-500" />, 
+    GOLD: {
+      title: "ZED Gold",
+      icon: <Award className="w-8 h-8 text-yellow-500" />,
       desc: "The pinnacle of MSME manufacturing excellence. Demonstrates world-class production, minimal environmental impact, and rigorous safety standards.",
       parameters: "20 Advanced Parameters",
       reward: "Maximum banking concessions, highest priority in Govt. tenders, and global export readiness."
@@ -121,32 +121,32 @@ const ZedCertification = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-[fadeIn_0.3s_ease-out]">
             <div className="bg-finBlue p-6 flex justify-between items-center text-white">
-              <h3 className="text-xl font-bold flex items-center"><ShieldCheck className="w-5 h-5 mr-2"/> Start ZED Certification</h3>
+              <h3 className="text-xl font-bold flex items-center"><ShieldCheck className="w-5 h-5 mr-2" /> Start ZED Certification</h3>
               <button onClick={() => setIsModalOpen(false)} className="hover:text-finOrange transition"><X className="w-6 h-6" /></button>
             </div>
             <form className="p-8 space-y-4" onSubmit={handleModalSubmit}>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Manufacturing Unit Name</label>
-                <input type="text" required value={formData.unitName} onChange={(e) => setFormData({...formData, unitName: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="Acme Auto Parts" />
+                <input type="text" required value={formData.unitName} onChange={(e) => setFormData({ ...formData, unitName: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="Acme Auto Parts" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Contact Person</label>
-                  <input type="text" required value={formData.contactPerson} onChange={(e) => setFormData({...formData, contactPerson: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="John Doe" />
+                  <input type="text" required value={formData.contactPerson} onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="John Doe" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                  <input type="tel" required value={formData.phoneNumber} onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="+91 98765 43210" />
+                  <input type="tel" required value={formData.phoneNumber} onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="+91 98765 43210" />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="director@company.com" />
+                <input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="director@company.com" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Target Level</label>
-                  <select value={formData.targetLevel} onChange={(e) => setFormData({...formData, targetLevel: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
+                  <select value={formData.targetLevel} onChange={(e) => setFormData({ ...formData, targetLevel: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
                     <option>ZED Bronze (Basic)</option>
                     <option>ZED Silver (Intermediate)</option>
                     <option>ZED Gold (Advanced)</option>
@@ -155,11 +155,11 @@ const ZedCertification = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Primary Industry</label>
-                  <input type="text" required value={formData.industry} onChange={(e) => setFormData({...formData, industry: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="e.g. Textiles" />
+                  <input type="text" required value={formData.industry} onChange={(e) => setFormData({ ...formData, industry: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="e.g. Textiles" />
                 </div>
               </div>
               <button type="submit" disabled={isSubmitting} className={`w-full text-white font-bold py-4 rounded-lg mt-4 flex justify-center items-center transition shadow-lg ${isSubmitting ? 'bg-gray-400' : 'bg-finOrange hover:bg-finOrange-dark'}`}>
-                {isSubmitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin"/> Processing...</> : <>Book Initial Gap Analysis <Send className="w-5 h-5 ml-2" /></>}
+                {isSubmitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Processing...</> : <>Book Initial Gap Analysis <Send className="w-5 h-5 ml-2" /></>}
               </button>
             </form>
           </div>
@@ -172,7 +172,7 @@ const ZedCertification = () => {
           <Award className="w-96 h-96 -mt-10 -mr-10 animate-[pulse_10s_ease-in-out_infinite]" />
         </div>
         <div className="absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-finOrange/20 to-transparent"></div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl">
             <div className="flex items-center space-x-2 text-finOrange font-bold tracking-wider uppercase text-sm mb-4">
@@ -204,7 +204,7 @@ const ZedCertification = () => {
               <p className="text-gray-600 mb-8 leading-relaxed text-lg">
                 Administered by MSME-QCI, ZED Gold is an advanced level certification that reflects high operational maturity. It is not just a certificate—it is a business enabler that serves as a stepping stone to large corporate vendor approvals, export readiness, and massive financial subsidies.
               </p>
-              
+
               <div className="bg-white border border-gray-200 p-8 rounded-2xl shadow-md">
                 <h3 className="text-xl font-bold text-finBlue mb-6 flex items-center border-b border-gray-100 pb-4">
                   <Award className="w-6 h-6 text-finOrange mr-3" />
@@ -215,6 +215,7 @@ const ZedCertification = () => {
                     "Concession on interest cost (up to 0.5%) by major banks",
                     "Up to 50% waiver on bank loan processing fees",
                     "Preferred status in Government and PSU tenders",
+                    "Integrates seamlessly with ISO 9000, ISO 14000, and ISO 45000 certifications", // <-- Added here
                     "Higher credibility with MNCs for vendor empanelment",
                     "Subsidies on technology upgrades and testing equipment",
                     "Better workplace safety, hygiene & statutory compliance"
@@ -282,8 +283,8 @@ const ZedCertification = () => {
                   <div className="bg-white/10 border border-white/20 px-6 py-4 rounded-xl font-extrabold text-3xl text-finOrange shadow-inner mb-8 text-center backdrop-blur-sm">
                     {formatINR(loanAmount)}
                   </div>
-                  <input 
-                    type="range" min="10000000" max="500000000" step="5000000" 
+                  <input
+                    type="range" min="10000000" max="500000000" step="5000000"
                     value={loanAmount} onChange={(e) => setLoanAmount(Number(e.target.value))}
                     className="w-full h-3 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-finOrange"
                   />
@@ -333,7 +334,7 @@ const ZedCertification = () => {
           <div className="max-w-5xl mx-auto bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-md">
             <div className="flex overflow-x-auto scrollbar-hide border-b border-gray-200 bg-slate-50">
               {Object.keys(zedTiers).map((key) => (
-                <button 
+                <button
                   key={key}
                   onClick={() => setActiveTier(key)}
                   className={`flex-none md:flex-1 py-5 px-6 text-center font-bold text-sm md:text-lg transition-colors flex flex-row items-center justify-center gap-3 whitespace-nowrap ${activeTier === key ? 'border-b-4 border-finOrange text-finBlue bg-white shadow-sm' : 'text-gray-400 hover:bg-gray-100 border-b-4 border-transparent'}`}
@@ -355,7 +356,7 @@ const ZedCertification = () => {
                     Assess Our Eligibility
                   </button>
                 </div>
-                
+
                 <div className="md:w-1/2 bg-slate-50 p-8 rounded-2xl border border-gray-100 w-full">
                   <div className="mb-6 pb-6 border-b border-gray-200">
                     <h4 className="font-bold text-gray-500 uppercase tracking-widest text-xs mb-2">Audit Scope</h4>
@@ -420,7 +421,7 @@ const ZedCertification = () => {
           <div className="space-y-4">
             {faqs.map((faq, index) => (
               <div key={index} className="bg-white border border-gray-200 rounded-lg overflow-hidden transition-all duration-300 shadow-sm">
-                <button 
+                <button
                   onClick={() => setActiveFaq(activeFaq === index ? null : index)}
                   className="w-full flex justify-between items-center p-6 hover:bg-gray-50 transition text-left"
                 >
@@ -447,12 +448,12 @@ const ZedCertification = () => {
             </div>
             <div className="w-full md:w-auto flex-shrink-0 relative z-10">
               <form className="flex flex-col sm:flex-row w-full shadow-lg rounded-lg overflow-hidden" onSubmit={handleBrochureDownload}>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   required
                   value={brochureEmail}
                   onChange={(e) => setBrochureEmail(e.target.value)}
-                  placeholder="Director's Email" 
+                  placeholder="Director's Email"
                   className="w-full sm:w-64 px-6 py-4 border-none focus:outline-none focus:ring-2 focus:ring-finOrange text-gray-800 rounded-t-lg sm:rounded-l-lg sm:rounded-t-none"
                 />
                 <button type="submit" disabled={isBrochureSubmitting} className={`text-white px-8 py-4 font-bold transition flex items-center justify-center whitespace-nowrap rounded-b-lg sm:rounded-r-lg sm:rounded-b-none ${isBrochureSubmitting ? 'bg-gray-400' : 'bg-finOrange hover:bg-finOrange-dark'}`}>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { 
-  Plane, Clock, DollarSign, Globe, CheckCircle, ArrowRight, 
-  ShieldCheck, FileText, Calculator, X, Send, ChevronDown, ChevronUp, 
+import {
+  Plane, Clock, DollarSign, Globe, CheckCircle, ArrowRight,
+  ShieldCheck, FileText, Calculator, X, Send, ChevronDown, ChevronUp,
   Download, FileSearch, Anchor, Activity, Building, Briefcase, Award, Loader2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -12,7 +12,7 @@ const ExportFunding = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
   const [activeIndustry, setActiveIndustry] = useState('TEXTILE');
-  
+
   // Modal Form State
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -22,7 +22,7 @@ const ExportFunding = () => {
     turnover: '₹2 Cr - ₹10 Cr',
     invoiceValue: ''
   });
-  
+
   // 1. Advanced Calculator State
   const [currency, setCurrency] = useState('USD');
   const [invoiceValue, setInvoiceValue] = useState(100000); // 100k Default
@@ -39,7 +39,7 @@ const ExportFunding = () => {
     setIsSubmitting(true);
     try {
       await createLead({
-        name: formData.companyName, 
+        name: formData.companyName,
         company: formData.companyName,
         email: formData.email,
         service: "Export Factoring / Funding",
@@ -104,28 +104,28 @@ const ExportFunding = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-[fadeIn_0.3s_ease-out]">
             <div className="bg-finBlue p-6 flex justify-between items-center text-white">
-              <h3 className="text-xl font-bold flex items-center"><Plane className="w-5 h-5 mr-2"/> Apply for Export Finance</h3>
+              <h3 className="text-xl font-bold flex items-center"><Plane className="w-5 h-5 mr-2" /> Apply for Export Finance</h3>
               <button onClick={() => setIsModalOpen(false)} className="hover:text-finOrange transition"><X className="w-6 h-6" /></button>
             </div>
             <form className="p-8 space-y-4" onSubmit={handleModalSubmit}>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-                  <input type="text" required value={formData.companyName} onChange={(e) => setFormData({...formData, companyName: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="Global Exports Ltd." />
+                  <input type="text" required value={formData.companyName} onChange={(e) => setFormData({ ...formData, companyName: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="Global Exports Ltd." />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">IEC Code (Import Export Code)</label>
-                  <input type="text" required value={formData.iecCode} onChange={(e) => setFormData({...formData, iecCode: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="0123456789" />
+                  <input type="text" required value={formData.iecCode} onChange={(e) => setFormData({ ...formData, iecCode: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="0123456789" />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Corporate Email</label>
-                <input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="finance@company.com" />
+                <input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="finance@company.com" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Annual Turnover</label>
-                  <select value={formData.turnover} onChange={(e) => setFormData({...formData, turnover: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
+                  <select value={formData.turnover} onChange={(e) => setFormData({ ...formData, turnover: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
                     <option>₹2 Cr - ₹10 Cr</option>
                     <option>₹10 Cr - ₹50 Cr</option>
                     <option>₹50 Cr+</option>
@@ -133,11 +133,11 @@ const ExportFunding = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Avg. Invoice Value</label>
-                  <input type="text" value={formData.invoiceValue} onChange={(e) => setFormData({...formData, invoiceValue: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="$50,000" />
+                  <input type="text" value={formData.invoiceValue} onChange={(e) => setFormData({ ...formData, invoiceValue: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="$50,000" />
                 </div>
               </div>
               <button type="submit" disabled={isSubmitting} className={`w-full text-white font-bold py-4 rounded-lg mt-4 flex justify-center items-center transition shadow-lg ${isSubmitting ? 'bg-gray-400' : 'bg-finOrange hover:bg-finOrange-dark'}`}>
-                {isSubmitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin"/> Submitting Request...</> : <>Submit Factoring Request <Send className="w-5 h-5 ml-2" /></>}
+                {isSubmitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Submitting Request...</> : <>Submit Factoring Request <Send className="w-5 h-5 ml-2" /></>}
               </button>
             </form>
           </div>
@@ -150,7 +150,7 @@ const ExportFunding = () => {
           <Globe className="w-96 h-96 -mt-20 -mr-20 animate-[spin_120s_linear_infinite]" />
         </div>
         <div className="absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-finOrange/20 to-transparent"></div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl">
             <div className="flex items-center space-x-2 text-finOrange font-bold tracking-wider uppercase text-sm mb-4">
@@ -161,7 +161,7 @@ const ExportFunding = () => {
               Bridge Your Credit Gap in <span className="text-finOrange">Less Than 24 Hours.</span>
             </h1>
             <p className="text-xl text-gray-300 mb-10 leading-relaxed">
-              Empowering exporters with collateral-free working capital up to ₹20 Crore. We finance your invoices so you can accelerate your global supply chain without waiting 90 days for payment.
+              Empowering exporters with collateral-free working capital up to $2.5 Million. We finance your invoices so you can accelerate your global supply chain without waiting 90 days for payment.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <button onClick={() => setIsModalOpen(true)} className="bg-finOrange hover:bg-finOrange-light text-white font-bold py-4 px-8 rounded-lg transition duration-300 shadow-lg shadow-finOrange/30 flex justify-center items-center">
@@ -176,7 +176,7 @@ const ExportFunding = () => {
       <section className="-mt-12 relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { title: "Credit Limit", value: "Up to ₹20 Cr", icon: <DollarSign className="w-6 h-6 text-finBlue" /> },
+            { title: "Credit Limit", value: "Up to $2.5 M", icon: <DollarSign className="w-6 h-6 text-finBlue" /> },
             { title: "Disbursal Time", value: "< 24 Hours", icon: <Clock className="w-6 h-6 text-finBlue" /> },
             { title: "Requirement", value: "Collateral-Free", icon: <ShieldCheck className="w-6 h-6 text-finBlue" /> },
             { title: "Global Reach", value: "100+ Countries", icon: <Globe className="w-6 h-6 text-finBlue" /> },
@@ -202,14 +202,14 @@ const ExportFunding = () => {
           </div>
 
           <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden max-w-5xl mx-auto flex flex-col md:flex-row">
-            
+
             {/* Input Side */}
             <div className="p-8 md:p-12 md:w-3/5 border-b md:border-b-0 md:border-r border-gray-200">
-              
+
               {/* Currency Selector */}
               <div className="flex space-x-2 mb-8">
                 {['USD', 'EUR', 'GBP', 'INR'].map(curr => (
-                  <button 
+                  <button
                     key={curr}
                     onClick={() => setCurrency(curr)}
                     className={`flex-1 py-2 rounded-lg font-bold transition-colors ${currency === curr ? 'bg-finBlue text-white shadow-md' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
@@ -227,11 +227,11 @@ const ExportFunding = () => {
                     {formatCurrency(invoiceValue)}
                   </div>
                 </div>
-                <input 
-                  type="range" 
-                  min={currency === 'INR' ? 1000000 : 10000} 
-                  max={currency === 'INR' ? 100000000 : 1000000} 
-                  step={currency === 'INR' ? 100000 : 5000} 
+                <input
+                  type="range"
+                  min={currency === 'INR' ? 1000000 : 10000}
+                  max={currency === 'INR' ? 100000000 : 1000000}
+                  step={currency === 'INR' ? 100000 : 5000}
                   value={invoiceValue} onChange={(e) => setInvoiceValue(Number(e.target.value))}
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-finOrange"
                 />
@@ -244,8 +244,8 @@ const ExportFunding = () => {
                     <label className="font-bold text-gray-600 text-sm">Credit Period</label>
                     <span className="font-bold text-finBlue bg-slate-50 px-2 py-1 border rounded">{creditDays} Days</span>
                   </div>
-                  <input 
-                    type="range" min="30" max="120" step="15" 
+                  <input
+                    type="range" min="30" max="120" step="15"
                     value={creditDays} onChange={(e) => setCreditDays(Number(e.target.value))}
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-finBlue"
                   />
@@ -257,8 +257,8 @@ const ExportFunding = () => {
                     <label className="font-bold text-gray-600 text-sm">Est. Fee/Month</label>
                     <span className="font-bold text-finOrange bg-orange-50 px-2 py-1 border border-orange-100 rounded">{feeRate}%</span>
                   </div>
-                  <input 
-                    type="range" min="0.5" max="3.0" step="0.1" 
+                  <input
+                    type="range" min="0.5" max="3.0" step="0.1"
                     value={feeRate} onChange={(e) => setFeeRate(Number(e.target.value))}
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-finOrange"
                   />
@@ -274,7 +274,7 @@ const ExportFunding = () => {
                   <p className="text-4xl font-extrabold text-white">{formatCurrency(dayZeroAdvance)}</p>
                   <p className="text-gray-400 text-xs mt-1">Credited within 24 hours.</p>
                 </div>
-                
+
                 <div className="pt-6 border-t border-gray-700">
                   <div className="flex justify-between text-sm mb-2 text-gray-400">
                     <span>Invoice Balance (20%)</span>
@@ -284,7 +284,7 @@ const ExportFunding = () => {
                     <span>Est. Factoring Fee Deduction</span>
                     <span>- {formatCurrency(totalFactoringFee)}</span>
                   </div>
-                  
+
                   <p className="text-finOrange font-bold text-sm tracking-widest uppercase mb-1">Final Payment to You</p>
                   <p className="text-3xl font-extrabold text-white">{formatCurrency(daySixtyBalance)}</p>
                   <p className="text-gray-400 text-xs mt-1">Paid on Day {creditDays}</p>
@@ -299,7 +299,7 @@ const ExportFunding = () => {
       <section className="py-20 bg-finBlue text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-8">Do You Qualify for Funding?</h2>
-          
+
           <div className="bg-white/10 p-8 rounded-2xl border border-white/20 backdrop-blur-md">
             {eligibilityStep === 0 && (
               <div className="animate-[fadeIn_0.5s_ease-in]">
@@ -310,7 +310,7 @@ const ExportFunding = () => {
                 </div>
               </div>
             )}
-            
+
             {eligibilityStep === 1 && (
               <div className="animate-[fadeIn_0.5s_ease-in]">
                 <p className="text-xl mb-6">Has your business been operating for more than 3 years?</p>
@@ -348,7 +348,7 @@ const ExportFunding = () => {
                     <button onClick={() => setIsModalOpen(true)} className="bg-finOrange px-8 py-3 rounded-lg font-bold hover:bg-finOrange-light transition shadow-lg">Contact Advisory Team</button>
                   </div>
                 )}
-                <button onClick={() => {setEligibilityStep(0); setEligibilityAnswers({});}} className="text-sm text-gray-400 mt-6 underline hover:text-white">Retake Assessment</button>
+                <button onClick={() => { setEligibilityStep(0); setEligibilityAnswers({}); }} className="text-sm text-gray-400 mt-6 underline hover:text-white">Retake Assessment</button>
               </div>
             )}
           </div>
@@ -366,7 +366,7 @@ const ExportFunding = () => {
           <div className="flex flex-col md:flex-row gap-8 max-w-5xl mx-auto">
             <div className="md:w-1/3 flex flex-col space-y-2">
               {Object.keys(industries).map((key) => (
-                <button 
+                <button
                   key={key}
                   onClick={() => setActiveIndustry(key)}
                   className={`p-4 text-left font-bold rounded-lg transition-all ${activeIndustry === key ? 'bg-finOrange text-white shadow-md' : 'bg-slate-50 text-gray-600 hover:bg-gray-100'}`}
@@ -396,7 +396,7 @@ const ExportFunding = () => {
           <div className="space-y-4">
             {faqs.map((faq, index) => (
               <div key={index} className="bg-white border border-gray-200 rounded-lg overflow-hidden transition-all duration-300 shadow-sm">
-                <button 
+                <button
                   onClick={() => setActiveFaq(activeFaq === index ? null : index)}
                   className="w-full flex justify-between items-center p-6 hover:bg-gray-50 transition text-left"
                 >
@@ -423,9 +423,9 @@ const ExportFunding = () => {
             </div>
             <div className="w-full md:w-auto flex-shrink-0 relative z-10">
               <form className="flex w-full shadow-lg" onSubmit={(e) => e.preventDefault()}>
-                <input 
-                  type="email" 
-                  placeholder="Corporate Email" 
+                <input
+                  type="email"
+                  placeholder="Corporate Email"
                   className="w-full md:w-64 px-4 py-4 rounded-l-lg border-none focus:outline-none focus:ring-2 focus:ring-finOrange text-gray-800"
                 />
                 <button className="bg-finOrange hover:bg-finOrange-dark text-white px-6 py-4 rounded-r-lg font-bold transition flex items-center whitespace-nowrap">

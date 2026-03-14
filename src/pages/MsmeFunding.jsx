@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { 
-  Factory, Settings, FileText, Landmark, ShieldCheck, Coins, 
-  LineChart, CheckCircle, ArrowRight, X, Send, Calculator, 
+import {
+  Factory, Settings, FileText, Landmark, ShieldCheck, Coins,
+  LineChart, CheckCircle, ArrowRight, X, Send, Calculator,
   ChevronDown, ChevronUp, Download, Building, Sun, Briefcase, Activity, Loader2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -22,15 +22,15 @@ const MsmeFunding = () => {
     turnover: 'Up to ₹5 Crores',
     fundingType: 'New Machinery Purchase'
   });
-  
+
   const [brochureEmail, setBrochureEmail] = useState('');
   const [isBrochureSubmitting, setIsBrochureSubmitting] = useState(false);
 
   // Calculator State
-  const [loanAmount, setLoanAmount] = useState(50000000); 
-  const [tenureYears, setTenureYears] = useState(7); 
-  const [interestRate, setInterestRate] = useState(10.5); 
-  const [subsidyRate, setSubsidyRate] = useState(3); 
+  const [loanAmount, setLoanAmount] = useState(50000000);
+  const [tenureYears, setTenureYears] = useState(7);
+  const [interestRate, setInterestRate] = useState(10.5);
+  const [subsidyRate, setSubsidyRate] = useState(3);
 
   // --- FORM HANDLERS ---
   const handleModalSubmit = async (e) => {
@@ -57,14 +57,14 @@ const MsmeFunding = () => {
 
   const handleBrochureDownload = async (e) => {
     e.preventDefault();
-    if(!brochureEmail) return toast.error("Please enter your email.");
+    if (!brochureEmail) return toast.error("Please enter your email.");
     setIsBrochureSubmitting(true);
     try {
       await createLead({
         name: "Brochure Download",
         email: brochureEmail,
-        service: "MSME Subsidy Handbook",
-        message: "User requested the MSME PDF guide."
+        service: "Machinery Loan Guide", // <-- Updated here for backend CRM
+        message: "User requested the Machinery Loan PDF guide."
       });
       toast.success("Handbook sent to your email!");
       setBrochureEmail('');
@@ -111,31 +111,31 @@ const MsmeFunding = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-[fadeIn_0.3s_ease-out]">
             <div className="bg-finBlue p-6 flex justify-between items-center text-white">
-              <h3 className="text-xl font-bold flex items-center"><Factory className="w-5 h-5 mr-2"/> MSME Funding Request</h3>
+              <h3 className="text-xl font-bold flex items-center"><Factory className="w-5 h-5 mr-2" /> MSME Funding Request</h3>
               <button onClick={() => setIsModalOpen(false)} className="hover:text-finOrange transition"><X className="w-6 h-6" /></button>
             </div>
             <form className="p-8 space-y-4" onSubmit={handleModalSubmit}>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-                <input type="text" required value={formData.companyName} onChange={e => setFormData({...formData, companyName: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="Acme Manufacturing" />
+                <input type="text" required value={formData.companyName} onChange={e => setFormData({ ...formData, companyName: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="Acme Manufacturing" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Contact Person</label>
-                  <input type="text" required value={formData.contactPerson} onChange={e => setFormData({...formData, contactPerson: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="John Doe" />
+                  <input type="text" required value={formData.contactPerson} onChange={e => setFormData({ ...formData, contactPerson: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="John Doe" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                  <input type="tel" required value={formData.phoneNumber} onChange={e => setFormData({...formData, phoneNumber: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="+91 98765 43210" />
+                  <input type="tel" required value={formData.phoneNumber} onChange={e => setFormData({ ...formData, phoneNumber: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="+91 98765 43210" />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <input type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="director@company.com" />
+                <input type="email" required value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="director@company.com" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Current Annual Turnover</label>
-                <select value={formData.turnover} onChange={e => setFormData({...formData, turnover: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
+                <select value={formData.turnover} onChange={e => setFormData({ ...formData, turnover: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
                   <option>Up to ₹5 Crores</option>
                   <option>₹5 Cr - ₹25 Crores</option>
                   <option>₹25 Cr - ₹100 Crores</option>
@@ -144,7 +144,7 @@ const MsmeFunding = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Funding Requirement Type</label>
-                <select value={formData.fundingType} onChange={e => setFormData({...formData, fundingType: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
+                <select value={formData.fundingType} onChange={e => setFormData({ ...formData, fundingType: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
                   <option>New Machinery Purchase</option>
                   <option>Working Capital Enhancement</option>
                   <option>Factory Construction</option>
@@ -232,7 +232,7 @@ const MsmeFunding = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16"><span className="text-finOrange font-bold tracking-wider uppercase text-sm mb-4 block">The FIN5IVE Method</span><h2 className="text-3xl font-bold text-finBlue mb-4">Strategic Financial Advisory</h2><p className="text-gray-600 max-w-2xl mx-auto">We don't just find you a loan; we engineer your entire funding proposal to ensure maximum approval rates and optimal terms.</p></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[ { title: "Project Report Preparation", desc: "Crafting compelling CMA data and project reports that resonate perfectly with strict banking requirements.", icon: <FileText className="w-8 h-8 text-finOrange" /> }, { title: "Financial Restructuring", desc: "In-depth review and structuring of your balance sheet to highlight business health and maximum repayment potential.", icon: <LineChart className="w-8 h-8 text-finBlue" /> }, { title: "Bank Syndication", desc: "Facilitating seamless interactions and connecting your business with the optimal PSU/Private banks from our network.", icon: <Landmark className="w-8 h-8 text-finOrange" /> } ].map((feature, index) => (
+            {[{ title: "Project Report Preparation", desc: "Crafting compelling CMA data and project reports that resonate perfectly with strict banking requirements.", icon: <FileText className="w-8 h-8 text-finOrange" /> }, { title: "Financial Restructuring", desc: "In-depth review and structuring of your balance sheet to highlight business health and maximum repayment potential.", icon: <LineChart className="w-8 h-8 text-finBlue" /> }, { title: "Bank Syndication", desc: "Facilitating seamless interactions and connecting your business with the optimal PSU/Private banks from our network.", icon: <Landmark className="w-8 h-8 text-finOrange" /> }].map((feature, index) => (
               <div key={index} className="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"><div className="bg-slate-50 w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">{feature.icon}</div><h3 className="text-xl font-bold text-finBlue mb-3">{feature.title}</h3><p className="text-gray-600 text-sm leading-relaxed">{feature.desc}</p></div>
             ))}
           </div>
@@ -244,7 +244,7 @@ const MsmeFunding = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div className="bg-finBlue rounded-3xl p-10 lg:p-14 text-white relative overflow-hidden shadow-2xl group"><Coins className="absolute top-0 right-0 w-64 h-64 text-white opacity-5 -mt-10 -mr-10 group-hover:scale-110 transition duration-700" /><div className="relative z-10"><span className="bg-finOrange text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-6 inline-block">Cost Reduction</span><h2 className="text-3xl font-bold mb-6">Interest Subsidy Assistance</h2><p className="text-gray-300 mb-8 text-lg">Drastically reduce your effective cost of borrowing. We handle the entire complex government subsidy lifecycle.</p><ul className="space-y-5">{['Identification of applicable state/central schemes', 'Complete documentation & profiling', 'Application filing with MSME/DIC authorities', 'Persistent follow-ups until subsidy is credited'].map((item, i) => (<li key={i} className="flex items-start"><div className="w-2 h-2 mt-2 bg-finOrange rounded-full mr-4 flex-shrink-0"></div><span className="text-gray-200">{item}</span></li>))}</ul></div></div>
-            <div className="bg-slate-50 border border-gray-200 rounded-3xl p-10 lg:p-14 relative overflow-hidden shadow-sm group"><ShieldCheck className="absolute top-0 right-0 w-64 h-64 text-finBlue opacity-5 -mt-10 -mr-10 group-hover:scale-110 transition duration-700" /><div className="relative z-10"><span className="bg-finBlue text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-6 inline-block">Quality & Compliance</span><h2 className="text-3xl font-bold text-finBlue mb-6">ZED Certification Support</h2><p className="text-gray-600 mb-8 text-lg">Achieve Zero Defect Zero Effect (Gold/Silver) certification to unlock quality benchmarks and massive banking concessions.</p><div className="space-y-6">{[ { title: "Gap Analysis & Registration", desc: "Identifying improvement areas and managing the official portal." }, { title: "Audit Coordination", desc: "Facilitating smooth external audits by MSME-QCI assessors." }, { title: "Final Approval & Concessions", desc: "Securing the certificate to claim 0.5% banking interest concessions." } ].map((phase, i) => (<div key={i} className="flex items-start bg-white p-4 rounded-xl border border-gray-100 shadow-sm"><div className="w-10 h-10 rounded-full bg-finOrange/10 text-finOrange font-bold flex items-center justify-center flex-shrink-0 mr-4 border border-finOrange/20">{i + 1}</div><div><h4 className="font-bold text-finBlue">{phase.title}</h4><p className="text-sm text-gray-500 mt-1">{phase.desc}</p></div></div>))}</div></div></div>
+            <div className="bg-slate-50 border border-gray-200 rounded-3xl p-10 lg:p-14 relative overflow-hidden shadow-sm group"><ShieldCheck className="absolute top-0 right-0 w-64 h-64 text-finBlue opacity-5 -mt-10 -mr-10 group-hover:scale-110 transition duration-700" /><div className="relative z-10"><span className="bg-finBlue text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-6 inline-block">Quality & Compliance</span><h2 className="text-3xl font-bold text-finBlue mb-6">ZED Certification Support</h2><p className="text-gray-600 mb-8 text-lg">Achieve Zero Defect Zero Effect (Gold/Silver) certification to unlock quality benchmarks and massive banking concessions.</p><div className="space-y-6">{[{ title: "Gap Analysis & Registration", desc: "Identifying improvement areas and managing the official portal." }, { title: "Audit Coordination", desc: "Facilitating smooth external audits by MSME-QCI assessors." }, { title: "Final Approval & Concessions", desc: "Securing the certificate to claim 0.5% banking interest concessions." }].map((phase, i) => (<div key={i} className="flex items-start bg-white p-4 rounded-xl border border-gray-100 shadow-sm"><div className="w-10 h-10 rounded-full bg-finOrange/10 text-finOrange font-bold flex items-center justify-center flex-shrink-0 mr-4 border border-finOrange/20">{i + 1}</div><div><h4 className="font-bold text-finBlue">{phase.title}</h4><p className="text-sm text-gray-500 mt-1">{phase.desc}</p></div></div>))}</div></div></div>
           </div>
         </div>
       </section>
@@ -256,7 +256,7 @@ const MsmeFunding = () => {
           <div className="relative max-w-5xl mx-auto">
             <div className="hidden lg:block absolute top-1/2 left-0 w-full h-1 bg-white/10 -translate-y-1/2"></div>
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-              {[ { step: 1, phase: "Financial Profiling", desc: "Deep dive into your balance sheet and funding requirements." }, { step: 2, phase: "CMA & Structuring", desc: "Crafting the Project Report and optimizing debt ratios." }, { step: 3, phase: "Bank Syndication", desc: "Applying to targeted banks matching your risk profile." }, { step: 4, phase: "Appraisal & Sanction", desc: "Liaising with credit managers to secure the sanction letter." }, { step: 5, phase: "Disbursal & Subsidy", desc: "Fulfilling final documentation and initiating subsidy claims." } ].map((item, i) => (<div key={i} className="relative z-10 flex flex-col items-center text-center"><div className="w-16 h-16 bg-finOrange rounded-full flex items-center justify-center font-extrabold text-2xl shadow-[0_0_15px_rgba(255,102,0,0.5)] mb-6">{item.step}</div><h4 className="font-bold text-lg mb-2 leading-tight">{item.phase}</h4><p className="text-gray-400 text-sm">{item.desc}</p></div>))}
+              {[{ step: 1, phase: "Financial Profiling", desc: "Deep dive into your balance sheet and funding requirements." }, { step: 2, phase: "CMA & Structuring", desc: "Crafting the Project Report and optimizing debt ratios." }, { step: 3, phase: "Bank Syndication", desc: "Applying to targeted banks matching your risk profile." }, { step: 4, phase: "Appraisal & Sanction", desc: "Liaising with credit managers to secure the sanction letter." }, { step: 5, phase: "Disbursal & Subsidy", desc: "Fulfilling final documentation and initiating subsidy claims." }].map((item, i) => (<div key={i} className="relative z-10 flex flex-col items-center text-center"><div className="w-16 h-16 bg-finOrange rounded-full flex items-center justify-center font-extrabold text-2xl shadow-[0_0_15px_rgba(255,102,0,0.5)] mb-6">{item.step}</div><h4 className="font-bold text-lg mb-2 leading-tight">{item.phase}</h4><p className="text-gray-400 text-sm">{item.desc}</p></div>))}
             </div>
           </div>
         </div>
@@ -282,14 +282,14 @@ const MsmeFunding = () => {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-slate-50 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl border border-gray-200">
             <div className="flex-1 text-center md:text-left">
-              <h3 className="text-2xl font-bold text-finBlue mb-2">Download the "MSME Subsidy Handbook"</h3>
-              <p className="text-gray-600">Get a detailed PDF covering current state-wise interest subventions, CGTMSE limits, and ZED Certification benefits.</p>
+              <h3 className="text-2xl font-bold text-finBlue mb-2">Download the "Machinery Loan Guide"</h3> {/* <-- Updated here */}
+              <p className="text-gray-600">Get a detailed PDF covering current state-wise interest subventions, CGTMSE limits, and ZED Certification benefits for your next equipment purchase.</p>
             </div>
             <div className="w-full md:w-auto flex-shrink-0">
               <form className="flex w-full shadow-md rounded-lg overflow-hidden" onSubmit={handleBrochureDownload}>
                 <input type="email" required value={brochureEmail} onChange={(e) => setBrochureEmail(e.target.value)} placeholder="Director's Email" className="w-full md:w-64 px-6 py-4 border border-gray-300 focus:outline-none focus:border-finOrange bg-white text-gray-800" />
                 <button type="submit" disabled={isBrochureSubmitting} className={`text-white px-8 py-4 font-bold transition flex items-center whitespace-nowrap ${isBrochureSubmitting ? 'bg-gray-400' : 'bg-finOrange hover:bg-finOrange-dark'}`}>
-                  {isBrochureSubmitting ? <Loader2 className="w-5 h-5 animate-spin"/> : <><Download className="w-5 h-5 mr-2" /> Get PDF</>}
+                  {isBrochureSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Download className="w-5 h-5 mr-2" /> Get PDF</>}
                 </button>
               </form>
             </div>

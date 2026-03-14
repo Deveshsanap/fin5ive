@@ -13,7 +13,7 @@ import {
   getAllLeads, updateLead, deleteLead, 
   getAllCustomers, createCustomer, deleteCustomer,
   getAllDocuments, uploadDocumentAdmin, deleteDocumentApi, downloadDocument,
-  getAllApplications // <-- NEW IMPORT FOR HR TAB
+  getAllApplications 
 } from '../config/api';
 
 const parseJwt = (token) => {
@@ -39,46 +39,52 @@ const AdminPortal = () => {
 
   const [activeTab, setActiveTab] = useState('DASHBOARD'); 
   const [globalSearch, setGlobalSearch] = useState('');
-  const [showNotifications, setShowNotifications] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const [leads, setLeads] = useState([]);
   const [clients, setClients] = useState([]);
   const [documents, setDocuments] = useState([]);
-  const [applications, setApplications] = useState([]); // <-- NEW STATE FOR JOB APPLICATIONS
+  const [applications, setApplications] = useState([]);
 
   const [selectedLead, setSelectedLead] = useState(null); 
   const [isClientModalOpen, setIsClientModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
-  const [newClient, setNewClient] = useState({ name: '', email: '', aum: '', creditLine: '' });
+  const [newClient, setNewClient] = useState({ corporateEntityName: '', keyContactPerson: '', initialAUM: '' });
+  
   const [uploadFile, setUploadFile] = useState(null);
   const [uploadClientId, setUploadClientId] = useState('');
 
-// --- FETCH ALL ADMIN DATA ---
+  // --- FETCH ALL ADMIN DATA ---
   const fetchAdminData = useCallback(async (isInitial = false) => {
     if (!isAdminLoggedIn) return;
     if (isInitial) setIsFetchingData(true);
     
+    // SMART EXTRACTOR: Finds arrays no matter how the backend nests them
+    const getArray = (res) => {
+      if (!res || !res.data) return [];
+      const d = res.data;
+      if (Array.isArray(d)) return d;
+      if (Array.isArray(d.data)) return d.data;
+      for (const key in d) { if (Array.isArray(d[key])) return d[key]; }
+      if (d.data && typeof d.data === 'object') {
+         for (const key in d.data) { if (Array.isArray(d.data[key])) return d.data[key]; }
+      }
+      return []; 
+    };
+
     try {
       const results = await Promise.allSettled([
-        getAllLeads(),         // results[0]
-        getAllCustomers(),     // results[1]
-        // getAllDocuments(),  // <-- Currently commented out
-        getAllApplications()   // Now this is results[2] !
+        getAllLeads(), 
+        getAllCustomers(),
+        getAllDocuments(), 
+        getAllApplications() 
       ]);
 
-      const leadsRes = results[0].status === 'fulfilled' ? results[0].value : { data: [] };
-      const customersRes = results[1].status === 'fulfilled' ? results[1].value : { data: [] };
-      // const docsRes = results[2].status === 'fulfilled' ? results[2].value : { data: [] };
-      
-      // FIX: Changed results[3] to results[2]
-      const appsRes = results[2].status === 'fulfilled' ? results[2].value : { data: [] }; 
-
-      setLeads(Array.isArray(leadsRes.data) ? leadsRes.data : (leadsRes.data?.data || []));
-      setClients(Array.isArray(customersRes.data) ? customersRes.data : (customersRes.data?.data || []));
-      // setDocuments(Array.isArray(docsRes.data) ? docsRes.data : (docsRes.data?.data || []));
-      setApplications(Array.isArray(appsRes.data) ? appsRes.data : (appsRes.data?.data || [])); 
+      setLeads(getArray(results[0].status === 'fulfilled' ? results[0].value : null));
+      setClients(getArray(results[1].status === 'fulfilled' ? results[1].value : null));
+      setDocuments(getArray(results[2].status === 'fulfilled' ? results[2].value : null));
+      setApplications(getArray(results[3].status === 'fulfilled' ? results[3].value : null)); 
       
     } catch (error) {
       console.error("Critical error in fetchAdminData", error);
@@ -97,9 +103,14 @@ const AdminPortal = () => {
     return () => clearInterval(pollInterval);
   }, [isAdminLoggedIn, fetchAdminData]);
 
-  const totalAUM = clients.reduce((acc, curr) => acc + (Number(curr.aum) || 0), 0);
+  // SMART AUM CALCULATOR
+  const totalAUM = clients.reduce((acc, curr) => {
+    const clientData = curr.customer || curr.data || curr;
+    return acc + (Number(clientData.initialAUM) || Number(clientData.aum) || 0);
+  }, 0);
+
   const newLeadsCount = leads.filter(l => l.status === 'New' || !l.status).length;
-  const newAppsCount = applications.length; // Count applications
+  const newAppsCount = applications.length;
 
   const handleSetupAdmin = async () => {
     setIsSubmitting(true);
@@ -125,12 +136,7 @@ const AdminPortal = () => {
       if (response.status === 200 || response.status === 201) {
         const data = response.data;
         const token = typeof data === 'string' ? data : (data.token || data.access_token || data.jwt); 
-
-        if (!token) {
-           toast.error("Login failed: Server did not return a token.");
-           setIsSubmitting(false);
-           return;
-        }
+        if (!token) return toast.error("Login failed: Server did not return a token.");
 
         localStorage.setItem('fin5ive_token', token);
         setIsAdminLoggedIn(true);
@@ -150,18 +156,16 @@ const AdminPortal = () => {
     localStorage.clear();
     toast('Admin logged out securely.', { icon: '🔒' });
   };
-
-  const handleNavClick = (tabId) => {
+const handleNavClick = (tabId) => {
     setActiveTab(tabId);
     setIsMobileMenuOpen(false);
   };
-
   // --- LEAD HANDLERS ---
   const markAsContacted = async (lead) => {
     const leadId = lead.id || lead._id;
     try {
       await updateLead(leadId, { status: 'Contacted' }); 
-      setLeads(leads.map(l => (l.id === leadId || l._id === leadId) ? { ...l, status: 'Contacted' } : l));
+      fetchAdminData(false);
       toast.success("Lead status updated to Contacted.");
       setSelectedLead(null); 
     } catch (e) {
@@ -173,7 +177,7 @@ const AdminPortal = () => {
     if(!window.confirm("Are you sure you want to delete this lead?")) return;
     try {
       await deleteLead(leadId); 
-      setLeads(leads.filter(l => l.id !== leadId && l._id !== leadId));
+      fetchAdminData(false);
       toast.success("Lead permanently deleted.");
       setSelectedLead(null);
     } catch (e) {
@@ -187,14 +191,14 @@ const AdminPortal = () => {
     setIsSubmitting(true);
     try {
       const payload = {
-        name: newClient.name,
-        email: newClient.email,
-        aum: Number(newClient.aum) || 0,
-        creditLine: Number(newClient.creditLine) || 0
+        corporateEntityName: newClient.corporateEntityName,
+        keyContactPerson: newClient.keyContactPerson,
+        initialAUM: Number(newClient.initialAUM) || 0
       };
-      const res = await createCustomer(payload);
-      setClients([res.data?.data || res.data, ...clients]);
-      setNewClient({ name: '', email: '', aum: '', creditLine: '' });
+      
+      await createCustomer(payload);
+      fetchAdminData(false); 
+      setNewClient({ corporateEntityName: '', keyContactPerson: '', initialAUM: '' });
       setIsClientModalOpen(false);
       toast.success("Client onboarded successfully!");
     } catch (error) {
@@ -205,10 +209,11 @@ const AdminPortal = () => {
   };
 
   const deleteClientData = async (clientId) => {
+    if(!clientId) return toast.error("Invalid client ID");
     if(!window.confirm("Remove this client from the active roster?")) return;
     try {
       await deleteCustomer(clientId);
-      setClients(clients.filter(c => c.id !== clientId && c._id !== clientId));
+      fetchAdminData(false); 
       toast.success("Client removed.");
     } catch (e) {
       toast.error(e.response?.data?.message || "Failed to delete client.");
@@ -224,9 +229,10 @@ const AdminPortal = () => {
       const formData = new FormData();
       formData.append("file", uploadFile);
       formData.append("customerId", uploadClientId);
+      formData.append("originalName", uploadFile.name); 
 
-      const res = await uploadDocumentAdmin(formData);
-      setDocuments([res.data?.data || res.data, ...documents]);
+      await uploadDocumentAdmin(formData);
+      fetchAdminData(false); 
       setUploadFile(null);
       setUploadClientId('');
       setIsUploadModalOpen(false);
@@ -242,7 +248,7 @@ const AdminPortal = () => {
     if(!window.confirm("Permanently delete this document?")) return;
     try {
       await deleteDocumentApi(docId);
-      setDocuments(documents.filter(d => d.id !== docId && d._id !== docId));
+      fetchAdminData(false);
       toast.success("Document deleted.");
     } catch (e) {
       toast.error(e.response?.data?.message || "Failed to delete document.");
@@ -271,12 +277,11 @@ const AdminPortal = () => {
   if (isAdminLoggedIn) {
     return (
       <div className="fixed inset-0 z-[200] bg-slate-50 flex overflow-hidden font-sans text-gray-800">
-        {isMobileMenuOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden transition-opacity" onClick={() => setIsMobileMenuOpen(false)}></div>}
-
-        {/* Lead Details Modal */}
+        
+        {/* Modals */}
         {selectedLead && (
           <div className="fixed inset-0 z-[300] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+            <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
               <div className="bg-[#003366] p-5 flex justify-between items-center text-white">
                 <h3 className="text-lg font-bold flex items-center"><Mailbox className="w-5 h-5 mr-2"/> Lead Details</h3>
                 <button onClick={() => setSelectedLead(null)} className="hover:text-[#FF6600]"><X className="w-6 h-6" /></button>
@@ -292,8 +297,9 @@ const AdminPortal = () => {
                     <p className="font-bold text-[#FF6600] text-sm">{selectedLead.service || 'General Inquiry'}</p>
                   </div>
                   <div className="sm:col-span-2">
-                    <p className="text-xs text-gray-500 font-bold uppercase mb-1 flex items-center"><Mail className="w-4 h-4 mr-1"/> Email</p>
+                    <p className="text-xs text-gray-500 font-bold uppercase mb-1 flex items-center"><Mail className="w-4 h-4 mr-1"/> Email / Contact</p>
                     <p className="font-bold text-blue-600 text-sm">{selectedLead.email}</p>
+                    {selectedLead.phone && <p className="font-bold text-gray-700 text-sm mt-1">{selectedLead.phone}</p>}
                   </div>
                   {selectedLead.message && (
                     <div className="sm:col-span-2">
@@ -313,7 +319,6 @@ const AdminPortal = () => {
           </div>
         )}
 
-        {/* Add Client Modal */}
         {isClientModalOpen && (
           <div className="fixed inset-0 z-[300] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
             <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
@@ -322,8 +327,18 @@ const AdminPortal = () => {
                 <button onClick={() => setIsClientModalOpen(false)} className="hover:text-[#FF6600]"><X className="w-6 h-6" /></button>
               </div>
               <form onSubmit={handleAddClient} className="p-6 space-y-5">
-                <div><label className="block text-sm font-bold text-gray-700 mb-2">Corporate Entity Name</label><input type="text" required value={newClient.name} onChange={e => setNewClient({...newClient, name: e.target.value})} className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 focus:ring-[#FF6600] outline-none text-sm"/></div>
-                <div><label className="block text-sm font-bold text-gray-700 mb-2">Client Email</label><input type="email" required value={newClient.email} onChange={e => setNewClient({...newClient, email: e.target.value})} className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 focus:ring-[#FF6600] outline-none text-sm" /></div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Corporate Entity Name</label>
+                  <input type="text" required value={newClient.corporateEntityName} onChange={e => setNewClient({...newClient, corporateEntityName: e.target.value})} className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 focus:ring-[#FF6600] outline-none text-sm"/>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Key Contact Person / Email</label>
+                  <input type="text" required value={newClient.keyContactPerson} onChange={e => setNewClient({...newClient, keyContactPerson: e.target.value})} className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 focus:ring-[#FF6600] outline-none text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Initial AUM (₹)</label>
+                  <input type="number" required min="0" value={newClient.initialAUM} onChange={e => setNewClient({...newClient, initialAUM: e.target.value})} className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 focus:ring-[#FF6600] outline-none text-sm" />
+                </div>
                 <button type="submit" disabled={isSubmitting} className="w-full text-white font-bold py-3.5 rounded-xl mt-4 bg-[#003366] hover:bg-[#002244] shadow-lg flex justify-center">
                   {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin"/> : 'Create Client Profile'}
                 </button>
@@ -332,7 +347,6 @@ const AdminPortal = () => {
           </div>
         )}
 
-        {/* Upload Modal */}
         {isUploadModalOpen && (
            <div className="fixed inset-0 z-[300] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
              <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
@@ -343,7 +357,10 @@ const AdminPortal = () => {
                <form onSubmit={handleUploadDocument} className="p-6 space-y-6">
                  <select required value={uploadClientId} onChange={(e) => setUploadClientId(e.target.value)} className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 focus:ring-[#FF6600] outline-none text-sm">
                    <option value="" disabled>-- Select a Client --</option>
-                   {clients.map(c => <option key={c.id || c._id} value={c.id || c._id}>{c.name} ({c.email})</option>)}
+                   {clients.map(clientRecord => {
+                      const c = clientRecord.customer || clientRecord.data || clientRecord || {};
+                      return <option key={c.id || c._id} value={c.id || c._id}>{c.corporateEntityName || c.name || "Unknown"}</option>
+                   })}
                  </select>
                  <div className="border-2 border-dashed border-gray-300 rounded-2xl p-6 text-center hover:border-[#FF6600] hover:bg-orange-50 relative group">
                    <input type="file" required onChange={(e) => setUploadFile(e.target.files[0])} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
@@ -357,7 +374,7 @@ const AdminPortal = () => {
            </div>
         )}
 
-        {/* --- SIDEBAR --- */}
+        {/* Sidebar */}
         <aside className={`fixed lg:relative inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 z-40 w-64 lg:w-72 bg-[#0a192f] text-white flex flex-col shadow-2xl`}>
           <div className="h-20 flex items-center px-6 border-b border-white/10 bg-[#061020] justify-between">
             <div className="flex flex-col"><span className="text-2xl font-black">FIN<span className="text-[#FF6600]">5</span>IVE</span><span className="text-[0.65rem] font-bold text-blue-400 uppercase mt-1">Admin Console</span></div>
@@ -369,7 +386,7 @@ const AdminPortal = () => {
               { id: 'LEADS', icon: Mailbox, label: `Lead CRM (${newLeadsCount})` }, 
               { id: 'CLIENTS', icon: Users, label: 'Active Clients' }, 
               { id: 'DOCUMENTS', icon: FolderOpen, label: 'Document Vault' },
-              { id: 'APPLICATIONS', icon: Briefcase, label: `HR Candidates (${newAppsCount})` } // <-- NEW TAB ADDED HERE
+              { id: 'APPLICATIONS', icon: Briefcase, label: `HR Candidates (${newAppsCount})` }
             ].map((item) => (
               <button key={item.id} onClick={() => handleNavClick(item.id)} className={`flex items-center w-full px-4 py-3.5 rounded-xl font-medium ${activeTab === item.id ? 'bg-blue-500/20 text-blue-400 font-bold border border-blue-500/30' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}>
                 <item.icon className="w-5 h-5 mr-3" /> {item.label}
@@ -381,7 +398,7 @@ const AdminPortal = () => {
           </div>
         </aside>
 
-        {/* --- MAIN CONTENT --- */}
+        {/* Main Content */}
         <main className="flex-1 flex flex-col h-full overflow-hidden w-full relative">
           <header className="h-20 bg-white border-b border-gray-200 px-4 sm:px-8 flex justify-between items-center shadow-sm z-10">
             <div className="flex items-center">
@@ -420,6 +437,7 @@ const AdminPortal = () => {
                               <td className="p-4"><span className={`inline-flex px-2.5 py-1 rounded-md text-xs font-bold ${(!lead.status || lead.status === 'New') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>{lead.status || 'New'}</span></td>
                             </tr>
                           ))}
+                          {leads.length === 0 && <tr><td colSpan="3" className="p-8 text-center text-gray-500 font-medium">No leads currently in pipeline.</td></tr>}
                         </tbody>
                       </table>
                     </div>
@@ -460,16 +478,42 @@ const AdminPortal = () => {
                   <div className="bg-white rounded-3xl border border-gray-100 overflow-hidden">
                     <div className="overflow-x-auto">
                       <table className="w-full text-left border-collapse min-w-[700px]">
-                        <thead><tr className="bg-slate-50 text-gray-400 text-xs uppercase border-b border-gray-100"><th className="p-5 font-bold">Client Entity</th><th className="p-5 font-bold">Contact Email</th><th className="p-5 font-bold">Total AUM</th><th className="p-5 font-bold text-right">Manage</th></tr></thead>
+                        <thead>
+                          <tr className="bg-slate-50 text-gray-400 text-xs uppercase border-b border-gray-100">
+                            <th className="p-5 font-bold">Client Entity</th>
+                            <th className="p-5 font-bold">Contact Person</th>
+                            <th className="p-5 font-bold">Total AUM</th>
+                            <th className="p-5 font-bold text-right">Manage</th>
+                          </tr>
+                        </thead>
                         <tbody className="divide-y divide-gray-50">
-                          {clients.map(client => (
-                            <tr key={client.id || client._id} className="hover:bg-slate-50">
-                              <td className="p-5 font-bold text-[#003366] text-sm">{client.name}</td>
-                              <td className="p-5 text-sm text-gray-600">{client.email || 'N/A'}</td>
-                              <td className="p-5 text-sm font-black text-gray-800">{formatINR(client.aum)}</td>
-                              <td className="p-5 text-right"><button onClick={() => deleteClientData(client.id || client._id)} className="p-2 text-gray-400 hover:text-red-600 rounded-lg"><Trash2 className="w-5 h-5" /></button></td>
+                          {clients.length > 0 ? clients.map((clientRecord, index) => {
+                            const client = clientRecord?.customer || clientRecord?.data || clientRecord || {};
+                            const clientId = client.id || client._id;
+                            
+                            return (
+                              <tr key={clientId || index} className="hover:bg-slate-50">
+                                <td className="p-5 font-bold text-[#003366] text-sm">
+                                  {client.corporateEntityName || client.name || 'Unknown Entity'}
+                                </td>
+                                <td className="p-5 text-sm text-gray-600">
+                                  {client.keyContactPerson || client.email || 'N/A'}
+                                </td>
+                                <td className="p-5 text-sm font-black text-gray-800">
+                                  {formatINR(client.initialAUM || client.aum || 0)}
+                                </td>
+                                <td className="p-5 text-right">
+                                  <button onClick={() => deleteClientData(clientId)} className="p-2 text-gray-400 hover:text-red-600 rounded-lg">
+                                    <Trash2 className="w-5 h-5" />
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          }) : (
+                            <tr>
+                              <td colSpan="4" className="p-8 text-center text-gray-500 font-medium">No clients found. Click "Add Client" to onboard one.</td>
                             </tr>
-                          ))}
+                          )}
                         </tbody>
                       </table>
                     </div>
@@ -486,14 +530,21 @@ const AdminPortal = () => {
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                     {documents.map((doc) => {
-                      const relatedClient = clients.find(c => c.id === doc.customerId || c._id === doc.customerId);
+                      const relatedClientRecord = clients.find(c => {
+                        const clientData = c.customer || c.data || c;
+                        return (clientData.id === doc.customerId || clientData._id === doc.customerId);
+                      });
+                      const relatedClient = relatedClientRecord?.customer || relatedClientRecord?.data || relatedClientRecord;
+                      
                       return (
                         <div key={doc.id || doc._id} className="bg-white p-6 rounded-3xl border border-gray-100 flex items-center justify-between group">
                           <div className="flex items-center truncate pr-4">
                             <div className="bg-red-50 p-4 rounded-2xl text-red-500 mr-5"><FileText className="w-7 h-7" /></div>
                             <div className="truncate">
                               <p className="font-bold text-[#003366] text-base truncate mb-1">{doc.title || doc.name || doc.originalName}</p>
-                              <span className="bg-slate-100 px-2 py-1 rounded-md text-[10px] text-gray-700 font-bold">{relatedClient ? relatedClient.name : 'Unknown Vault'}</span>
+                              <span className="bg-slate-100 px-2 py-1 rounded-md text-[10px] text-gray-700 font-bold">
+                                {relatedClient ? (relatedClient.corporateEntityName || relatedClient.name) : 'Unknown Vault'}
+                              </span>
                             </div>
                           </div>
                           <div className="flex space-x-2">
@@ -507,7 +558,7 @@ const AdminPortal = () => {
                 </div>
               )}
 
-              {/* --- NEW HR APPLICATIONS TAB --- */}
+              {/* HR APPLICATIONS TAB */}
               {activeTab === 'APPLICATIONS' && (
                 <div>
                   <div className="flex justify-between items-end mb-6">
