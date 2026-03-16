@@ -21,12 +21,18 @@ const InvestmentServices = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [isNewsletterSubmitting, setIsNewsletterSubmitting] = useState(false);
 
+  // --- FORM HANDLER: Main Modal ---
   const handleModalSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
       await createLead({
-        name: `${formData.firstName} ${formData.lastName}`, email: formData.email, service: `Wealth Management - ${formData.assetClass}`, message: `Investor Profile: ${formData.profile}`
+        name: `${formData.firstName} ${formData.lastName}`, 
+        email: formData.email, 
+        phone: "0000000000", // <-- Dummy data added to prevent backend crash
+        company: "N/A",      // <-- Dummy data added to prevent backend crash
+        service: `Wealth Management - ${formData.assetClass}`, 
+        message: `Investor Profile: ${formData.profile}`
       });
       toast.success("Request Received. An advisor will contact you shortly.");
       setIsModalOpen(false);
@@ -38,18 +44,38 @@ const InvestmentServices = () => {
     }
   };
 
+  // --- FORM HANDLER: Newsletter & PDF Download (UPDATED) ---
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
     if(!newsletterEmail) return toast.error("Please enter your email.");
     setIsNewsletterSubmitting(true);
+    
     try {
+      // 1. Send lead to backend (with dummy data to bypass backend crash)
       await createLead({
-        name: "Newsletter Subscription", email: newsletterEmail, service: "Quarterly Market Strategy Report", message: "User subscribed to the HNI wealth newsletter."
+        name: "Market Report Subscriber", 
+        email: newsletterEmail, 
+        phone: "0000000000", // <-- Prevents backend crash
+        company: "N/A",      // <-- Prevents backend crash
+        service: "Quarterly Market Strategy Report", 
+        message: "User subscribed to the HNI wealth newsletter and downloaded the Investment Brochure."
       });
-      toast.success('Subscribed successfully!', { icon: '📈' });
+
+      // 2. Safely trigger the PDF download
+      const link = document.createElement('a');
+      link.href = '/Investment Brochure.pdf.pdf'; // Exact file name from your public folder
+      link.setAttribute('download', 'Fin5ive_Investment_Brochure.pdf'); // Clean name for the user
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // 3. Show success message
+      toast.success('Subscribed successfully! Brochure downloaded.', { icon: '📈' });
       setNewsletterEmail('');
+      
     } catch (error) {
-      toast.error("Failed to subscribe.");
+      console.error("Backend Error:", error);
+      toast.error("Failed to process request.");
     } finally {
       setIsNewsletterSubmitting(false);
     }
@@ -363,17 +389,17 @@ const amcLogos = [
         </div>
       </section>
 
-      {/* Newsletter - UPDATED TITLE */}
+      {/* Newsletter - WIRED UP WITH PDF DOWNLOAD */}
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-[#003366] rounded-[3rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden">
             <Landmark className="absolute top-0 right-0 w-64 h-64 text-white opacity-5 -mr-10 -mt-10 pointer-events-none" />
-            <div className="flex-1 text-center md:text-left relative z-10"><h3 className="text-2xl font-bold text-white mb-2">Quarterly Market Strategy Report</h3><p className="text-gray-300">Subscribe to our HNI newsletter to receive exclusive insights on upcoming AIF launches, market valuations, and asset allocation strategies.</p></div>
+            <div className="flex-1 text-center md:text-left relative z-10"><h3 className="text-2xl font-bold text-white mb-2">Quarterly Market Strategy Report</h3><p className="text-gray-300">Subscribe to our HNI newsletter to receive exclusive insights on upcoming AIF launches, market valuations, and asset allocation strategies. <strong className="text-white">You will also instantly receive our full Investment Brochure PDF.</strong></p></div>
             <div className="w-full md:w-auto flex-shrink-0 relative z-10">
               <form className="flex w-full shadow-lg rounded-lg overflow-hidden" onSubmit={handleNewsletterSubmit}>
                 <input type="email" required value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)} placeholder="Your Email Address" className="w-full md:w-64 px-6 py-4 border-none focus:outline-none focus:ring-2 focus:ring-[#FF6600] text-gray-800" />
                 <button type="submit" disabled={isNewsletterSubmitting} className={`text-white px-8 py-4 font-bold transition flex items-center whitespace-nowrap ${isNewsletterSubmitting ? 'bg-gray-400' : 'bg-[#FF6600] hover:bg-[#e55c00]'}`}>
-                  {isNewsletterSubmitting ? <Loader2 className="w-5 h-5 animate-spin"/> : <><Mail className="w-5 h-5 mr-2" /> Subscribe</>}
+                  {isNewsletterSubmitting ? <Loader2 className="w-5 h-5 animate-spin"/> : <><Download className="w-5 h-5 mr-2" /> Subscribe & Download</>}
                 </button>
               </form>
             </div>

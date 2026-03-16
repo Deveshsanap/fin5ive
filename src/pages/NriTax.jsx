@@ -26,7 +26,7 @@ const NriTax = () => {
   const [brochureEmail, setBrochureEmail] = useState('');
   const [isBrochureSubmitting, setIsBrochureSubmitting] = useState(false);
 
-  // --- FORM HANDLERS ---
+  // --- FORM HANDLERS: Main Modal ---
   const handleModalSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -35,6 +35,7 @@ const NriTax = () => {
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         phone: formData.phoneNumber,
+        company: "N/A", // <-- Dummy data added to prevent backend crash
         service: `NRI Tax & Compliance - ${formData.interest}`,
         message: `Country of Residence: ${formData.country}`
       });
@@ -48,20 +49,37 @@ const NriTax = () => {
     }
   };
 
+  // --- FORM HANDLER: PDF Download (UPDATED) ---
   const handleBrochureDownload = async (e) => {
     e.preventDefault();
     if(!brochureEmail) return toast.error("Please enter your email.");
     setIsBrochureSubmitting(true);
+    
     try {
+      // 1. Send lead to backend (with dummy data to bypass backend crash)
       await createLead({
-        name: "Factsheet Download",
+        name: "NRI Factsheet Download",
         email: brochureEmail,
+        phone: "0000000000", // <-- Prevents backend crash
+        company: "N/A",      // <-- Prevents backend crash
         service: "NRI Tax Compliance Guide",
         message: "User requested the NRI Tax & Compliance PDF guide."
       });
-      toast.success("Guide sent to your email!", { icon: '📄' });
+
+      // 2. Safely trigger the PDF download
+      const link = document.createElement('a');
+      link.href = '/Fin5ive NRI Tax Filing Brochure - Version 3 (8).pdf'; // Exact file name from public folder
+      link.setAttribute('download', 'Fin5ive_NRI_Tax_Filing.pdf'); // Clean name for the user
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // 3. Reset form and show success
+      toast.success("Guide downloaded successfully!", { icon: '📄' });
       setBrochureEmail('');
+      
     } catch (error) {
+      console.error("Backend Error:", error);
       toast.error("Failed to process request.");
     } finally {
       setIsBrochureSubmitting(false);
@@ -300,7 +318,7 @@ const NriTax = () => {
           </div>
           <div className="text-center mt-10">
              <button onClick={() => setIsModalOpen(true)} className="bg-[#FF6600] hover:bg-[#e55c00] text-white font-bold py-4 px-10 rounded-xl transition duration-300 shadow-lg text-lg">
-                Apply for Lower TDS Certificate
+               Apply for Lower TDS Certificate
              </button>
           </div>
         </div>
@@ -331,7 +349,7 @@ const NriTax = () => {
         </div>
       </section>
 
-      {/* 6. Lead Magnet: Download Guide */}
+      {/* 6. Lead Magnet: Download Guide (WIRED UP) */}
       <section className="py-16 bg-slate-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-[#003366] rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden">

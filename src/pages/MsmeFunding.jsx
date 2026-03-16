@@ -24,7 +24,7 @@ const MsmeFunding = () => {
   });
 
   const [brochureEmail, setBrochureEmail] = useState('');
-  const [isBrochureSubmitting, setIsBrochureSubmitting] = useState(false);
+  const [downloadingDoc, setDownloadingDoc] = useState(null);
 
   // Calculator State
   const [loanAmount, setLoanAmount] = useState(50000000);
@@ -55,23 +55,37 @@ const MsmeFunding = () => {
     }
   };
 
-  const handleBrochureDownload = async (e) => {
-    e.preventDefault();
-    if (!brochureEmail) return toast.error("Please enter your email.");
-    setIsBrochureSubmitting(true);
+  // --- DYNAMIC MULTI-FILE DOWNLOAD HANDLER ---
+  const triggerDownload = async (docName, fileUrl, saveAsName) => {
+    if (!brochureEmail) return toast.error("Please enter your email first to download resources.");
+    setDownloadingDoc(docName);
+    
     try {
+      // 1. Send lead to backend
       await createLead({
-        name: "Brochure Download",
+        name: `${docName} Download`,
         email: brochureEmail,
-        service: "Machinery Loan Guide", // <-- Updated here for backend CRM
-        message: "User requested the Machinery Loan PDF guide."
+        phone: "0000000000",
+        company: "N/A",
+        service: "MSME Resource Library",
+        message: `User downloaded the ${docName} file.`
       });
-      toast.success("Handbook sent to your email!");
-      setBrochureEmail('');
+
+      // 2. Trigger the PDF/PNG download
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.setAttribute('download', saveAsName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success(`${docName} downloaded!`, { icon: '✅' });
+      
     } catch (error) {
+      console.error("Backend Error:", error);
       toast.error("Failed to process request.");
     } finally {
-      setIsBrochureSubmitting(false);
+      setDownloadingDoc(null);
     }
   };
 
@@ -277,21 +291,91 @@ const MsmeFunding = () => {
         </div>
       </section>
 
-      {/* Lead Magnet */}
+      {/* Lead Magnet - NEW GRID FOR 4 RESOURCES */}
       <section className="py-16 bg-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-slate-50 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl border border-gray-200">
-            <div className="flex-1 text-center md:text-left">
-              <h3 className="text-2xl font-bold text-finBlue mb-2">Download the "Machinery Loan Guide"</h3> {/* <-- Updated here */}
-              <p className="text-gray-600">Get a detailed PDF covering current state-wise interest subventions, CGTMSE limits, and ZED Certification benefits for your next equipment purchase.</p>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-slate-50 rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-gray-200">
+            <div className="text-center mb-10">
+              <h3 className="text-3xl font-black text-finBlue mb-4">Access Our MSME Resource Library</h3>
+              <p className="text-gray-600 max-w-2xl mx-auto">Enter your corporate email once to instantly unlock and download any of our comprehensive guides, brochures, and checklists below.</p>
             </div>
-            <div className="w-full md:w-auto flex-shrink-0">
-              <form className="flex w-full shadow-md rounded-lg overflow-hidden" onSubmit={handleBrochureDownload}>
-                <input type="email" required value={brochureEmail} onChange={(e) => setBrochureEmail(e.target.value)} placeholder="Director's Email" className="w-full md:w-64 px-6 py-4 border border-gray-300 focus:outline-none focus:border-finOrange bg-white text-gray-800" />
-                <button type="submit" disabled={isBrochureSubmitting} className={`text-white px-8 py-4 font-bold transition flex items-center whitespace-nowrap ${isBrochureSubmitting ? 'bg-gray-400' : 'bg-finOrange hover:bg-finOrange-dark'}`}>
-                  {isBrochureSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Download className="w-5 h-5 mr-2" /> Get PDF</>}
-                </button>
-              </form>
+            
+            <div className="max-w-md mx-auto mb-12">
+              <input 
+                type="email" 
+                required 
+                value={brochureEmail} 
+                onChange={(e) => setBrochureEmail(e.target.value)} 
+                placeholder="Enter your email to unlock downloads" 
+                className="w-full px-6 py-4 border-2 border-gray-200 focus:border-finOrange rounded-xl focus:outline-none text-center font-medium shadow-sm transition-colors" 
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Resource 1: MSME Brochure */}
+              <button 
+                onClick={() => triggerDownload('MSME Brochure', '/MSME Funding Brochure.pdf.pdf', 'Fin5ive_MSME_Brochure.pdf')}
+                disabled={downloadingDoc !== null}
+                className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left"
+              >
+                <div className="bg-orange-50 p-4 rounded-xl text-finOrange mr-6 group-hover:scale-110 transition-transform">
+                  {downloadingDoc === 'MSME Brochure' ? <Loader2 className="w-8 h-8 animate-spin" /> : <FileText className="w-8 h-8" />}
+                </div>
+                <div>
+                  <h4 className="font-bold text-finBlue text-lg">Main MSME Brochure</h4>
+                  <p className="text-sm text-gray-500 mt-1">Complete overview of all funding suites.</p>
+                </div>
+                <Download className="w-5 h-5 text-gray-300 ml-auto group-hover:text-finOrange" />
+              </button>
+
+              {/* Resource 2: Working Capital PDF */}
+              <button 
+                onClick={() => triggerDownload('Working Capital Guide', '/working capital (1).pdf', 'Fin5ive_Working_Capital.pdf')}
+                disabled={downloadingDoc !== null}
+                className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left"
+              >
+                <div className="bg-blue-50 p-4 rounded-xl text-finBlue mr-6 group-hover:scale-110 transition-transform">
+                  {downloadingDoc === 'Working Capital Guide' ? <Loader2 className="w-8 h-8 animate-spin" /> : <Coins className="w-8 h-8" />}
+                </div>
+                <div>
+                  <h4 className="font-bold text-finBlue text-lg">Working Capital Guide</h4>
+                  <p className="text-sm text-gray-500 mt-1">Details on CC/OD and CGTMSE schemes.</p>
+                </div>
+                <Download className="w-5 h-5 text-gray-300 ml-auto group-hover:text-finOrange" />
+              </button>
+
+              {/* Resource 3: Checklist PDF */}
+              <button 
+                onClick={() => triggerDownload('Loan Checklist', '/Checklist for Loan Proposal.pdf', 'Fin5ive_Loan_Checklist.pdf')}
+                disabled={downloadingDoc !== null}
+                className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left"
+              >
+                <div className="bg-green-50 p-4 rounded-xl text-green-600 mr-6 group-hover:scale-110 transition-transform">
+                  {downloadingDoc === 'Loan Checklist' ? <Loader2 className="w-8 h-8 animate-spin" /> : <CheckCircle className="w-8 h-8" />}
+                </div>
+                <div>
+                  <h4 className="font-bold text-finBlue text-lg">Loan Proposal Checklist</h4>
+                  <p className="text-sm text-gray-500 mt-1">Exact documents needed for bank approval.</p>
+                </div>
+                <Download className="w-5 h-5 text-gray-300 ml-auto group-hover:text-finOrange" />
+              </button>
+
+              {/* Resource 4: Image PNG */}
+              <button 
+                onClick={() => triggerDownload('Machinery Loan 1-Pager', '/Machine loan 1 pager .png', 'Fin5ive_Machinery_Loan_Guide.png')}
+                disabled={downloadingDoc !== null}
+                className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left"
+              >
+                <div className="bg-purple-50 p-4 rounded-xl text-purple-600 mr-6 group-hover:scale-110 transition-transform">
+                  {downloadingDoc === 'Machinery Loan 1-Pager' ? <Loader2 className="w-8 h-8 animate-spin" /> : <Settings className="w-8 h-8" />}
+                </div>
+                <div>
+                  <h4 className="font-bold text-finBlue text-lg">Machinery Loan 1-Pager</h4>
+                  <p className="text-sm text-gray-500 mt-1">Quick snapshot of equipment financing.</p>
+                </div>
+                <Download className="w-5 h-5 text-gray-300 ml-auto group-hover:text-finOrange" />
+              </button>
+
             </div>
           </div>
         </div>

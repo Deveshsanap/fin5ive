@@ -23,6 +23,10 @@ const ExportFunding = () => {
     invoiceValue: ''
   });
 
+  // Brochure Form State (NEWLY ADDED)
+  const [brochureEmail, setBrochureEmail] = useState('');
+  const [isBrochureSubmitting, setIsBrochureSubmitting] = useState(false);
+
   // 1. Advanced Calculator State
   const [currency, setCurrency] = useState('USD');
   const [invoiceValue, setInvoiceValue] = useState(100000); // 100k Default
@@ -33,7 +37,7 @@ const ExportFunding = () => {
   const [eligibilityStep, setEligibilityStep] = useState(0);
   const [eligibilityAnswers, setEligibilityAnswers] = useState({});
 
-  // --- FORM HANDLER ---
+  // --- FORM HANDLER: Main Modal ---
   const handleModalSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -52,6 +56,43 @@ const ExportFunding = () => {
       toast.error(error.response?.data?.message || "Failed to submit request. Please try again.");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // --- FORM HANDLER: PDF Download (NEWLY ADDED) ---
+  const handleBrochureDownload = async (e) => {
+    e.preventDefault();
+    if (!brochureEmail) return toast.error("Please enter your email.");
+    setIsBrochureSubmitting(true);
+    
+    try {
+      // 1. Send lead to backend (with dummy data to bypass backend crash)
+      await createLead({
+        name: "Export Finance Guide Download",
+        email: brochureEmail,
+        phone: "0000000000",
+        company: "N/A",
+        service: "Export Trade Finance",
+        message: "User requested the Export Finance Guide PDF."
+      });
+
+      // 2. Safely trigger the PDF download
+      const link = document.createElement('a');
+      link.href = '/export funding5.0.pdf'; // Exact file name from your public folder
+      link.setAttribute('download', 'Fin5ive_Export_Trade_Finance.pdf'); // Clean name for the user
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // 3. Reset form and show success
+      toast.success("Brochure downloaded successfully!", { icon: '📄' });
+      setBrochureEmail('');
+      
+    } catch (error) {
+      console.error("Backend Error:", error);
+      toast.error(error.response?.data?.message || "Failed to process request.");
+    } finally {
+      setIsBrochureSubmitting(false);
     }
   };
 
@@ -422,14 +463,23 @@ const ExportFunding = () => {
               <p className="text-gray-300">Get a detailed PDF covering the complete pricing matrix, eligible countries list, and legal structuring for export factoring.</p>
             </div>
             <div className="w-full md:w-auto flex-shrink-0 relative z-10">
-              <form className="flex w-full shadow-lg" onSubmit={(e) => e.preventDefault()}>
+              {/* WIRED UP FORM */}
+              <form className="flex w-full shadow-lg" onSubmit={handleBrochureDownload}>
                 <input
                   type="email"
+                  required
+                  value={brochureEmail}
+                  onChange={(e) => setBrochureEmail(e.target.value)}
                   placeholder="Corporate Email"
                   className="w-full md:w-64 px-4 py-4 rounded-l-lg border-none focus:outline-none focus:ring-2 focus:ring-finOrange text-gray-800"
                 />
-                <button className="bg-finOrange hover:bg-finOrange-dark text-white px-6 py-4 rounded-r-lg font-bold transition flex items-center whitespace-nowrap">
-                  <Download className="w-5 h-5 mr-2" /> Get PDF
+                <button 
+                  type="submit" 
+                  disabled={isBrochureSubmitting}
+                  className={`text-white px-6 py-4 rounded-r-lg font-bold transition flex items-center whitespace-nowrap ${isBrochureSubmitting ? 'bg-gray-400' : 'bg-finOrange hover:bg-finOrange-dark'}`}
+                >
+                  {isBrochureSubmitting ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Download className="w-5 h-5 mr-2" />}
+                  {isBrochureSubmitting ? 'Processing...' : 'Get PDF'}
                 </button>
               </form>
             </div>

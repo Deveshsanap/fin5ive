@@ -21,11 +21,15 @@ const GiftCity = () => {
     companyName: '',
     targetSector: 'Banking / AIF'
   });
+
+  // Brochure Form State (NEWLY ADDED)
+  const [brochureEmail, setBrochureEmail] = useState('');
+  const [isBrochureSubmitting, setIsBrochureSubmitting] = useState(false);
   
   // Tax Calculator State
   const [projectedProfit, setProjectedProfit] = useState(100000000); // Default 10 Cr
 
-  // --- FORM HANDLER ---
+  // --- FORM HANDLER: Main Modal ---
   const handleModalSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -34,6 +38,7 @@ const GiftCity = () => {
         name: formData.fullName,
         company: formData.companyName,
         email: formData.email,
+        phone: "0000000000", // <-- Dummy data added to prevent backend crash
         service: `GIFT City Setup - ${formData.targetSector}`,
         message: "Requested a strategy session for GIFT City setup."
       });
@@ -44,6 +49,43 @@ const GiftCity = () => {
       toast.error(error.response?.data?.message || "Failed to submit request. Please try again.");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // --- FORM HANDLER: PDF Download (NEWLY ADDED) ---
+  const handleBrochureDownload = async (e) => {
+    e.preventDefault();
+    if (!brochureEmail) return toast.error("Please enter your email.");
+    setIsBrochureSubmitting(true);
+    
+    try {
+      // 1. Send lead to backend (with dummy data to bypass backend crash)
+      await createLead({
+        name: "GIFT City Guide Download",
+        email: brochureEmail,
+        phone: "0000000000",
+        company: "N/A",
+        service: "GIFT City Setup Guide",
+        message: "User requested the Investments with GIFT City PDF."
+      });
+
+      // 2. Safely trigger the PDF download
+      const link = document.createElement('a');
+      link.href = '/Investments with GIFT City.pdf'; // Exact file name from your public folder
+      link.setAttribute('download', 'Fin5ive_GIFT_City_Investments.pdf'); // Clean name for the user
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // 3. Reset form and show success
+      toast.success("Guide downloaded successfully!", { icon: '📄' });
+      setBrochureEmail('');
+      
+    } catch (error) {
+      console.error("Backend Error:", error);
+      toast.error("Failed to process request.");
+    } finally {
+      setIsBrochureSubmitting(false);
     }
   };
 
@@ -370,7 +412,7 @@ const GiftCity = () => {
         </div>
       </section>
 
-      {/* 9. Lead Magnet: Download Brochure */}
+      {/* 9. Lead Magnet: Download Brochure (WIRED UP) */}
       <section className="py-16 bg-white border-t border-gray-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-slate-50 rounded-2xl border border-gray-200 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-sm hover:shadow-md transition">
@@ -379,14 +421,18 @@ const GiftCity = () => {
               <p className="text-gray-600">Get a detailed PDF breaking down compliance requirements, expected capital outlay, and step-by-step documentation needed for GIFT City.</p>
             </div>
             <div className="w-full md:w-auto flex-shrink-0">
-              <form className="flex w-full shadow-sm" onSubmit={(e) => e.preventDefault()}>
+              <form className="flex flex-col sm:flex-row w-full shadow-sm rounded-lg overflow-hidden" onSubmit={handleBrochureDownload}>
                 <input 
                   type="email" 
+                  required
+                  value={brochureEmail}
+                  onChange={(e) => setBrochureEmail(e.target.value)}
                   placeholder="Corporate Email" 
-                  className="w-full md:w-64 px-4 py-4 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-finOrange"
+                  className="w-full sm:w-64 px-4 py-4 border-none focus:outline-none focus:ring-1 focus:ring-finOrange rounded-t-lg sm:rounded-l-lg sm:rounded-t-none"
                 />
-                <button className="bg-finOrange hover:bg-finOrange-dark text-white px-6 py-4 rounded-r-lg font-bold transition flex items-center whitespace-nowrap">
-                  <Download className="w-5 h-5 mr-2" /> Get PDF
+                <button type="submit" disabled={isBrochureSubmitting} className={`px-6 py-4 font-bold transition flex items-center justify-center whitespace-nowrap rounded-b-lg sm:rounded-r-lg sm:rounded-b-none ${isBrochureSubmitting ? 'bg-gray-400 text-white' : 'bg-finOrange hover:bg-finOrange-dark text-white'}`}>
+                  {isBrochureSubmitting ? <Loader2 className="w-5 h-5 mr-2 animate-spin"/> : <Download className="w-5 h-5 mr-2" />}
+                  {isBrochureSubmitting ? 'Processing...' : 'Get PDF'}
                 </button>
               </form>
             </div>

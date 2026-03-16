@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   ShieldCheck, Award, TrendingUp, Factory, CheckCircle,
   ArrowRight, Settings, FileCheck, X, Send, Calculator,
-  ChevronDown, ChevronUp, Download, CheckSquare, Coins, LineChart, Loader2
+  ChevronDown, ChevronUp, Download, CheckSquare, Coins, LineChart, Loader2, FileText
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { createLead } from '../config/api';
@@ -24,7 +24,7 @@ const ZedCertification = () => {
   });
 
   const [brochureEmail, setBrochureEmail] = useState('');
-  const [isBrochureSubmitting, setIsBrochureSubmitting] = useState(false);
+  const [downloadingDoc, setDownloadingDoc] = useState(null);
 
   // --- FORM HANDLERS ---
   const handleModalSubmit = async (e) => {
@@ -49,23 +49,37 @@ const ZedCertification = () => {
     }
   };
 
-  const handleBrochureDownload = async (e) => {
-    e.preventDefault();
-    if (!brochureEmail) return toast.error("Please enter your email.");
-    setIsBrochureSubmitting(true);
+  // --- DYNAMIC MULTI-FILE DOWNLOAD HANDLER ---
+  const triggerDownload = async (docName, fileUrl, saveAsName) => {
+    if (!brochureEmail) return toast.error("Please enter your email first.");
+    setDownloadingDoc(docName);
+    
     try {
+      // 1. Send lead to backend (with dummy data)
       await createLead({
-        name: "Checklist Download",
+        name: `${docName} Download`,
         email: brochureEmail,
-        service: "ZED Gold Checklist",
-        message: "User requested the ZED Certification PDF."
+        phone: "0000000000",
+        company: "N/A",
+        service: "ZED Resource Library",
+        message: `User downloaded the ${docName} file.`
       });
-      toast.success("Checklist sent to your email!");
-      setBrochureEmail('');
+
+      // 2. Safely trigger the PDF download
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.setAttribute('download', saveAsName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success(`${docName} downloaded successfully!`, { icon: '📄' });
+      
     } catch (error) {
+      console.error("Backend Error:", error);
       toast.error("Failed to process request.");
     } finally {
-      setIsBrochureSubmitting(false);
+      setDownloadingDoc(null);
     }
   };
 
@@ -215,7 +229,7 @@ const ZedCertification = () => {
                     "Concession on interest cost (up to 0.5%) by major banks",
                     "Up to 50% waiver on bank loan processing fees",
                     "Preferred status in Government and PSU tenders",
-                    "Integrates seamlessly with ISO 9000, ISO 14000, and ISO 45000 certifications", // <-- Added here
+                    "Integrates seamlessly with ISO 9000, ISO 14000, and ISO 45000 certifications", 
                     "Higher credibility with MNCs for vendor empanelment",
                     "Subsidies on technology upgrades and testing equipment",
                     "Better workplace safety, hygiene & statutory compliance"
@@ -437,30 +451,60 @@ const ZedCertification = () => {
         </div>
       </section>
 
-      {/* Lead Magnet: Download Brochure */}
+      {/* Lead Magnet - NEW GRID FOR 2 RESOURCES */}
       <section className="py-16 bg-white border-t border-gray-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-finBlue rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden">
+          <div className="bg-[#003366] rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden">
             <CheckSquare className="absolute top-0 right-0 w-64 h-64 text-white opacity-5 -mr-10 -mt-10 pointer-events-none" />
-            <div className="flex-1 text-center md:text-left relative z-10">
-              <h3 className="text-2xl font-bold text-white mb-2">Get The ZED Gold Checklist</h3>
-              <p className="text-gray-300">Download the exact 20 parameters tested by QCI auditors and check if your factory is ready for certification.</p>
+            
+            <div className="text-center mb-10 relative z-10">
+              <h3 className="text-3xl font-black text-white mb-4">Access ZED Implementation Guides</h3>
+              <p className="text-gray-300 max-w-2xl mx-auto">Enter your email below to instantly unlock our ZED Certification Guide and the specific 20-parameter QCI Checklist.</p>
             </div>
-            <div className="w-full md:w-auto flex-shrink-0 relative z-10">
-              <form className="flex flex-col sm:flex-row w-full shadow-lg rounded-lg overflow-hidden" onSubmit={handleBrochureDownload}>
-                <input
-                  type="email"
-                  required
-                  value={brochureEmail}
-                  onChange={(e) => setBrochureEmail(e.target.value)}
-                  placeholder="Director's Email"
-                  className="w-full sm:w-64 px-6 py-4 border-none focus:outline-none focus:ring-2 focus:ring-finOrange text-gray-800 rounded-t-lg sm:rounded-l-lg sm:rounded-t-none"
-                />
-                <button type="submit" disabled={isBrochureSubmitting} className={`text-white px-8 py-4 font-bold transition flex items-center justify-center whitespace-nowrap rounded-b-lg sm:rounded-r-lg sm:rounded-b-none ${isBrochureSubmitting ? 'bg-gray-400' : 'bg-finOrange hover:bg-finOrange-dark'}`}>
-                  {isBrochureSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Download className="w-5 h-5 mr-2" /> Get PDF</>}
-                </button>
-              </form>
+
+            <div className="max-w-md mx-auto mb-10 relative z-10">
+              <input 
+                type="email" 
+                required 
+                value={brochureEmail} 
+                onChange={(e) => setBrochureEmail(e.target.value)} 
+                placeholder="Enter your email to unlock downloads" 
+                className="w-full px-6 py-4 border-none focus:ring-2 focus:ring-finOrange rounded-xl focus:outline-none text-center font-medium shadow-sm" 
+              />
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+              {/* Resource 1: ZED Brochure */}
+              <button 
+                onClick={() => triggerDownload('ZED Brochure', '/ZED CERTIFICATION.pdf', 'Fin5ive_ZED_Certification_Guide.pdf')}
+                disabled={downloadingDoc !== null}
+                className="flex items-center p-5 bg-white/10 border border-white/20 hover:bg-white/20 hover:border-finOrange rounded-2xl transition group text-left backdrop-blur-sm"
+              >
+                <div className="bg-finOrange text-white p-3 rounded-xl mr-5 group-hover:scale-110 transition-transform">
+                  {downloadingDoc === 'ZED Brochure' ? <Loader2 className="w-6 h-6 animate-spin" /> : <FileText className="w-6 h-6" />}
+                </div>
+                <div>
+                  <h4 className="font-bold text-white text-lg">ZED Certification Guide</h4>
+                  <p className="text-sm text-gray-300 mt-1">Complete overview of MSME-QCI benefits.</p>
+                </div>
+              </button>
+
+              {/* Resource 2: ZED Checklist */}
+              <button 
+                onClick={() => triggerDownload('ZED Checklist', '/Checklist for ZED certificate.pdf', 'Fin5ive_ZED_Gold_Checklist.pdf')}
+                disabled={downloadingDoc !== null}
+                className="flex items-center p-5 bg-white/10 border border-white/20 hover:bg-white/20 hover:border-finOrange rounded-2xl transition group text-left backdrop-blur-sm"
+              >
+                <div className="bg-green-500 text-white p-3 rounded-xl mr-5 group-hover:scale-110 transition-transform">
+                  {downloadingDoc === 'ZED Checklist' ? <Loader2 className="w-6 h-6 animate-spin" /> : <CheckSquare className="w-6 h-6" />}
+                </div>
+                <div>
+                  <h4 className="font-bold text-white text-lg">ZED Audit Checklist</h4>
+                  <p className="text-sm text-gray-300 mt-1">The 20 parameters tested by QCI auditors.</p>
+                </div>
+              </button>
+            </div>
+
           </div>
         </div>
       </section>
