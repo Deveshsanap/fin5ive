@@ -394,7 +394,6 @@ const NriDomestic = () => {
             <FileText className="absolute top-0 right-0 w-64 h-64 text-white opacity-5 -mr-10 -mt-10 pointer-events-none" />
             <div className="flex-1 text-center md:text-left relative z-10">
               <h3 className="text-2xl font-bold text-white mb-2">Domestic Product Factsheet</h3>
-              <p className="text-gray-300">Download our complete guide detailing KYC procedures for NRIs, NRE vs NRO taxation differences, and top-performing funds.</p>
             </div>
             <div className="w-full md:w-auto flex-shrink-0 relative z-10">
               <form className="flex w-full shadow-lg rounded-xl overflow-hidden" onSubmit={handleBrochureDownload}>
