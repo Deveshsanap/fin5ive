@@ -40,11 +40,11 @@ const About = () => {
     }
   };
 
- const handleProfileDownload = async (e) => {
+  const handleProfileDownload = async (e) => {
     e.preventDefault();
-    if(!profileEmail) return toast.error("Please enter your email.");
+    if (!profileEmail) return toast.error("Please enter your email.");
     setIsProfileSubmitting(true);
-    
+
     try {
       // 1. Send the Lead to the Backend CRM (with dummy data to bypass validation)
       await createLead({
@@ -67,7 +67,7 @@ const About = () => {
       // 3. Show Success Message
       toast.success("Company Profile downloaded successfully!", { icon: '📄' });
       setProfileEmail('');
-      
+
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message || "Failed to process request.");
@@ -217,15 +217,20 @@ const About = () => {
             {/* CA Chetan Joshi */}
             <div className="bg-slate-50 rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden group hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col">
               <div className="h-80 bg-[#003366] relative overflow-hidden flex items-center justify-center">
-<img src={chetanPhoto} alt="CA Chetan Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 object-top" />                <div className="absolute inset-0 bg-gradient-to-t from-[#003366] via-transparent to-transparent opacity-90"></div>
+                <img src={chetanPhoto} alt="CA Chetan Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 object-top" />                <div className="absolute inset-0 bg-gradient-to-t from-[#003366] via-transparent to-transparent opacity-90"></div>
                 <div className="absolute bottom-0 left-0 p-8 w-full">
                   <div className="flex justify-between items-end">
                     <div>
                       <h3 className="text-3xl font-black text-white">CA Chetan Joshi</h3>
                       <p className="text-[#FF6600] font-bold tracking-wider uppercase text-sm mt-2">Founder & Managing Director</p>
                     </div>
-                    <a href="#" target="_blank" rel="noopener noreferrer" className="bg-white/10 p-3 rounded-2xl hover:bg-[#FF6600] transition backdrop-blur-md z-20">
-                      <Linkedin className="w-6 h-6 text-white" />
+                    <a
+                      href="https://www.linkedin.com/in/chetan-joshi-234ab0155"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="..."
+                    >
+                      <Linkedin className="w-6 h-6" />
                     </a>
                   </div>
                 </div>
@@ -245,15 +250,20 @@ const About = () => {
             {/* CMA Neha Joshi */}
             <div className="bg-slate-50 rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden group hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col">
               <div className="h-80 bg-[#FF6600] relative overflow-hidden flex items-center justify-center">
-<img src={nehaPhoto} alt="CMA Neha Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 object-top" />                <div className="absolute inset-0 bg-gradient-to-t from-[#003366] via-transparent to-transparent opacity-90"></div>
+                <img src={nehaPhoto} alt="CMA Neha Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 object-top" />                <div className="absolute inset-0 bg-gradient-to-t from-[#003366] via-transparent to-transparent opacity-90"></div>
                 <div className="absolute bottom-0 left-0 p-8 w-full">
                   <div className="flex justify-between items-end">
                     <div>
                       <h3 className="text-3xl font-black text-white">CMA Neha Joshi</h3>
                       <p className="text-[#FF6600] font-bold tracking-wider uppercase text-sm mt-2">Co-Founder & Director</p>
                     </div>
-                    <a href="#" target="_blank" rel="noopener noreferrer" className="bg-white/10 p-3 rounded-2xl hover:bg-[#FF6600] transition backdrop-blur-md z-20">
-                      <Linkedin className="w-6 h-6 text-white" />
+                    <a
+                      href="https://www.linkedin.com/in/neha-joshi-8b18853b7"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="..."
+                    >
+                      <Linkedin className="w-6 h-6" />
                     </a>
                   </div>
                 </div>
@@ -280,7 +290,6 @@ const About = () => {
             <Building2 className="absolute top-0 right-0 w-64 h-64 text-white opacity-5 -mr-10 -mt-10 pointer-events-none" />
             <div className="flex-1 text-center md:text-left relative z-10">
               <h3 className="text-2xl font-bold text-white mb-2">Download Our Company Profile</h3>
-              <p className="text-gray-300">Get a detailed PDF brochure outlining our complete service offerings, track record, and corporate philosophy.</p>
             </div>
             <div className="w-full md:w-auto flex-shrink-0 relative z-10">
               <form className="flex w-full shadow-lg rounded-xl overflow-hidden" onSubmit={handleProfileDownload}>

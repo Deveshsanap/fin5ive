@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import logo from '../assets/logo.png';
+
 const Footer = () => {
   return (
     <footer className="bg-[#002244] text-white pt-16 pb-8 border-t-4 border-[#FF6600] mt-auto">
@@ -12,8 +13,8 @@ const Footer = () => {
           <div>
             <Link to="/" className="flex flex-col items-start mb-6 w-max">
               <div className="relative inline-block">
-                {/* Logo Image (Using CSS to make it white for the dark footer) */}
-                <img src={logo} alt="FIN5IVE Logo" className="h-12 w-auto object-contain brightness-0 invert" />
+                {/* Logo Image (Original Colors restored!) */}
+                <img src={logo} alt="FIN5IVE Logo" className="h-12 w-auto object-contain" />
                 <span className="absolute -top-1 -right-3 text-[10px] font-bold text-white">™</span>
               </div>
               <span className="text-[10px] text-gray-400 font-medium tracking-widest uppercase mt-2 leading-none">

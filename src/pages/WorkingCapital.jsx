@@ -3,8 +3,10 @@ import {
   Landmark, Coins, Activity, Home, Building, Factory, Map, 
   ArrowRight, CheckCircle, AlertCircle, Calculator, ShieldCheck, 
   ChevronDown, ChevronUp, Download, Send, X, Building2, Stethoscope, 
-  FileText, Info 
+  FileText, Info, Loader2 
 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { createLead } from '../config/api';
 
 const WorkingCapital = () => {
   // --- STATE MANAGEMENT ---
@@ -12,10 +14,82 @@ const WorkingCapital = () => {
   const [activeFaq, setActiveFaq] = useState(null);
   const [activeLtvTab, setActiveLtvTab] = useState('RESIDENTIAL');
 
+  // --- FORM STATE ---
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    companyName: '',
+    contactPerson: '',
+    email: '',
+    phoneNumber: '',
+    amount: '₹30 Lakhs - ₹1 Crore',
+    collateral: 'Residential Property'
+  });
+
+  const [brochureEmail, setBrochureEmail] = useState('');
+  const [isBrochureSubmitting, setIsBrochureSubmitting] = useState(false);
+
   // Drawing Power (DP) Calculator State
   const [inventory, setInventory] = useState(5000000); // 50 Lakhs
   const [receivables, setReceivables] = useState(4000000); // 40 Lakhs
   const [creditors, setCreditors] = useState(2000000); // 20 Lakhs
+
+  // --- FORM HANDLERS ---
+  const handleModalSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await createLead({
+        name: formData.contactPerson,
+        company: formData.companyName,
+        email: formData.email,
+        phone: formData.phoneNumber,
+        service: `Working Capital - ${formData.amount}`,
+        message: `Primary Collateral: ${formData.collateral}`
+      });
+      toast.success("Request Sent! Our credit team will contact you shortly.");
+      setIsModalOpen(false);
+      setFormData({ companyName: '', contactPerson: '', email: '', phoneNumber: '', amount: '₹30 Lakhs - ₹1 Crore', collateral: 'Residential Property' });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to submit request.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleBrochureDownload = async (e) => {
+    e.preventDefault();
+    if (!brochureEmail) return toast.error("Please enter your email.");
+    setIsBrochureSubmitting(true);
+    
+    try {
+      // 1. Send lead to backend (with dummy data to bypass crash)
+      await createLead({
+        name: "Working Capital Checklist Download",
+        email: brochureEmail,
+        phone: "0000000000",
+        company: "N/A",
+        service: "Checklist for MSME Loan Proposal",
+        message: "User requested the Loan Proposal Checklist PDF."
+      });
+
+      // 2. Safely trigger the PDF download
+      const link = document.createElement('a');
+      link.href = '/Checklist for Loan Proposal.pdf'; // Exact file name from public folder
+      link.setAttribute('download', 'Checklist_for_MSME_Loan_Proposal.pdf'); // Clean name
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success("Checklist downloaded successfully!", { icon: '📄' });
+      setBrochureEmail('');
+      
+    } catch (error) {
+      console.error("Backend Error:", error);
+      toast.error("Failed to process request.");
+    } finally {
+      setIsBrochureSubmitting(false);
+    }
+  };
 
   // --- CALCULATOR MATH (Standard Bank DP Logic) ---
   // Standard Margins: 25% on Inventory, 40% on Receivables. 
@@ -27,19 +101,19 @@ const WorkingCapital = () => {
 
   const formatINR = (value) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value);
 
-  // --- DATA ARRAYS ---
+  // --- DATA ARRAYS (UPDATED BASED ON CLIENT FEEDBACK) ---
   const ltvMatrix = {
     RESIDENTIAL: { 
       title: "Residential Property", 
       icon: <Home className="w-6 h-6" />,
-      ltv: "Up to 100%", 
+      ltv: "Up to 90%", // Changed from 100%
       desc: "Maximum liquidity unlocked against fully constructed, self-occupied or vacant residential houses, flats, and bungalows.",
       points: ["Highest Loan-to-Value ratios", "Lower interest rate bands", "Longer repayment tenures available"]
     },
     COMMERCIAL: { 
       title: "Commercial Property", 
       icon: <Building2 className="w-6 h-6" />,
-      ltv: "Up to 90%", 
+      ltv: "Up to 80%", // Changed from 90%
       desc: "Leverage your office spaces, retail shops, and commercial showrooms to fund your daily business operations.",
       points: ["Self-occupied or rented accepted", "Funding against future rent receivables (LRD)", "Quick valuation turnarounds"]
     },
@@ -49,14 +123,8 @@ const WorkingCapital = () => {
       ltv: "Up to 80%", 
       desc: "Utilize your manufacturing sheds, factory land, and industrial galas as solid collateral for Overdrafts.",
       points: ["Operational factories preferred", "Plant & Machinery valuation considered", "Flexible end-use of funds"]
-    },
-    SPECIAL: { 
-      title: "Hotels & Hospitals", 
-      icon: <Stethoscope className="w-6 h-6" />,
-      ltv: "Case Specific", 
-      desc: "We possess specialized expertise in evaluating and funding complex, purpose-built properties like Hotels, Resorts, and Hospitals.",
-      points: ["Cash-flow based structuring", "Funding for specialized medical equipment", "Refinancing of existing high-cost debt"]
     }
+    // HOTELS & HOSPITALS REMOVED HERE
   };
 
   const faqs = [
@@ -77,24 +145,28 @@ const WorkingCapital = () => {
               <h3 className="text-xl font-bold flex items-center"><Activity className="w-5 h-5 mr-2"/> Apply for Working Capital</h3>
               <button onClick={() => setIsModalOpen(false)} className="hover:text-finOrange transition"><X className="w-6 h-6" /></button>
             </div>
-            <form className="p-8 space-y-4" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); alert("Request Sent! Our credit team will contact you shortly."); }}>
+            <form className="p-8 space-y-4" onSubmit={handleModalSubmit}>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-                <input type="text" required className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="Acme Enterprises" />
+                <input type="text" required value={formData.companyName} onChange={e => setFormData({...formData, companyName: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="Acme Enterprises" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Contact Person</label>
-                  <input type="text" required className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="John Doe" />
+                  <input type="text" required value={formData.contactPerson} onChange={e => setFormData({...formData, contactPerson: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="John Doe" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                  <input type="tel" required className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="+91 98765 43210" />
+                  <input type="tel" required value={formData.phoneNumber} onChange={e => setFormData({...formData, phoneNumber: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="+91 98765 43210" />
                 </div>
               </div>
               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <input type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none" placeholder="director@company.com" />
+              </div>
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Funding Amount Required</label>
-                <select className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
+                <select value={formData.amount} onChange={e => setFormData({...formData, amount: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
                   <option>₹30 Lakhs - ₹1 Crore</option>
                   <option>₹1 Crore - ₹5 Crores</option>
                   <option>₹5 Crores - ₹25 Crores</option>
@@ -103,15 +175,15 @@ const WorkingCapital = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Primary Collateral Available</label>
-                <select className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
+                <select value={formData.collateral} onChange={e => setFormData({...formData, collateral: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-finOrange outline-none bg-white">
                   <option>Residential Property</option>
                   <option>Commercial / Industrial Property</option>
                   <option>Inventory & Receivables Only</option>
                   <option>Unsecured (CGTMSE Route)</option>
                 </select>
               </div>
-              <button type="submit" className="w-full bg-finOrange hover:bg-finOrange-dark text-white font-bold py-4 rounded-lg mt-4 flex justify-center items-center transition shadow-lg">
-                Request Credit Assessment <Send className="w-5 h-5 ml-2" />
+              <button type="submit" disabled={isSubmitting} className={`w-full text-white font-bold py-4 rounded-lg mt-4 flex justify-center items-center transition shadow-lg ${isSubmitting ? 'bg-gray-400' : 'bg-finOrange hover:bg-finOrange-dark'}`}>
+                {isSubmitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin"/> Processing...</> : <>Request Credit Assessment <Send className="w-5 h-5 ml-2" /></>}
               </button>
             </form>
           </div>
@@ -384,39 +456,12 @@ const WorkingCapital = () => {
             </div>
           </div>
           
-          <div className="mt-8 flex flex-col sm:flex-row justify-center gap-6">
-            <div className="bg-finOrange/10 border border-finOrange/20 px-6 py-4 rounded-xl flex items-center justify-center text-finBlue font-bold shadow-sm">
-              <Map className="w-5 h-5 text-finOrange mr-3" /> Up to 80% LTV on Open Plots
-            </div>
-            <div className="bg-finBlue/5 border border-finBlue/10 px-6 py-4 rounded-xl flex items-center justify-center text-finBlue font-bold shadow-sm">
-              <Building className="w-5 h-5 text-finBlue mr-3" /> Up to 100% on Fully Constructed
-            </div>
-          </div>
+          {/* REMOVED BOTTOM PILLS AS PER CLIENT REQUEST */}
+          
         </div>
       </section>
 
-      {/* 5. Specialised Funding Alert */}
-      <section className="bg-finBlue py-16 relative overflow-hidden">
-        <Activity className="absolute inset-0 w-full h-full text-white opacity-5 scale-150 pointer-events-none" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <div className="inline-flex flex-col md:flex-row items-center justify-center bg-white/10 p-8 rounded-3xl border border-white/20 backdrop-blur-md shadow-2xl">
-            <AlertCircle className="w-12 h-12 text-finOrange mb-4 md:mb-0 md:mr-6" />
-            <div className="text-left text-center md:text-left">
-              <p className="text-white text-xl font-medium mb-1">
-                Specialised Project Finance Available For
-              </p>
-              <p className="text-2xl md:text-3xl font-extrabold text-finOrange tracking-wide">
-                HOTELS & HOSPITAL PROPERTIES
-              </p>
-            </div>
-            <button onClick={() => setIsModalOpen(true)} className="mt-6 md:mt-0 md:ml-8 bg-finOrange hover:bg-finOrange-light text-white font-bold py-3 px-8 rounded-lg transition duration-300">
-              Consult Now
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. FAQ Accordion */}
+      {/* 5. FAQ Accordion */}
       <section className="py-24 bg-white border-b border-gray-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -442,24 +487,26 @@ const WorkingCapital = () => {
         </div>
       </section>
 
-      {/* 7. Lead Magnet: Required Documents Checklist */}
+      {/* 6. Lead Magnet: Required Documents Checklist */}
       <section className="py-16 bg-slate-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl border border-gray-100 relative overflow-hidden">
             <FileText className="absolute top-0 right-0 w-64 h-64 text-slate-50 opacity-50 -mr-10 -mt-10 pointer-events-none" />
             <div className="flex-1 text-center md:text-left relative z-10">
-              <h3 className="text-2xl font-bold text-finBlue mb-2">Get The Pre-Sanction Checklist</h3>
-              <p className="text-gray-600">Download the exact list of financial documents, KYC, and property papers needed to fast-track your OD/CC application.</p>
+              <h3 className="text-2xl font-bold text-finBlue mb-2">Checklist for MSME Loan Proposal</h3>
             </div>
             <div className="w-full md:w-auto flex-shrink-0 relative z-10">
-              <form className="flex flex-col sm:flex-row w-full shadow-md rounded-lg overflow-hidden" onSubmit={(e) => e.preventDefault()}>
+              <form className="flex flex-col sm:flex-row w-full shadow-md rounded-lg overflow-hidden" onSubmit={handleBrochureDownload}>
                 <input 
                   type="email" 
+                  required
+                  value={brochureEmail}
+                  onChange={(e) => setBrochureEmail(e.target.value)}
                   placeholder="Director Email" 
                   className="w-full sm:w-64 px-6 py-4 border border-gray-300 sm:border-r-0 focus:outline-none focus:border-finOrange bg-slate-50 text-gray-800 rounded-t-lg sm:rounded-l-lg sm:rounded-t-none"
                 />
-                <button className="bg-finOrange hover:bg-finOrange-dark text-white px-8 py-4 font-bold transition flex items-center justify-center whitespace-nowrap rounded-b-lg sm:rounded-r-lg sm:rounded-b-none">
-                  <Download className="w-5 h-5 mr-2" /> Get PDF
+                <button type="submit" disabled={isBrochureSubmitting} className={`px-8 py-4 font-bold transition flex items-center justify-center whitespace-nowrap rounded-b-lg sm:rounded-r-lg sm:rounded-b-none ${isBrochureSubmitting ? 'bg-gray-400 text-white' : 'bg-finOrange hover:bg-finOrange-dark text-white'}`}>
+                  {isBrochureSubmitting ? <Loader2 className="w-5 h-5 animate-spin mr-2"/> : <Download className="w-5 h-5 mr-2" />} Get PDF
                 </button>
               </form>
             </div>

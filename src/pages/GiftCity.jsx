@@ -71,8 +71,8 @@ const GiftCity = () => {
 
       // 2. Safely trigger the PDF download
       const link = document.createElement('a');
-      link.href = '/Investments with GIFT City.pdf'; // Exact file name from your public folder
-      link.setAttribute('download', 'Fin5ive_GIFT_City_Investments.pdf'); // Clean name for the user
+      link.href = '/Gift City IFSC Setup Guide.pdf';
+      link.setAttribute('download', 'Gift City IFSC Setup Guide.pdf'); // Clean name for the user
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -417,22 +417,13 @@ const GiftCity = () => {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-slate-50 rounded-2xl border border-gray-200 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-sm hover:shadow-md transition">
             <div className="flex-1 text-center md:text-left">
-              <h3 className="text-2xl font-bold text-finBlue mb-2">Download the Comprehensive Setup Guide</h3>
-              <p className="text-gray-600">Get a detailed PDF breaking down compliance requirements, expected capital outlay, and step-by-step documentation needed for GIFT City.</p>
+              <h3 className="text-2xl font-bold text-finBlue mb-2">Gift City IFSC Setup Guide</h3>
             </div>
             <div className="w-full md:w-auto flex-shrink-0">
               <form className="flex flex-col sm:flex-row w-full shadow-sm rounded-lg overflow-hidden" onSubmit={handleBrochureDownload}>
-                <input 
-                  type="email" 
-                  required
-                  value={brochureEmail}
-                  onChange={(e) => setBrochureEmail(e.target.value)}
-                  placeholder="Corporate Email" 
-                  className="w-full sm:w-64 px-4 py-4 border-none focus:outline-none focus:ring-1 focus:ring-finOrange rounded-t-lg sm:rounded-l-lg sm:rounded-t-none"
-                />
+                <input type="email" required value={brochureEmail} onChange={(e) => setBrochureEmail(e.target.value)} placeholder="Corporate Email" className="w-full sm:w-64 px-4 py-4 border-none focus:outline-none focus:ring-1 focus:ring-finOrange rounded-t-lg sm:rounded-l-lg sm:rounded-t-none" />
                 <button type="submit" disabled={isBrochureSubmitting} className={`px-6 py-4 font-bold transition flex items-center justify-center whitespace-nowrap rounded-b-lg sm:rounded-r-lg sm:rounded-b-none ${isBrochureSubmitting ? 'bg-gray-400 text-white' : 'bg-finOrange hover:bg-finOrange-dark text-white'}`}>
-                  {isBrochureSubmitting ? <Loader2 className="w-5 h-5 mr-2 animate-spin"/> : <Download className="w-5 h-5 mr-2" />}
-                  {isBrochureSubmitting ? 'Processing...' : 'Get PDF'}
+                  {isBrochureSubmitting ? <Loader2 className="w-5 h-5 mr-2 animate-spin"/> : <Download className="w-5 h-5 mr-2" />} Get PDF
                 </button>
               </form>
             </div>

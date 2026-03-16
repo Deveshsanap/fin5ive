@@ -27,7 +27,7 @@ const NriDomestic = () => {
   const [brochureEmail, setBrochureEmail] = useState('');
   const [isBrochureSubmitting, setIsBrochureSubmitting] = useState(false);
 
-  // --- FORM HANDLERS ---
+  // --- FORM HANDLERS: Main Modal ---
   const handleModalSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -36,6 +36,7 @@ const NriDomestic = () => {
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         phone: formData.phoneNumber,
+        company: "N/A", // <-- Dummy data added to prevent backend crash
         service: `NRI Domestic - ${formData.interest}`,
         message: `Country of Residence: ${formData.country}`
       });
@@ -49,20 +50,37 @@ const NriDomestic = () => {
     }
   };
 
+  // --- FORM HANDLER: PDF Download (UPDATED) ---
   const handleBrochureDownload = async (e) => {
     e.preventDefault();
     if(!brochureEmail) return toast.error("Please enter your email.");
     setIsBrochureSubmitting(true);
+    
     try {
+      // 1. Send lead to backend (with dummy data to bypass backend crash)
       await createLead({
-        name: "Factsheet Download",
+        name: "Domestic Factsheet Download",
         email: brochureEmail,
+        phone: "0000000000", // <-- Prevents backend crash
+        company: "N/A",      // <-- Prevents backend crash
         service: "Domestic Product Factsheet",
-        message: "User requested the NRI Domestic Investment guide."
+        message: "User requested the Domestic Product Factsheet PDF guide."
       });
-      toast.success("Factsheet sent to your email!", { icon: '📊' });
+
+      // 2. Safely trigger the PDF download
+      const link = document.createElement('a');
+      link.href = '/Domestic Product Factsheet.pdf'; // Exact file name from your public folder
+      link.setAttribute('download', 'Fin5ive_Domestic_Product_Factsheet.pdf'); // Clean name for the user
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // 3. Reset form and show success
+      toast.success("Factsheet downloaded successfully!", { icon: '📊' });
       setBrochureEmail('');
+      
     } catch (error) {
+      console.error("Backend Error:", error);
       toast.error("Failed to process request.");
     } finally {
       setIsBrochureSubmitting(false);
@@ -369,13 +387,13 @@ const NriDomestic = () => {
         </div>
       </section>
 
-      {/* 7. Lead Magnet: Download Guide */}
+      {/* 7. Lead Magnet: Download Guide (WIRED UP) */}
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-[#003366] rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden">
             <FileText className="absolute top-0 right-0 w-64 h-64 text-white opacity-5 -mr-10 -mt-10 pointer-events-none" />
             <div className="flex-1 text-center md:text-left relative z-10">
-              <h3 className="text-2xl font-bold text-white mb-2">Get The Domestic Product Factsheet</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">Domestic Product Factsheet</h3>
               <p className="text-gray-300">Download our complete guide detailing KYC procedures for NRIs, NRE vs NRO taxation differences, and top-performing funds.</p>
             </div>
             <div className="w-full md:w-auto flex-shrink-0 relative z-10">

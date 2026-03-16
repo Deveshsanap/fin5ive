@@ -291,13 +291,13 @@ const MsmeFunding = () => {
         </div>
       </section>
 
-      {/* Lead Magnet - NEW GRID FOR 4 RESOURCES */}
+
+{/* Lead Magnet - UPDATED NAMES & PATHS */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-slate-50 rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-gray-200">
             <div className="text-center mb-10">
               <h3 className="text-3xl font-black text-finBlue mb-4">Access Our MSME Resource Library</h3>
-              <p className="text-gray-600 max-w-2xl mx-auto">Enter your corporate email once to instantly unlock and download any of our comprehensive guides, brochures, and checklists below.</p>
             </div>
             
             <div className="max-w-md mx-auto mb-12">
@@ -312,70 +312,41 @@ const MsmeFunding = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Resource 1: MSME Brochure */}
-              <button 
-                onClick={() => triggerDownload('MSME Brochure', '/MSME Funding Brochure.pdf.pdf', 'Fin5ive_MSME_Brochure.pdf')}
-                disabled={downloadingDoc !== null}
-                className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left"
-              >
-                <div className="bg-orange-50 p-4 rounded-xl text-finOrange mr-6 group-hover:scale-110 transition-transform">
-                  {downloadingDoc === 'MSME Brochure' ? <Loader2 className="w-8 h-8 animate-spin" /> : <FileText className="w-8 h-8" />}
-                </div>
+              {/* MSME Funding Services */}
+              <button onClick={() => triggerDownload('MSME Brochure', '/MSME Funding Brochure.pdf', 'MSME_Funding_Services.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left">
+                <div className="bg-orange-50 p-4 rounded-xl text-finOrange mr-6 group-hover:scale-110 transition-transform">{downloadingDoc === 'MSME Brochure' ? <Loader2 className="w-8 h-8 animate-spin" /> : <FileText className="w-8 h-8" />}</div>
                 <div>
-                  <h4 className="font-bold text-finBlue text-lg">Main MSME Brochure</h4>
-                  <p className="text-sm text-gray-500 mt-1">Complete overview of all funding suites.</p>
+                  <h4 className="font-bold text-finBlue text-lg">MSME Funding Services</h4>
                 </div>
                 <Download className="w-5 h-5 text-gray-300 ml-auto group-hover:text-finOrange" />
               </button>
 
-              {/* Resource 2: Working Capital PDF */}
-              <button 
-                onClick={() => triggerDownload('Working Capital Guide', '/working capital (1).pdf', 'Fin5ive_Working_Capital.pdf')}
-                disabled={downloadingDoc !== null}
-                className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left"
-              >
-                <div className="bg-blue-50 p-4 rounded-xl text-finBlue mr-6 group-hover:scale-110 transition-transform">
-                  {downloadingDoc === 'Working Capital Guide' ? <Loader2 className="w-8 h-8 animate-spin" /> : <Coins className="w-8 h-8" />}
-                </div>
+              {/* Working Capital Services */}
+              <button onClick={() => triggerDownload('Working Capital Guide', '/working capital (1).pdf', 'Working_Capital_Services.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left">
+                <div className="bg-blue-50 p-4 rounded-xl text-finBlue mr-6 group-hover:scale-110 transition-transform">{downloadingDoc === 'Working Capital Guide' ? <Loader2 className="w-8 h-8 animate-spin" /> : <Coins className="w-8 h-8" />}</div>
                 <div>
-                  <h4 className="font-bold text-finBlue text-lg">Working Capital Guide</h4>
-                  <p className="text-sm text-gray-500 mt-1">Details on CC/OD and CGTMSE schemes.</p>
+                  <h4 className="font-bold text-finBlue text-lg">working capital Services</h4>
+                                  </div>
+                <Download className="w-5 h-5 text-gray-300 ml-auto group-hover:text-finOrange" />
+              </button>
+
+              {/* Checklist for MSME Loan Proposal */}
+              <button onClick={() => triggerDownload('Loan Checklist', '/Checklist for Loan Proposal.pdf', 'Checklist_MSME_Loan.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left">
+                <div className="bg-green-50 p-4 rounded-xl text-green-600 mr-6 group-hover:scale-110 transition-transform">{downloadingDoc === 'Loan Checklist' ? <Loader2 className="w-8 h-8 animate-spin" /> : <CheckCircle className="w-8 h-8" />}</div>
+                <div>
+                  <h4 className="font-bold text-finBlue text-lg">Checklist for MSME Loan Proposal</h4>
                 </div>
                 <Download className="w-5 h-5 text-gray-300 ml-auto group-hover:text-finOrange" />
               </button>
 
-              {/* Resource 3: Checklist PDF */}
-              <button 
-                onClick={() => triggerDownload('Loan Checklist', '/Checklist for Loan Proposal.pdf', 'Fin5ive_Loan_Checklist.pdf')}
-                disabled={downloadingDoc !== null}
-                className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left"
-              >
-                <div className="bg-green-50 p-4 rounded-xl text-green-600 mr-6 group-hover:scale-110 transition-transform">
-                  {downloadingDoc === 'Loan Checklist' ? <Loader2 className="w-8 h-8 animate-spin" /> : <CheckCircle className="w-8 h-8" />}
-                </div>
+              {/* Machine loan Services */}
+              <button onClick={() => triggerDownload('Machinery Loan 1-Pager', '/Machine loan 1 pager .png', 'Machine_Loan_Services.png')} disabled={downloadingDoc !== null} className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left">
+                <div className="bg-purple-50 p-4 rounded-xl text-purple-600 mr-6 group-hover:scale-110 transition-transform">{downloadingDoc === 'Machinery Loan 1-Pager' ? <Loader2 className="w-8 h-8 animate-spin" /> : <Settings className="w-8 h-8" />}</div>
                 <div>
-                  <h4 className="font-bold text-finBlue text-lg">Loan Proposal Checklist</h4>
-                  <p className="text-sm text-gray-500 mt-1">Exact documents needed for bank approval.</p>
+                  <h4 className="font-bold text-finBlue text-lg">Machine loan</h4>
                 </div>
                 <Download className="w-5 h-5 text-gray-300 ml-auto group-hover:text-finOrange" />
               </button>
-
-              {/* Resource 4: Image PNG */}
-              <button 
-                onClick={() => triggerDownload('Machinery Loan 1-Pager', '/Machine loan 1 pager .png', 'Fin5ive_Machinery_Loan_Guide.png')}
-                disabled={downloadingDoc !== null}
-                className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left"
-              >
-                <div className="bg-purple-50 p-4 rounded-xl text-purple-600 mr-6 group-hover:scale-110 transition-transform">
-                  {downloadingDoc === 'Machinery Loan 1-Pager' ? <Loader2 className="w-8 h-8 animate-spin" /> : <Settings className="w-8 h-8" />}
-                </div>
-                <div>
-                  <h4 className="font-bold text-finBlue text-lg">Machinery Loan 1-Pager</h4>
-                  <p className="text-sm text-gray-500 mt-1">Quick snapshot of equipment financing.</p>
-                </div>
-                <Download className="w-5 h-5 text-gray-300 ml-auto group-hover:text-finOrange" />
-              </button>
-
             </div>
           </div>
         </div>

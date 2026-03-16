@@ -459,27 +459,13 @@ const ExportFunding = () => {
           <div className="bg-finBlue rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden">
             <Anchor className="absolute top-0 right-0 w-64 h-64 text-white opacity-5 -mr-10 -mt-10" />
             <div className="flex-1 text-center md:text-left relative z-10">
-              <h3 className="text-2xl font-bold text-white mb-2">Download the Export Finance Guide</h3>
-              <p className="text-gray-300">Get a detailed PDF covering the complete pricing matrix, eligible countries list, and legal structuring for export factoring.</p>
+              <h3 className="text-2xl font-bold text-white mb-2">Export funding Services</h3>
             </div>
             <div className="w-full md:w-auto flex-shrink-0 relative z-10">
-              {/* WIRED UP FORM */}
               <form className="flex w-full shadow-lg" onSubmit={handleBrochureDownload}>
-                <input
-                  type="email"
-                  required
-                  value={brochureEmail}
-                  onChange={(e) => setBrochureEmail(e.target.value)}
-                  placeholder="Corporate Email"
-                  className="w-full md:w-64 px-4 py-4 rounded-l-lg border-none focus:outline-none focus:ring-2 focus:ring-finOrange text-gray-800"
-                />
-                <button 
-                  type="submit" 
-                  disabled={isBrochureSubmitting}
-                  className={`text-white px-6 py-4 rounded-r-lg font-bold transition flex items-center whitespace-nowrap ${isBrochureSubmitting ? 'bg-gray-400' : 'bg-finOrange hover:bg-finOrange-dark'}`}
-                >
-                  {isBrochureSubmitting ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Download className="w-5 h-5 mr-2" />}
-                  {isBrochureSubmitting ? 'Processing...' : 'Get PDF'}
+                <input type="email" required value={brochureEmail} onChange={(e) => setBrochureEmail(e.target.value)} placeholder="Corporate Email" className="w-full md:w-64 px-4 py-4 rounded-l-lg border-none focus:outline-none focus:ring-2 focus:ring-finOrange text-gray-800" />
+                <button type="submit" disabled={isBrochureSubmitting} className={`text-white px-6 py-4 rounded-r-lg font-bold transition flex items-center whitespace-nowrap ${isBrochureSubmitting ? 'bg-gray-400' : 'bg-finOrange hover:bg-finOrange-dark'}`}>
+                  {isBrochureSubmitting ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Download className="w-5 h-5 mr-2" />} Get PDF
                 </button>
               </form>
             </div>

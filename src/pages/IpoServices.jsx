@@ -27,7 +27,7 @@ const IpoServices = () => {
   const [brochureEmail, setBrochureEmail] = useState('');
   const [isBrochureSubmitting, setIsBrochureSubmitting] = useState(false);
 
-  // --- FORM HANDLERS ---
+  // --- FORM HANDLERS: Main Modal ---
   const handleModalSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -36,6 +36,7 @@ const IpoServices = () => {
         name: formData.name,
         company: formData.companyName,
         email: formData.email,
+        phone: "0000000000", // <-- Dummy data added to prevent backend crash
         service: `IPO Advisory`,
         message: `Designation: ${formData.designation} | Revenue: ${formData.revenue} | Target: ${formData.timeline}`
       });
@@ -49,20 +50,37 @@ const IpoServices = () => {
     }
   };
 
+  // --- FORM HANDLER: PDF Download (UPDATED) ---
   const handleBrochureDownload = async (e) => {
     e.preventDefault();
     if(!brochureEmail) return toast.error("Please enter your email.");
     setIsBrochureSubmitting(true);
+    
     try {
+      // 1. Send lead to backend (with dummy data to bypass backend crash)
       await createLead({
-        name: "Brochure Download",
+        name: "IPO Brochure Download",
         email: brochureEmail,
-        service: "Going Public Playbook",
-        message: "User requested the IPO Structuring PDF guide."
+        phone: "0000000000", // <-- Prevents backend crash
+        company: "N/A",      // <-- Prevents backend crash
+        service: "FIN5IVE IPO Services",
+        message: "User requested the FIN5IVE IPO Services PDF guide."
       });
-      toast.success("Playbook sent to your email!");
+
+      // 2. Safely trigger the PDF download
+      const link = document.createElement('a');
+      link.href = '/FIN5IVE IPO Services.pdf'; // Exact file name from your public folder
+      link.setAttribute('download', 'Fin5ive_IPO_Services.pdf'); // Clean name for the user
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // 3. Reset form and show success
+      toast.success("Brochure downloaded successfully!", { icon: '📄' });
       setBrochureEmail('');
+      
     } catch (error) {
+      console.error("Backend Error:", error);
       toast.error("Failed to process request.");
     } finally {
       setIsBrochureSubmitting(false);
@@ -289,11 +307,13 @@ const IpoServices = () => {
         </div>
       </section>
 
-      {/* Lead Magnet */}
+      {/* Lead Magnet - WIRED UP WITH NEW TITLE */}
       <section className="py-16 bg-slate-50 border-t border-gray-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl border border-gray-100">
-            <div className="flex-1 text-center md:text-left"><h3 className="text-2xl font-bold text-finBlue mb-2">Download the "Going Public" Playbook</h3><p className="text-gray-600">Get a detailed PDF covering exact SEBI compliance checklists, estimated IPO costs, and the structuring roadmap.</p></div>
+            <div className="flex-1 text-center md:text-left">
+              <h3 className="text-2xl font-bold text-finBlue mb-2">FIN5IVE IPO Services</h3>
+            </div>
             <div className="w-full md:w-auto flex-shrink-0">
               <form className="flex w-full shadow-md rounded-lg overflow-hidden" onSubmit={handleBrochureDownload}>
                 <input type="email" required value={brochureEmail} onChange={(e) => setBrochureEmail(e.target.value)} placeholder="Director Email" className="w-full md:w-64 px-6 py-4 border border-gray-300 focus:outline-none focus:border-finOrange bg-slate-50 text-gray-800" />

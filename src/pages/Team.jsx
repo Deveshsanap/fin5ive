@@ -17,7 +17,7 @@ const Team = () => {
       name: "CA Chetan Joshi",
       role: "Founder & Managing Director",
       image: chetanPhoto,
-      linkedin: "https://www.linkedin.com/", 
+      linkedin: "https://www.linkedin.com/in/chetan-joshi-234ab0155", 
       email: "connect.fivefin@gmail.com",
       bio: "A seasoned Chartered Accountant and expert in Capital Markets, IPO Structuring, and GIFT City offshore establishment, Chetan brings decades of institutional insight to corporate clients. He specializes in MSME financial engineering, architecting massive cost-reduction strategies through precision Working Capital funding, ZED certifications, and Government Subsidies. By bridging elite capital market strategies with specialized MSME financial tools, he ensures corporate growth and capital optimization.",
       credentials: [
@@ -32,7 +32,7 @@ const Team = () => {
       name: "CMA Neha Joshi",
       role: "Co-Founder & Director",
       image: nehaPhoto,
-      linkedin: "https://www.linkedin.com/", // <-- PASTE NEHA'S LINKEDIN URL HERE
+      linkedin: "https://www.linkedin.com/in/neha-joshi-8b18853b7", // <-- PASTE NEHA'S LINKEDIN URL HERE
       email: "connect.fivefin@gmail.com",
       bio: "A highly credentialed Cost and Management Accountant (CMA), Neha applies analytical precision to personal finance and wealth management. She specializes in engineering robust financial portfolios through data-driven Mutual Fund strategies and comprehensive Insurance planning. By focusing on cost-efficiency and risk mitigation, Neha ensures that individual investments are optimized for long-term growth while protecting assets against life’s uncertainties.",
       credentials: [

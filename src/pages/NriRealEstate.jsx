@@ -27,7 +27,7 @@ const NriRealEstate = () => {
   const [brochureEmail, setBrochureEmail] = useState('');
   const [isBrochureSubmitting, setIsBrochureSubmitting] = useState(false);
 
-  // --- FORM HANDLERS ---
+  // --- FORM HANDLERS: Main Modal ---
   const handleModalSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -36,6 +36,7 @@ const NriRealEstate = () => {
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         phone: formData.phoneNumber,
+        company: "N/A", // <-- Dummy data added to prevent backend crash
         service: `NRI Real Estate - ${formData.interest}`,
         message: `Country of Residence: ${formData.country}`
       });
@@ -49,20 +50,37 @@ const NriRealEstate = () => {
     }
   };
 
+  // --- FORM HANDLER: PDF Download (UPDATED) ---
   const handleBrochureDownload = async (e) => {
     e.preventDefault();
     if(!brochureEmail) return toast.error("Please enter your email.");
     setIsBrochureSubmitting(true);
+    
     try {
+      // 1. Send lead to backend (with dummy data to bypass backend crash)
       await createLead({
-        name: "Factsheet Download",
+        name: "Real Estate Service Download",
         email: brochureEmail,
-        service: "NRI Real Estate Guide",
-        message: "User requested the NRI Real Estate PDF guide."
+        phone: "0000000000", // <-- Prevents backend crash
+        company: "N/A",      // <-- Prevents backend crash
+        service: "NRI Real Estate Service",
+        message: "User requested the NRI Real Estate Service PDF guide."
       });
-      toast.success("Guide sent to your email!", { icon: '🏡' });
+
+      // 2. Safely trigger the PDF download
+      const link = document.createElement('a');
+      link.href = '/NRI Real Estate Service.pdf'; // Exact file name based on your master list
+      link.setAttribute('download', 'Fin5ive_NRI_Real_Estate_Service.pdf'); // Clean name for the user
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // 3. Reset form and show success
+      toast.success("Guide downloaded successfully!", { icon: '🏡' });
       setBrochureEmail('');
+      
     } catch (error) {
+      console.error("Backend Error:", error);
       toast.error("Failed to process request.");
     } finally {
       setIsBrochureSubmitting(false);
@@ -353,13 +371,13 @@ const NriRealEstate = () => {
         </div>
       </section>
 
-      {/* 7. Lead Magnet: Download Guide */}
+      {/* 7. Lead Magnet: Download Guide (UPDATED & WIRED UP) */}
       <section className="py-16 bg-slate-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-[#003366] rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden">
             <FileText className="absolute top-0 right-0 w-64 h-64 text-white opacity-5 -mr-10 -mt-10 pointer-events-none" />
             <div className="flex-1 text-center md:text-left relative z-10">
-              <h3 className="text-2xl font-bold text-white mb-2">Get The NRI Real Estate Guide</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">NRI Real Estate Service</h3>
               <p className="text-gray-300">Download our comprehensive PDF breaking down TDS calculations, repatriation rules (Form 15CA/CB), and property due diligence.</p>
             </div>
             <div className="w-full md:w-auto flex-shrink-0 relative z-10">

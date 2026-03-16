@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  ArrowRight, ShieldCheck, TrendingUp, Users, Award, Building2, 
-  Briefcase, Calculator, ChevronDown, ChevronUp, Star, Quote, 
+import {
+  ArrowRight, ShieldCheck, TrendingUp, Users, Award, Building2,
+  Briefcase, Calculator, ChevronDown, ChevronUp, Star, Quote,
   CheckCircle, Mail, LineChart, Loader2, Linkedin,
   ArrowLeft, TrendingDown
 } from 'lucide-react';
@@ -10,19 +10,19 @@ import toast from 'react-hot-toast';
 
 import Hero from '../components/Hero';
 import ServicesGrid from '../components/ServicesGrid';
-import { createLead } from '../config/api'; 
+import { createLead } from '../config/api';
 
 // --- IMPORTED PHOTOS ---
 import chetanPhoto from '../assets/chetanJoshi.png';
 import nehaPhoto from '../assets/nehaJoshi.png';
 
 const Home = () => {
-  const [calcType, setCalcType] = useState('SIP'); 
+  const [calcType, setCalcType] = useState('SIP');
   const [investment, setInvestment] = useState(25000);
   const [years, setYears] = useState(10);
   const [returnRate, setReturnRate] = useState(12);
 
-  const [activeFaq, setActiveFaq] = useState(null); 
+  const [activeFaq, setActiveFaq] = useState(null);
   const [testimonialIdx, setTestimonialIdx] = useState(0);
   const sliderIntervalRef = useRef(null);
 
@@ -72,7 +72,7 @@ const Home = () => {
   const startSlider = () => {
     sliderIntervalRef.current = setInterval(() => {
       setTestimonialIdx((prev) => (prev + 1) % testimonials.length);
-    }, 5000); 
+    }, 5000);
   };
 
   useEffect(() => {
@@ -83,13 +83,13 @@ const Home = () => {
   const nextTestimonial = () => {
     clearInterval(sliderIntervalRef.current);
     setTestimonialIdx((prev) => (prev + 1) % testimonials.length);
-    startSlider(); 
+    startSlider();
   };
-  
+
   const prevTestimonial = () => {
     clearInterval(sliderIntervalRef.current);
     setTestimonialIdx((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-    startSlider(); 
+    startSlider();
   };
 
   const calculateReturns = () => {
@@ -121,7 +121,7 @@ const Home = () => {
       await createLead({
         name: "Home Page Subscriber", email: newsletterEmail, phone: "0000000000", company: "N/A", service: "Newsletter Subscription", message: "User subscribed to market updates."
       });
-      toast.success('Successfully subscribed to market updates!', { iconTheme: { primary: '#FF6600', secondary: 'white' }});
+      toast.success('Successfully subscribed to market updates!', { iconTheme: { primary: '#FF6600', secondary: 'white' } });
       setNewsletterEmail('');
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to subscribe. Please try again later.");
@@ -146,21 +146,21 @@ const Home = () => {
   const TickerItems = () => (
     <div className="flex space-x-12 px-6 items-center flex-shrink-0">
       <span className="flex items-center font-medium transition-colors duration-500">
-        {marketData.nifty.isPositive ? <TrendingUp className="w-3.5 h-3.5 text-green-400 mr-1.5"/> : <TrendingDown className="w-3.5 h-3.5 text-red-400 mr-1.5"/>}
-        NIFTY 50: {formatIndex(marketData.nifty.value)} 
+        {marketData.nifty.isPositive ? <TrendingUp className="w-3.5 h-3.5 text-green-400 mr-1.5" /> : <TrendingDown className="w-3.5 h-3.5 text-red-400 mr-1.5" />}
+        NIFTY 50: {formatIndex(marketData.nifty.value)}
         <span className={`ml-1.5 font-bold ${marketData.nifty.isPositive ? 'text-green-400' : 'text-red-400'}`}>
           ({marketData.nifty.isPositive ? '+' : ''}{marketData.nifty.change.toFixed(2)}%)
         </span>
       </span>
       <span className="flex items-center font-medium transition-colors duration-500">
-        {marketData.sensex.isPositive ? <TrendingUp className="w-3.5 h-3.5 text-green-400 mr-1.5"/> : <TrendingDown className="w-3.5 h-3.5 text-red-400 mr-1.5"/>}
-        SENSEX: {formatIndex(marketData.sensex.value)} 
+        {marketData.sensex.isPositive ? <TrendingUp className="w-3.5 h-3.5 text-green-400 mr-1.5" /> : <TrendingDown className="w-3.5 h-3.5 text-red-400 mr-1.5" />}
+        SENSEX: {formatIndex(marketData.sensex.value)}
         <span className={`ml-1.5 font-bold ${marketData.sensex.isPositive ? 'text-green-400' : 'text-red-400'}`}>
           ({marketData.sensex.isPositive ? '+' : ''}{marketData.sensex.change.toFixed(2)}%)
         </span>
       </span>
       <span className="flex items-center font-medium transition-colors duration-500">
-        <LineChart className="w-3.5 h-3.5 text-[#FF6600] mr-1.5"/> 
+        <LineChart className="w-3.5 h-3.5 text-[#FF6600] mr-1.5" />
         GOLD: ₹{formatIndex(marketData.gold.value)}
         <span className={`ml-1.5 font-bold ${marketData.gold.isPositive ? 'text-green-400' : 'text-red-400'}`}>
           ({marketData.gold.isPositive ? '+' : ''}{marketData.gold.change.toFixed(2)}%)
@@ -175,7 +175,7 @@ const Home = () => {
 
   return (
     <div className="bg-white font-sans overflow-x-hidden">
-      
+
       <style>
         {`
           @keyframes custom-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
@@ -183,7 +183,7 @@ const Home = () => {
           .animate-custom-marquee:hover { animation-play-state: paused; }
         `}
       </style>
-      
+
       <div className="bg-[#002244] text-white text-xs py-2.5 overflow-hidden relative z-50 border-b border-white/10 flex">
         <div className="animate-custom-marquee">
           <TickerItems />
@@ -196,7 +196,7 @@ const Home = () => {
       {/* --- TRUSTED PARTNERS SHOWCASE --- */}
       <section className="py-16 bg-slate-50 border-b border-gray-100 overflow-hidden shadow-[inset_0_4px_6px_-4px_rgba(0,0,0,0.05)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           {/* Mutual Fund Partners ONLY */}
           <div>
             <p className="text-center text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-8">
@@ -205,9 +205,9 @@ const Home = () => {
             <div className="flex flex-wrap justify-center gap-8 md:gap-12 items-center transition-all duration-700">
               {mutualFundLogos.map((fund, index) => (
                 <div key={index} className="w-24 md:w-32 h-16 flex items-center justify-center hover:scale-105 transition-transform duration-300">
-                  <img 
-                    src={fund.img} 
-                    alt={fund.name} 
+                  <img
+                    src={fund.img}
+                    alt={fund.name}
                     className="max-w-full max-h-full object-contain mix-blend-multiply"
                     onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
                   />
@@ -257,7 +257,7 @@ const Home = () => {
 
       <section className="py-24 bg-[#003366] relative overflow-hidden text-white">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#FF6600] opacity-5 blur-[120px] rounded-full pointer-events-none"></div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <span className="text-[#FF6600] font-bold tracking-widest uppercase text-sm mb-4 block">Wealth Analytics</span>
@@ -275,15 +275,15 @@ const Home = () => {
               <div className="p-8 md:p-12 border-b md:border-b-0 md:border-r border-gray-100 md:col-span-3">
                 <div className="mb-10">
                   <div className="flex justify-between items-center mb-5"><label className="font-extrabold text-gray-800">{calcType === 'SIP' ? 'Monthly Investment' : 'Total Investment'}</label><div className="bg-orange-50 border border-orange-100 px-5 py-2.5 rounded-xl font-black text-[#FF6600] shadow-sm">{formatINR(investment)}</div></div>
-                  <input type="range" min={calcType === 'SIP' ? "1000" : "50000"} max={calcType === 'SIP' ? "500000" : "25000000"} step={calcType === 'SIP' ? "1000" : "50000"} value={investment} onChange={(e) => setInvestment(Number(e.target.value))} className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#003366]"/>
+                  <input type="range" min={calcType === 'SIP' ? "1000" : "50000"} max={calcType === 'SIP' ? "500000" : "25000000"} step={calcType === 'SIP' ? "1000" : "50000"} value={investment} onChange={(e) => setInvestment(Number(e.target.value))} className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#003366]" />
                 </div>
                 <div className="mb-10">
                   <div className="flex justify-between items-center mb-5"><label className="font-extrabold text-gray-800">Investment Horizon</label><div className="bg-orange-50 border border-orange-100 px-5 py-2.5 rounded-xl font-black text-[#FF6600] shadow-sm">{years} Years</div></div>
-                  <input type="range" min="1" max="30" step="1" value={years} onChange={(e) => setYears(Number(e.target.value))} className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#003366]"/>
+                  <input type="range" min="1" max="30" step="1" value={years} onChange={(e) => setYears(Number(e.target.value))} className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#003366]" />
                 </div>
                 <div className="mb-4">
                   <div className="flex justify-between items-center mb-5"><label className="font-extrabold text-gray-800">Expected Annual Return</label><div className="bg-orange-50 border border-orange-100 px-5 py-2.5 rounded-xl font-black text-[#FF6600] shadow-sm">{returnRate}%</div></div>
-                  <input type="range" min="5" max="25" step="0.5" value={returnRate} onChange={(e) => setReturnRate(Number(e.target.value))} className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#003366]"/>
+                  <input type="range" min="5" max="25" step="0.5" value={returnRate} onChange={(e) => setReturnRate(Number(e.target.value))} className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#003366]" />
                 </div>
               </div>
 
@@ -305,7 +305,7 @@ const Home = () => {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <span className="text-[#FF6600] font-bold tracking-widest uppercase text-sm mb-4 block">Client Success</span>
           <h2 className="text-4xl md:text-5xl font-black text-[#003366] mb-16 tracking-tight">Trusted by Industry Leaders</h2>
-          
+
           <div className="bg-slate-50 rounded-[3rem] p-10 md:p-20 relative shadow-lg border border-gray-100 overflow-hidden">
             <Quote className="absolute top-10 left-10 w-24 h-24 text-[#003366] opacity-5 pointer-events-none" />
             <div className="relative z-10 min-h-[250px] flex flex-col justify-center transition-opacity duration-500">
@@ -316,13 +316,13 @@ const Home = () => {
                 <p className="text-[#FF6600] font-bold uppercase tracking-wider text-sm mt-1">{testimonials[testimonialIdx].role}</p>
               </div>
             </div>
-            
+
             <div className="absolute bottom-10 right-10 flex space-x-3">
               <button onClick={prevTestimonial} className="w-12 h-12 rounded-full border-2 border-gray-200 text-gray-500 flex items-center justify-center hover:bg-[#003366] hover:text-white hover:border-[#003366] transition-all shadow-sm"><ArrowLeft className="w-5 h-5" /></button>
               <button onClick={nextTestimonial} className="w-12 h-12 rounded-full border-2 border-gray-200 text-gray-500 flex items-center justify-center hover:bg-[#003366] hover:text-white hover:border-[#003366] transition-all shadow-sm"><ArrowRight className="w-5 h-5" /></button>
             </div>
             <div className="absolute bottom-14 left-0 w-full flex justify-center space-x-2 pointer-events-none">
-               {testimonials.map((_, i) => (<div key={i} className={`h-1.5 rounded-full transition-all duration-500 ${testimonialIdx === i ? 'w-8 bg-[#FF6600]' : 'w-2 bg-gray-300'}`}></div>))}
+              {testimonials.map((_, i) => (<div key={i} className={`h-1.5 rounded-full transition-all duration-500 ${testimonialIdx === i ? 'w-8 bg-[#FF6600]' : 'w-2 bg-gray-300'}`}></div>))}
             </div>
           </div>
         </div>
@@ -342,8 +342,14 @@ const Home = () => {
                 <img src={chetanPhoto} alt="CA Chetan Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 object-top" />
               </div>
               <div className="p-8 relative">
-                <a href="#" target="_blank" rel="noreferrer" className="absolute top-8 right-8 text-blue-600 hover:text-blue-800 bg-blue-50 p-2 rounded-lg transition-colors"><Linkedin className="w-6 h-6" /></a>
-                <h3 className="text-2xl font-black text-[#003366]">CA Chetan Joshi</h3>
+                <a
+                  href="https://www.linkedin.com/in/chetan-joshi-234ab0155"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="..."
+                >
+                  <Linkedin className="w-6 h-6" />
+                </a>                <h3 className="text-2xl font-black text-[#003366]">CA Chetan Joshi</h3>
                 <p className="text-[#FF6600] font-bold text-sm tracking-wider uppercase mt-2 mb-4">Founder & Managing Director</p>
                 <p className="text-gray-600 text-sm leading-relaxed">A seasoned Chartered Accountant and expert in Capital Markets, IPO Structuring, and GIFT City offshore establishment, bringing decades of institutional insight to corporate clients.</p>
               </div>
@@ -354,14 +360,20 @@ const Home = () => {
                 <img src={nehaPhoto} alt="CMA Neha Joshi" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 object-top" />
               </div>
               <div className="p-8 relative">
-                <a href="#" target="_blank" rel="noreferrer" className="absolute top-8 right-8 text-blue-600 hover:text-blue-800 bg-blue-50 p-2 rounded-lg transition-colors"><Linkedin className="w-6 h-6" /></a>
-                <h3 className="text-2xl font-black text-[#003366]">CMA Neha Joshi</h3>
+                <a
+                  href="https://www.linkedin.com/in/neha-joshi-8b18853b7"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="..."
+                >
+                  <Linkedin className="w-6 h-6" />
+                </a>                <h3 className="text-2xl font-black text-[#003366]">CMA Neha Joshi</h3>
                 <p className="text-[#FF6600] font-bold text-sm tracking-wider uppercase mt-2 mb-4">Co-Founder & Director</p>
                 <p className="text-gray-600 text-sm leading-relaxed">A highly credentialed Cost and Management Accountant (CMA), Neha applies analytical precision to personal finance and wealth management, specializing in robust financial portfolios.</p>
               </div>
             </div>
           </div>
-          
+
           <div className="text-center">
             <Link to="/team" className="inline-flex items-center text-[#003366] font-bold hover:text-[#FF6600] transition-colors border-b-2 border-transparent hover:border-[#FF6600] pb-1">
               View Full Leadership Directory <ArrowRight className="w-4 h-4 ml-2" />
@@ -409,14 +421,14 @@ const Home = () => {
       <section className="py-24 bg-slate-50 border-t border-gray-100 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-orange-100 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
-        
+
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <div className="bg-white w-20 h-20 rounded-3xl shadow-lg border border-gray-100 flex items-center justify-center mx-auto mb-8">
             <Mail className="w-10 h-10 text-[#FF6600]" />
           </div>
           <h2 className="text-4xl font-black text-[#003366] mb-6 tracking-tight">Stay Ahead of the Markets</h2>
           <p className="text-gray-500 text-lg font-medium mb-12 max-w-2xl mx-auto">Join our exclusive mailing list for HNI investment strategies, IPO updates, and MSME regulatory alerts delivered straight to your inbox.</p>
-          
+
           <form className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto" onSubmit={handleNewsletterSubmit}>
             <input type="email" required value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)} placeholder="Enter your corporate email address" className="flex-1 px-8 py-5 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FF6600] focus:border-[#FF6600] font-medium text-gray-800 shadow-sm" />
             <button type="submit" disabled={isSubscribing} className={`bg-[#003366] text-white font-bold py-5 px-10 rounded-2xl transition duration-300 shadow-lg whitespace-nowrap flex items-center justify-center ${isSubscribing ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#002244] hover:-translate-y-1'}`}>
@@ -431,10 +443,10 @@ const Home = () => {
           <div className="bg-[#FF6600] rounded-[3rem] p-12 md:p-20 text-center shadow-2xl relative overflow-hidden">
             <TrendingUp className="absolute -bottom-10 -right-10 w-80 h-80 text-white opacity-20 pointer-events-none" />
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
-            
+
             <div className="relative z-10">
               <h2 className="text-4xl md:text-6xl font-black text-white mb-8 leading-tight tracking-tight">
-                Ready to Accelerate <br/>Your Growth?
+                Ready to Accelerate <br />Your Growth?
               </h2>
               <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto font-medium">
                 Whether you're looking for global expansion in GIFT City, planning an IPO, or seeking seamless working capital.

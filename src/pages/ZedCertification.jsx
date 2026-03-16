@@ -451,60 +451,34 @@ const ZedCertification = () => {
         </div>
       </section>
 
-      {/* Lead Magnet - NEW GRID FOR 2 RESOURCES */}
+
+{/* Lead Magnet - UPDATED NAMES */}
       <section className="py-16 bg-white border-t border-gray-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-[#003366] rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden">
             <CheckSquare className="absolute top-0 right-0 w-64 h-64 text-white opacity-5 -mr-10 -mt-10 pointer-events-none" />
-            
             <div className="text-center mb-10 relative z-10">
               <h3 className="text-3xl font-black text-white mb-4">Access ZED Implementation Guides</h3>
-              <p className="text-gray-300 max-w-2xl mx-auto">Enter your email below to instantly unlock our ZED Certification Guide and the specific 20-parameter QCI Checklist.</p>
             </div>
-
             <div className="max-w-md mx-auto mb-10 relative z-10">
-              <input 
-                type="email" 
-                required 
-                value={brochureEmail} 
-                onChange={(e) => setBrochureEmail(e.target.value)} 
-                placeholder="Enter your email to unlock downloads" 
-                className="w-full px-6 py-4 border-none focus:ring-2 focus:ring-finOrange rounded-xl focus:outline-none text-center font-medium shadow-sm" 
-              />
+              <input type="email" required value={brochureEmail} onChange={(e) => setBrochureEmail(e.target.value)} placeholder="Enter your email to unlock downloads" className="w-full px-6 py-4 border-none focus:ring-2 focus:ring-finOrange rounded-xl focus:outline-none text-center font-medium shadow-sm" />
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
-              {/* Resource 1: ZED Brochure */}
-              <button 
-                onClick={() => triggerDownload('ZED Brochure', '/ZED CERTIFICATION.pdf', 'Fin5ive_ZED_Certification_Guide.pdf')}
-                disabled={downloadingDoc !== null}
-                className="flex items-center p-5 bg-white/10 border border-white/20 hover:bg-white/20 hover:border-finOrange rounded-2xl transition group text-left backdrop-blur-sm"
-              >
-                <div className="bg-finOrange text-white p-3 rounded-xl mr-5 group-hover:scale-110 transition-transform">
-                  {downloadingDoc === 'ZED Brochure' ? <Loader2 className="w-6 h-6 animate-spin" /> : <FileText className="w-6 h-6" />}
-                </div>
+              <button onClick={() => triggerDownload('ZED Brochure', '/ZED CERTIFICATION.pdf', 'ZED_Certification_Services.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-5 bg-white/10 border border-white/20 hover:bg-white/20 hover:border-finOrange rounded-2xl transition group text-left backdrop-blur-sm">
+                <div className="bg-finOrange text-white p-3 rounded-xl mr-5 group-hover:scale-110 transition-transform">{downloadingDoc === 'ZED Brochure' ? <Loader2 className="w-6 h-6 animate-spin" /> : <FileText className="w-6 h-6" />}</div>
                 <div>
-                  <h4 className="font-bold text-white text-lg">ZED Certification Guide</h4>
+                  <h4 className="font-bold text-white text-lg">ZED Certification Services</h4>
                   <p className="text-sm text-gray-300 mt-1">Complete overview of MSME-QCI benefits.</p>
                 </div>
               </button>
-
-              {/* Resource 2: ZED Checklist */}
-              <button 
-                onClick={() => triggerDownload('ZED Checklist', '/Checklist for ZED certificate.pdf', 'Fin5ive_ZED_Gold_Checklist.pdf')}
-                disabled={downloadingDoc !== null}
-                className="flex items-center p-5 bg-white/10 border border-white/20 hover:bg-white/20 hover:border-finOrange rounded-2xl transition group text-left backdrop-blur-sm"
-              >
-                <div className="bg-green-500 text-white p-3 rounded-xl mr-5 group-hover:scale-110 transition-transform">
-                  {downloadingDoc === 'ZED Checklist' ? <Loader2 className="w-6 h-6 animate-spin" /> : <CheckSquare className="w-6 h-6" />}
-                </div>
+              <button onClick={() => triggerDownload('ZED Checklist', '/Checklist for ZED certificate.pdf', 'Checklist_ZED_Certification.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-5 bg-white/10 border border-white/20 hover:bg-white/20 hover:border-finOrange rounded-2xl transition group text-left backdrop-blur-sm">
+                <div className="bg-green-500 text-white p-3 rounded-xl mr-5 group-hover:scale-110 transition-transform">{downloadingDoc === 'ZED Checklist' ? <Loader2 className="w-6 h-6 animate-spin" /> : <CheckSquare className="w-6 h-6" />}</div>
                 <div>
-                  <h4 className="font-bold text-white text-lg">ZED Audit Checklist</h4>
+                  <h4 className="font-bold text-white text-lg">Checklist for ZED Certification</h4>
                   <p className="text-sm text-gray-300 mt-1">The 20 parameters tested by QCI auditors.</p>
                 </div>
               </button>
             </div>
-
           </div>
         </div>
       </section>
