@@ -23,7 +23,7 @@ const Navbar = () => {
     { name: 'Export Trade Finance', path: '/services/export-funding' },
     { name: 'Working Capital Solutions', path: '/services/working-capital' },
     { name: 'GIFT City IFSC Setup', path: '/services/gift-city' },
-    { name: 'ZED Certification', path: '/services/zed-certification' },
+    { name: 'ZED Certification and ISO Certification', path: '/services/zed-certification' },
     { name: 'Tools & Calculators', path: '/calculators' },
   ];
 

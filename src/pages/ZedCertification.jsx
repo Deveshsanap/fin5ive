@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import {
   ShieldCheck, Award, TrendingUp, Factory, CheckCircle,
   ArrowRight, Settings, FileCheck, X, Send, Calculator,
-  ChevronDown, ChevronUp, Download, CheckSquare, Coins, LineChart, Loader2, FileText
+  ChevronDown, ChevronUp, Download, CheckSquare, Coins, 
+  LineChart, Loader2, FileText, Leaf
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { createLead } from '../config/api';
@@ -194,7 +195,7 @@ const ZedCertification = () => {
               <span>Zero Defect. Zero Effect.</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight">
-              Elevate Your Manufacturing with <span className="text-finOrange">ZED Gold.</span>
+              ZED Certification <span className="text-finOrange">& ISO Certification.</span>
             </h1>
             <p className="text-xl text-gray-300 mb-10 leading-relaxed max-w-2xl">
               Achieve operational maturity, robust SOPs, and strict quality control. We act as your hands-on implementation partner to secure India's flagship MSME certification.
@@ -425,6 +426,57 @@ const ZedCertification = () => {
         </div>
       </section>
 
+      {/* --- NEW ISO CERTIFICATION SECTION --- */}
+      <section className="py-24 bg-white border-t border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="text-finOrange font-bold tracking-wider uppercase text-sm mb-4 block">Global Standards</span>
+            <h2 className="text-3xl md:text-4xl font-black text-finBlue mb-6 tracking-tight">ISO Certification</h2>
+            <p className="text-gray-600 max-w-4xl mx-auto text-lg leading-relaxed">
+              ISO (International Organization for Standardization) certifications are globally recognized benchmarks that ensure organizations maintain the highest levels of quality, safety, efficiency, and sustainability. Achieving these certifications demonstrates a verified commitment to continuous improvement, strict regulatory compliance, and operational excellence.
+            </p>
+            <p className="text-finBlue font-bold mt-6 text-lg">
+              FIN5IVE Management Private Limited operates in strict compliance with the following international standards:
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* ISO 9001 */}
+            <div className="bg-slate-50 p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+              <div className="bg-blue-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-finBlue">
+                <Award className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-finBlue mb-3">ISO 9001: Quality Management (QMS)</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                ISO 9001 is the foremost international standard specifying requirements for a robust quality management system. This certification signifies a highly structured, process-driven approach to delivering financial advisory and management consulting services. It ensures that internal processes consistently meet both client requirements and statutory frameworks. The core principles of this standard include a strong customer focus, evidence-based decision-making, risk management, and continuous process improvement.
+              </p>
+            </div>
+
+            {/* ISO 14001 */}
+            <div className="bg-slate-50 p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+              <div className="bg-green-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-green-600">
+                <Leaf className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-finBlue mb-3">ISO 14001: Environmental Management (EMS)</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                ISO 14001 sets out the criteria for an effective environmental management system. It provides a strategic framework to identify, monitor, and control environmental impact. Holding this certification reflects a commitment to sustainable corporate practices, including efficient resource utilization, energy management, and proactive waste reduction. It ensures that business operations are conducted with a focus on long-term ecological responsibility and environmental compliance.
+              </p>
+            </div>
+
+            {/* ISO 45001 */}
+            <div className="bg-slate-50 p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+              <div className="bg-orange-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-finOrange">
+                <ShieldCheck className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-finBlue mb-3">ISO 45001: Health & Safety (OH&S)</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                ISO 45001 is the global standard for occupational health and safety, providing a systematic framework to manage and mitigate workplace risks. This standard is focused on providing safe and healthy work environments by preventing work-related injury and ill health. It establishes that proactive measures are continuously implemented to eliminate hazards, minimize operational risks, and prioritize the overall safety and well-being of all personnel, partners, and stakeholders.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ Accordion */}
       <section className="py-24 bg-slate-50 border-t border-gray-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -451,8 +503,7 @@ const ZedCertification = () => {
         </div>
       </section>
 
-
-{/* Lead Magnet - UPDATED NAMES */}
+      {/* Lead Magnet - UPDATED NAMES */}
       <section className="py-16 bg-white border-t border-gray-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-[#003366] rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden">
@@ -468,14 +519,12 @@ const ZedCertification = () => {
                 <div className="bg-finOrange text-white p-3 rounded-xl mr-5 group-hover:scale-110 transition-transform">{downloadingDoc === 'ZED Brochure' ? <Loader2 className="w-6 h-6 animate-spin" /> : <FileText className="w-6 h-6" />}</div>
                 <div>
                   <h4 className="font-bold text-white text-lg">ZED Certification Services</h4>
-                  <p className="text-sm text-gray-300 mt-1">Complete overview of MSME-QCI benefits.</p>
                 </div>
               </button>
               <button onClick={() => triggerDownload('ZED Checklist', '/Checklist for ZED certificate.pdf', 'Checklist_ZED_Certification.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-5 bg-white/10 border border-white/20 hover:bg-white/20 hover:border-finOrange rounded-2xl transition group text-left backdrop-blur-sm">
                 <div className="bg-green-500 text-white p-3 rounded-xl mr-5 group-hover:scale-110 transition-transform">{downloadingDoc === 'ZED Checklist' ? <Loader2 className="w-6 h-6 animate-spin" /> : <CheckSquare className="w-6 h-6" />}</div>
                 <div>
                   <h4 className="font-bold text-white text-lg">Checklist for ZED Certification</h4>
-                  <p className="text-sm text-gray-300 mt-1">The 20 parameters tested by QCI auditors.</p>
                 </div>
               </button>
             </div>
