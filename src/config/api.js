@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://fin-five-server.vercel.app", 
+  baseURL: "http://localhost:3000", // Changed to local backend
   headers: {
     "Content-Type": "application/json",
   },
@@ -47,8 +47,7 @@ export const uploadDocumentAdmin = (formData) => API.post("/documents/upload", f
 export const getCustomerDocuments = (customerId) => API.get(`/documents/customer/${customerId}`);
 export const getDocument = (id) => API.get(`/documents/${id}`);
 export const deleteDocumentApi = (id) => API.delete(`/documents/${id}`);
-export const downloadDocument = (id) => API.get(`/documents/${id}/download`, { responseType: 'blob' });
-
+export const downloadDocument = (id) => API.get(`/documents/${id}/download`);
 // --- APPLICATIONS ENDPOINTS ---
 export const submitApplication = (formData) => API.post("/applications", formData, {
   headers: { "Content-Type": "multipart/form-data" },

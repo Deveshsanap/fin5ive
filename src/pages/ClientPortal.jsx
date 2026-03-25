@@ -310,20 +310,21 @@ const ClientPortal = () => {
     }
   };
   
-  const handleRealDownload = async (docId, fileName) => {
-    const loadingToast = toast.loading('Decrypting and fetching file...');
+ const handleRealDownload = async (docId, fileName) => {
+    const loadingToast = toast.loading('Securing file connection...');
     try {
+      // 1. Ask backend for the secure URL
       const response = await downloadDocument(docId);
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', fileName || 'document.pdf');
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      toast.success(`${fileName} downloaded securely.`, { id: loadingToast });
+      const fileUrl = response.data.url;
+
+      // 2. Tell the browser to open the Cloudinary URL in a new tab 
+      // (The browser handles the PDF download natively this way!)
+      window.open(fileUrl, '_blank');
+      
+      toast.success(`${fileName} opened successfully.`, { id: loadingToast });
     } catch (error) {
-      toast.error('Failed to download document.', { id: loadingToast });
+      console.error("Download error:", error);
+      toast.error('Failed to process request.', { id: loadingToast });
     }
   };
 
