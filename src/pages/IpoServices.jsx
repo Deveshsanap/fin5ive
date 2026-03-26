@@ -69,7 +69,7 @@ const IpoServices = () => {
 
       // 2. Safely trigger the PDF download
       const link = document.createElement('a');
-      link.href = '/FIN5IVE IPO Services.pdf'; // Exact file name from your public folder
+      link.href = '/fin5ive-ipo-services.pdf'; // Exact file name from your public folder
       link.setAttribute('download', 'Fin5ive_IPO_Services.pdf'); // Clean name for the user
       document.body.appendChild(link);
       link.click();

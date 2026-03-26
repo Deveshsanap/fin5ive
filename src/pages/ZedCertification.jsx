@@ -515,8 +515,7 @@ const ZedCertification = () => {
               <input type="email" required value={brochureEmail} onChange={(e) => setBrochureEmail(e.target.value)} placeholder="Enter your email to unlock downloads" className="w-full px-6 py-4 border-none focus:ring-2 focus:ring-finOrange rounded-xl focus:outline-none text-center font-medium shadow-sm" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
-              <button onClick={() => triggerDownload('ZED Brochure', '/ZED CERTIFICATION.pdf', 'ZED_Certification_Services.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-5 bg-white/10 border border-white/20 hover:bg-white/20 hover:border-finOrange rounded-2xl transition group text-left backdrop-blur-sm">
-                <div className="bg-finOrange text-white p-3 rounded-xl mr-5 group-hover:scale-110 transition-transform">{downloadingDoc === 'ZED Brochure' ? <Loader2 className="w-6 h-6 animate-spin" /> : <FileText className="w-6 h-6" />}</div>
+<button onClick={() => triggerDownload('ZED Brochure', '/zed-certification.pdf', 'ZED_Certification_Services.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-5 bg-white/10 border border-white/20 hover:bg-white/20 hover:border-finOrange rounded-2xl transition group text-left backdrop-blur-sm">                <div className="bg-finOrange text-white p-3 rounded-xl mr-5 group-hover:scale-110 transition-transform">{downloadingDoc === 'ZED Brochure' ? <Loader2 className="w-6 h-6 animate-spin" /> : <FileText className="w-6 h-6" />}</div>
                 <div>
                   <h4 className="font-bold text-white text-lg">ZED Certification Services</h4>
                 </div>
