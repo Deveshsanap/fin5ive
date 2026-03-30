@@ -58,7 +58,7 @@ const About = () => {
 
       // 2. ACTIVATE REAL PDF DOWNLOAD
       const link = document.createElement('a');
-      link.href = '/Company Profile.pdf'; // <--- This looks inside your public folder
+      link.href = '/company-profile.pdf'; // <--- This looks inside your public folder
       link.setAttribute('download', 'Fin5ive_Company_Profile.pdf'); // Name of file when downloaded
       document.body.appendChild(link);
       link.click();

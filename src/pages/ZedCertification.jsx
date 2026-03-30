@@ -520,7 +520,7 @@ const ZedCertification = () => {
                   <h4 className="font-bold text-white text-lg">ZED Certification Services</h4>
                 </div>
               </button>
-              <button onClick={() => triggerDownload('ZED Checklist', '/Checklist for ZED certificate.pdf', 'Checklist_ZED_Certification.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-5 bg-white/10 border border-white/20 hover:bg-white/20 hover:border-finOrange rounded-2xl transition group text-left backdrop-blur-sm">
+              <button onClick={() => triggerDownload('ZED Checklist', '/zed-checklist.pdf', 'Checklist_ZED_Certification.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-5 bg-white/10 border border-white/20 hover:bg-white/20 hover:border-finOrange rounded-2xl transition group text-left backdrop-blur-sm">
                 <div className="bg-green-500 text-white p-3 rounded-xl mr-5 group-hover:scale-110 transition-transform">{downloadingDoc === 'ZED Checklist' ? <Loader2 className="w-6 h-6 animate-spin" /> : <CheckSquare className="w-6 h-6" />}</div>
                 <div>
                   <h4 className="font-bold text-white text-lg">Checklist for ZED Certification</h4>

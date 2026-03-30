@@ -69,7 +69,7 @@ const NriGiftCity = () => {
 
       // 2. Safely trigger the PDF download
       const link = document.createElement('a');
-      link.href = '/Gift City Investment Services.pdf'; // Exact file name from your public folder
+      link.href = '/gift-city-investment-services.pdf'; // Exact file name from your public folder
       link.setAttribute('download', 'Fin5ive_Gift_City_Investment_Services.pdf'); // Clean name for the user
       document.body.appendChild(link);
       link.click();

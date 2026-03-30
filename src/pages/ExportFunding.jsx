@@ -78,7 +78,7 @@ const ExportFunding = () => {
 
       // 2. Safely trigger the PDF download
       const link = document.createElement('a');
-      link.href = '/export funding5.0.pdf'; // Exact file name from your public folder
+      link.href = '/export-funding.pdf'; // Exact file name from your public folder
       link.setAttribute('download', 'Fin5ive_Export_Trade_Finance.pdf'); // Clean name for the user
       document.body.appendChild(link);
       link.click();

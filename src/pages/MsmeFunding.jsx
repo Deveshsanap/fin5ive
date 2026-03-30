@@ -313,7 +313,7 @@ const MsmeFunding = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* MSME Funding Services */}
-              <button onClick={() => triggerDownload('MSME Brochure', '/MSME Funding Brochure.pdf', 'MSME_Funding_Services.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left">
+              <button onClick={() => triggerDownload('MSME Brochure', '/msme-funding-brochure.pdf', 'MSME_Funding_Services.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left">
                 <div className="bg-orange-50 p-4 rounded-xl text-finOrange mr-6 group-hover:scale-110 transition-transform">{downloadingDoc === 'MSME Brochure' ? <Loader2 className="w-8 h-8 animate-spin" /> : <FileText className="w-8 h-8" />}</div>
                 <div>
                   <h4 className="font-bold text-finBlue text-lg">MSME Funding Services</h4>
@@ -322,7 +322,7 @@ const MsmeFunding = () => {
               </button>
 
               {/* Working Capital Services */}
-              <button onClick={() => triggerDownload('Working Capital Guide', '/working capital (1).pdf', 'Working_Capital_Services.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left">
+              <button onClick={() => triggerDownload('Working Capital Guide', '/working-capital.pdf', 'Working_Capital_Services.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left">
                 <div className="bg-blue-50 p-4 rounded-xl text-finBlue mr-6 group-hover:scale-110 transition-transform">{downloadingDoc === 'Working Capital Guide' ? <Loader2 className="w-8 h-8 animate-spin" /> : <Coins className="w-8 h-8" />}</div>
                 <div>
                   <h4 className="font-bold text-finBlue text-lg">working capital Services</h4>
@@ -331,7 +331,7 @@ const MsmeFunding = () => {
               </button>
 
               {/* Checklist for MSME Loan Proposal */}
-              <button onClick={() => triggerDownload('Loan Checklist', '/Checklist for Loan Proposal.pdf', 'Checklist_MSME_Loan.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left">
+              <button onClick={() => triggerDownload('Loan Checklist', '/loan-proposal-checklist.pdf', 'Checklist_MSME_Loan.pdf')} disabled={downloadingDoc !== null} className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left">
                 <div className="bg-green-50 p-4 rounded-xl text-green-600 mr-6 group-hover:scale-110 transition-transform">{downloadingDoc === 'Loan Checklist' ? <Loader2 className="w-8 h-8 animate-spin" /> : <CheckCircle className="w-8 h-8" />}</div>
                 <div>
                   <h4 className="font-bold text-finBlue text-lg">Checklist for MSME Loan Proposal</h4>
@@ -340,7 +340,7 @@ const MsmeFunding = () => {
               </button>
 
               {/* Machine loan Services */}
-              <button onClick={() => triggerDownload('Machinery Loan 1-Pager', '/Machine loan 1 pager .png', 'Machine_Loan_Services.png')} disabled={downloadingDoc !== null} className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left">
+              <button onClick={() => triggerDownload('Machinery Loan 1-Pager', '/machine-loan-1-pager.png', 'Machine_Loan_Services.png')} disabled={downloadingDoc !== null} className="flex items-center p-6 bg-white border border-gray-200 hover:border-finOrange hover:shadow-md rounded-2xl transition group text-left">
                 <div className="bg-purple-50 p-4 rounded-xl text-purple-600 mr-6 group-hover:scale-110 transition-transform">{downloadingDoc === 'Machinery Loan 1-Pager' ? <Loader2 className="w-8 h-8 animate-spin" /> : <Settings className="w-8 h-8" />}</div>
                 <div>
                   <h4 className="font-bold text-finBlue text-lg">Machine loan</h4>

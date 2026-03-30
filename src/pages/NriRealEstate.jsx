@@ -69,7 +69,7 @@ const NriRealEstate = () => {
 
       // 2. Safely trigger the PDF download
       const link = document.createElement('a');
-      link.href = '/NRI Real Estate Service.pdf'; // Exact file name based on your master list
+      link.href = '/nri-real-estate-service.pdf'; // Exact file name based on your master list
       link.setAttribute('download', 'Fin5ive_NRI_Real_Estate_Service.pdf'); // Clean name for the user
       document.body.appendChild(link);
       link.click();

@@ -69,7 +69,7 @@ const NriDomestic = () => {
 
       // 2. Safely trigger the PDF download
       const link = document.createElement('a');
-      link.href = '/Domestic Product Factsheet.pdf'; // Exact file name from your public folder
+      link.href = '/domestic-product-factsheet.pdf'; // Exact file name from your public folder
       link.setAttribute('download', 'Fin5ive_Domestic_Product_Factsheet.pdf'); // Clean name for the user
       document.body.appendChild(link);
       link.click();

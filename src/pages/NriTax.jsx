@@ -68,7 +68,7 @@ const NriTax = () => {
 
       // 2. Safely trigger the PDF download
       const link = document.createElement('a');
-      link.href = '/Fin5ive NRI Tax Filing Services.pdf';
+      link.href = '/nri-tax-filing-services.pdf';
       link.setAttribute('download', 'Fin5ive_NRI_Tax_Filing.pdf'); // Clean name for the user
       document.body.appendChild(link);
       link.click();

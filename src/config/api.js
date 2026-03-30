@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:3000", // Changed to local backend
+  baseURL: "https://fin-five-server.vercel.app", // Changed to local backend
   headers: {
     "Content-Type": "application/json",
   },

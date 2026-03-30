@@ -74,7 +74,7 @@ const WorkingCapital = () => {
 
       // 2. Safely trigger the PDF download
       const link = document.createElement('a');
-      link.href = '/Checklist for Loan Proposal.pdf'; // Exact file name from public folder
+      link.href = '/loan-proposal-checklist.pdf'; // Exact file name from public folder
       link.setAttribute('download', 'Checklist_for_MSME_Loan_Proposal.pdf'); // Clean name
       document.body.appendChild(link);
       link.click();
